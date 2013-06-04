@@ -6,6 +6,7 @@ from gameobjects.vector2 import Vector2
 
 import statemachines
 import global_data
+import screen_entity
 
 
 class GameEntity(object):
@@ -23,18 +24,20 @@ class GameEntity(object):
         
         self.id = 0
         
-    def render(self, surface):
+    def render(self, viewport):
         
         x, y = self.location
-        w, h = self.image.get_size()
-        surface.blit(self.image, (x-w/2, y-h/2))
+      
+        #Let's call the viewport entity render.  It will determine if it's on screen.
+       
+        viewport.render_entity(self.image, x, y)
         
         #render mini-map
         #map is 256 across and 192 down
-        minimap_x = x/4. + 750
-        minimap_y = y/4. + 550
+#       minimap_x = x/4. + 750
+#       minimap_y = y/4. + 550
         #surface.set_at((int(minimap_x), int(minimap_y)), self.color)
-        pygame.draw.rect(surface, self.color, (int(minimap_x), int(minimap_y), 4, 4))   
+#        pygame.draw.rect(surface, self.color, (int(minimap_x), int(minimap_y), 4, 4))   
         
     def process(self, time_passed):
         
@@ -202,21 +205,21 @@ class Ant(GameEntity):
             self.base.increment_leaf()
             
         
-    def render(self, surface):
+    def render(self, viewport):
         
-        GameEntity.render(self, surface)
+        GameEntity.render(self, viewport)
         
         if self.carry_image:
             x, y = self.location
             w, h = self.carry_image.get_size()
-            surface.blit(self.carry_image, (x-w, y-h/2))
+            viewport.render_entity(self.carry_image, x-w, y-h/2)
 
         x, y = self.location
         w, h = self.image.get_size()
         bar_x = x - 12
         bar_y = y + h/2
-        surface.fill( (255, 0, 0), (bar_x, bar_y, 25, 4))
-        surface.fill( (0, 255, 0), (bar_x, bar_y, self.hunger/40, 4))
+        viewport.surface.fill( (255, 0, 0), (bar_x, bar_y, 25, 4))
+        viewport.surface.fill( (0, 255, 0), (bar_x, bar_y, self.hunger/40, 4))
 
     def process(self, time_passed):
         self.hunger -= 1

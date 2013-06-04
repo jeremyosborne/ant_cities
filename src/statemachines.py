@@ -208,7 +208,7 @@ class AntStateExploring(State):
         
     def random_destination(self):
         
-        w, h = global_data.WORLD_SIZE
+        w, h = global_data.world_size
         self.ant.destination = Vector2(randint(0, w), randint(0, h))    
     
     def do_actions(self):

@@ -4,7 +4,7 @@ Created on Mar 2, 2013
 @author: jmadams
 '''
 
-#SCREEN_SIZE = (1200, 768)
+#screen_size = (1200, 768)
 #WORLD_SIZE = (1200, 512)
 #INTERFACE_SIZE = (1200, 256)
 #NEST_POSITION = (944, 256)
@@ -21,6 +21,7 @@ from gameobjects.vector2 import Vector2
 import entities
 import statemachines
 import global_data
+import screen_entity
 
 
       
@@ -29,7 +30,7 @@ class ControlPanel(object):
     def __init__(self, world):
         
         self.font = pygame.font.SysFont("arial", 16);
-        screen_width, screen_height = global_data.SCREEN_SIZE
+        screen_width, screen_height = global_data.screen_size
         panel_height = 256
         panel_starting_position = screen_height - panel_height
         size_of_world_stats = 280
@@ -86,15 +87,18 @@ class ControlPanel(object):
         x, y = self.food_units_location
         surface.blit(label, (x + offset, y))
         
-            
+
 class World(object):
     
     def __init__(self):
         
         self.entities = {}    #Dictionary of all the entities
-        self.entity_id = 0        
-        self.background = pygame.surface.Surface(global_data.SCREEN_SIZE).convert()
+        self.entity_id = 0
+        #This is just the background image.  It's blank right now.        
+        self.background = pygame.surface.Surface(global_data.screen_size).convert()
         self.background.fill((255, 255, 255))
+        #viewport is the screen entity that contains the view of the game world.
+        self.viewport = screen_entity.World_Screen_Entity()
         self.sri = False
 
         
@@ -123,10 +127,16 @@ class World(object):
             
     def render(self, surface):
         
-        surface.blit(self.background, (0, 0))
+        self.background = pygame.surface.Surface(global_data.world_size).convert()
+        self.background.fill((255, 255, 255))
+        #Put the background down.
+        self.viewport.zoom_frame_buffer.blit(self.background, (0, 0))
+        #Render each entity onto the framebuffer.
         for entity in self.entities.itervalues():
-            entity.render(surface)
-            
+            entity.render(self.viewport)
+        #Render the framebuffer onto the screen    
+        self.viewport.render(surface)
+        
             
     def get_close_entity(self, name, location, range=100.):
         
@@ -153,12 +163,12 @@ class World(object):
 def run():
     
     pygame.init()
-    screen = pygame.display.set_mode(global_data.SCREEN_SIZE, 0, 32)
+    screen = pygame.display.set_mode(global_data.screen_size, 0, 32)
     
     world = World()
     control_panel = ControlPanel(world)
     
-    w, h = global_data.WORLD_SIZE
+    w, h = global_data.world_size
     
     clock = pygame.time.Clock()
     
@@ -192,6 +202,10 @@ def run():
         ant.location = Vector2(randint(0, w), randint(0, h))
         ant.brain.set_state("exploring")
         world.add_entity(ant)
+        
+        world.viewport.change_zoom_level("out")
+        world.viewport.change_zoom_level("out")
+        world.viewport.change_zoom_level("out")
     
     while True:
         
@@ -228,6 +242,8 @@ def run():
         control_panel.render_base_stats(screen, world, base_1, 25)
         control_panel.render_base_stats(screen, world, base_2, 100)
         
+
+
         pygame.display.update()
     
 if __name__ == "__main__":    
