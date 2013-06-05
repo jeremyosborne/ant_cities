@@ -94,9 +94,6 @@ class World(object):
         
         self.entities = {}    #Dictionary of all the entities
         self.entity_id = 0
-        #This is just the background image.  It's blank right now.        
-        self.background = pygame.surface.Surface(global_data.screen_size).convert()
-        self.background.fill((255, 255, 255))
         #viewport is the screen entity that contains the view of the game world.
         self.viewport = screen_entity.World_Screen_Entity()
         self.sri = False
@@ -127,10 +124,9 @@ class World(object):
             
     def render(self, surface):
         
-        self.background = pygame.surface.Surface(global_data.world_size).convert()
-        self.background.fill((255, 255, 255))
-        #Put the background down.
-        self.viewport.zoom_frame_buffer.blit(self.background, (0, 0))
+        #Prepares for the next frame.  Clears the background, etc.
+        self.viewport.prepare_new_frame()
+        
         #Render each entity onto the framebuffer.
         for entity in self.entities.itervalues():
             entity.render(self.viewport)
@@ -166,7 +162,7 @@ def run():
     screen = pygame.display.set_mode(global_data.screen_size, 0, 32)
     
     world = World()
-    control_panel = ControlPanel(world)
+    #control_panel = ControlPanel(world)
     
     w, h = global_data.world_size
     
@@ -220,7 +216,37 @@ def run():
                     world.add_entity(seth)
                 if event.key == K_z:
                     sri = entities.Sri(world, sri_image) 
-                    world.add_entity(sri)       
+                    world.add_entity(sri)
+                if event.key == K_3:
+                    world.viewport.update_zoom_level(world.viewport.zoom_level_3)
+                if event.key == K_1:
+                    world.viewport.update_zoom_level(world.viewport.zoom_level_1)
+                if event.key == K_2:
+                    world.viewport.update_zoom_level(world.viewport.zoom_level_2)
+                if event.key == K_4:
+                    world.viewport.update_zoom_level(world.viewport.zoom_level_4)
+                if event.key == K_5:
+                    world.viewport.update_zoom_level(world.viewport.zoom_level_5)
+            #Handle the mouse wheel for zooming.
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4:  #Mouse Scroll Wheel Up, so zoom in
+                    world.viewport.change_zoom_level("in")
+                if event.button == 5:  #Mouse Scroll Wheel Down, so zoom out
+                    world.viewport.change_zoom_level("out")
+                
+        #Let's take care of the mouse.            
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if mouse_x < 10:
+            world.viewport.subtract_from_viewport_x(world.viewport.scroll_speed)
+                
+        if mouse_x > (world.viewport.width-10):
+            world.viewport.add_to_viewport_x(world.viewport.scroll_speed)
+                
+        if mouse_y < 10:
+            world.viewport.subtract_from_viewport_y(world.viewport.scroll_speed)
+                
+        if mouse_y > (world.viewport.height-10):
+            world.viewport.add_to_viewport_y(world.viewport.scroll_speed)
         
         time_passed = clock.tick(30)
         
@@ -229,18 +255,13 @@ def run():
             leaf.location = Vector2(randint(0, w), randint(0, h))
             world.add_entity(leaf)
             
-        #if randint(1, 100) == 1:
-        #    seth = Seth(world, seth_image)
-        #    seth.location = Vector2(-50, randint(0, h))
-        #    seth.brain.set_state("exploring")
-            #spider.destination = Vector2(w+50, randint(0, h))            
-        #    world.add_entity(seth)
+
         
         world.process(time_passed)
         world.render(screen)
-        control_panel.render(screen, world)
-        control_panel.render_base_stats(screen, world, base_1, 25)
-        control_panel.render_base_stats(screen, world, base_2, 100)
+        #control_panel.render(screen, world)
+        #control_panel.render_base_stats(screen, world, base_1, 25)
+        #control_panel.render_base_stats(screen, world, base_2, 100)
         
 
 

@@ -113,7 +113,13 @@ class World_Screen_Entity(Screen_Entity):
 
         #The zoom_frame_buffer is the surface where everything is rendered (blited) to.  It will then be scaled to fit the viewport.
         self.zoom_frame_buffer = pygame.surface.Surface((self.zoom_area_width, self.zoom_area_height)).convert()
+        
+        #Let's prepare the backgound image.  It will just be white.
+        self.background = pygame.surface.Surface((self.zoom_area_width, self.zoom_area_height)).convert()
+        self.background.fill((255, 255, 255))
 
+    def prepare_new_frame(self):
+        self.zoom_frame_buffer.blit(self.background, (0, 0))
 
     #We check to see if it's in the field of vision and render if so.
     def render_entity(self, image, x, y):
@@ -214,8 +220,9 @@ class World_Screen_Entity(Screen_Entity):
         self.zoom_frame_buffer = pygame.surface.Surface(level).convert()
     
         #Redefine the size of the surface for the background
-        #background = pygame.surface.Surface(level).convert()
-    
+        self.background = pygame.surface.Surface(level).convert()
+        self.background.fill((255, 255, 255))
+        
         #Change the scroll_speed based on the zoom level.
         self.scroll_speed = self.scroll_speeds[self.zoom_level]
     
