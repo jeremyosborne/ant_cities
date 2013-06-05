@@ -155,7 +155,16 @@ class World(object):
     def add_sri(self):
         self.sri = True
                 
-
+def print_fps(clock, screen):
+    
+    fps = clock.get_fps()
+    
+    #Since we're stopping normal rendering, we have clear the area where the text will be written.
+    pygame.draw.rect(screen, (255, 255, 255), (5, global_data.screen_size_y - 50, 125, 20), 0)
+    font = pygame.font.SysFont("arial", 16);
+    label = font.render(str(fps), True, (0, 0, 0))
+    screen.blit(label, (5, global_data.screen_size_y - 50))
+    
 def run():
     
     pygame.init()
@@ -167,6 +176,8 @@ def run():
     w, h = global_data.world_size
     
     clock = pygame.time.Clock()
+    
+    render_game_world = True
     
     ant_image = pygame.image.load("assets/ant.png").convert_alpha()
     ant_image_2 = pygame.image.load("assets/ant-blue.png").convert_alpha()
@@ -227,6 +238,11 @@ def run():
                     world.viewport.update_zoom_level(world.viewport.zoom_level_4)
                 if event.key == K_5:
                     world.viewport.update_zoom_level(world.viewport.zoom_level_5)
+                if event.key == K_q:
+                    if render_game_world:
+                        render_game_world = False
+                    else:
+                        render_game_world = True
             #Handle the mouse wheel for zooming.
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:  #Mouse Scroll Wheel Up, so zoom in
@@ -248,7 +264,7 @@ def run():
         if mouse_y > (world.viewport.height-10):
             world.viewport.add_to_viewport_y(world.viewport.scroll_speed)
         
-        time_passed = clock.tick(30)
+        time_passed = clock.tick(60)
         
         if randint(1, 10) == 1:
             leaf = entities.Leaf(world, leaf_image)
@@ -258,9 +274,12 @@ def run():
 
         
         world.process(time_passed)
-        world.render(screen)
+        if render_game_world:
+            world.render(screen)
+        print_fps(clock, screen)
+        
         #control_panel.render(screen, world)
-        #control_panel.render_base_stats(screen, world, base_1, 25)
+        #conStrol_panel.render_base_stats(screen, world, base_1, 25)
         #control_panel.render_base_stats(screen, world, base_2, 100)
         
 
