@@ -190,6 +190,8 @@ class Ant(GameEntity):
         
         self.carry_image = None
         
+        self.bar_surface = pygame.surface.Surface((25, 4)).convert()
+        
     def carry(self, image):
         
         self.carry_image = image
@@ -207,19 +209,22 @@ class Ant(GameEntity):
         
     def render(self, viewport):
         
-        GameEntity.render(self, viewport)
-        
-        if self.carry_image:
-            x, y = self.location
-            w, h = self.carry_image.get_size()
-            viewport.render_entity(self.carry_image, x-w, y-h/2)
-
         x, y = self.location
         w, h = self.image.get_size()
-        bar_x = x - 12
-        bar_y = y + h/2
-        viewport.surface.fill( (255, 0, 0), (bar_x, bar_y, 25, 4))
-        viewport.surface.fill( (0, 255, 0), (bar_x, bar_y, self.hunger/40, 4))
+        
+        #Let's draw the ant first.
+        viewport.render_entity(self.image, x-w, y-h/2)
+        
+        #If it's carrying a leaf, let's draw that too.
+        if self.carry_image:
+            w, h = self.carry_image.get_size()
+            viewport.render_entity(self.carry_image, x-w, y-h/2)
+        
+        #Hunger Bar.  Draw the inital bar.
+        self.bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
+        #Now draw how much food is left over the inital bar
+        self.bar_surface.fill( (0, 255, 0), (0, 0, self.hunger/40, 4))
+        viewport.render_entity(self.bar_surface, x-30, y+10)
 
     def process(self, time_passed):
         self.hunger -= 1
