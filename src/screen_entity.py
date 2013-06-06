@@ -244,6 +244,35 @@ class World_Screen_Entity(Screen_Entity):
                 self.zoom_level = self.zoom_level + 1
                 self.update_zoom_level(self.zoom_levels[self.zoom_level])
 
+#Mini_Map
+class Mini_Map(Screen_Entity):
+    def __init__(self, top=0, left=0, width=256, height=256):
+        Screen_Entity.__init__(self, top, left, width, height, 1, 0, True)
+
+        self.x_scale_factor = global_data.world_size_x / width
+        self.y_scale_factor = global_data.world_size_y / height
+        
+        self.background = pygame.surface.Surface((width, height)).convert()
+        self.background.fill((0, 0, 0))
+    
+        print str(self.top)
+        print str(self.left)
+        
+    def render(self, world, screen):
+        
+        #Clear the mini map.
+        self.surface.blit(self.background, (0, 0))
+        #Let's go through all the entities and put them on the mini_map
+        for entity in world.entities.itervalues():
+            x_location, y_location = entity.location
+            minimap_x = x_location/self.x_scale_factor
+            minimap_y = y_location/self.y_scale_factor
+            self.surface.set_at((int(minimap_x), int(minimap_y)), entity.color)
+            pygame.draw.rect(self.surface, entity.color, (int(minimap_x), int(minimap_y), 4, 4))
+        
+        screen.blit(self.surface, (944, 598))
+        #screen.blit(self.surface, (self.top, self.left))
+
 
 
 

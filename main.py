@@ -3,7 +3,6 @@ Run this file from the commandline to start.
 """
 
 if __name__ == "__main__":
-
     import sys
     import os
     
@@ -29,8 +28,9 @@ if __name__ == "__main__":
     # It is our job to call run on this game object to start the game. 
     import game
     game.run()
-    log("Game has exited if we are here. All necessary cleanup should have happened before this point.")
-    log("Thank you for playing.")
+    print "Game has exited if we are here. All necessary cleanup should have happened before this point."
+    print "Thank you for playing."
+
 
 
 

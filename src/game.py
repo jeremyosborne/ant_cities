@@ -173,6 +173,8 @@ def run():
     world = World()
     #control_panel = ControlPanel(world)
     
+    #Mini_Map Init
+    mini_map = screen_entity.Mini_Map(1200-256, 768-170, 256, 170)
     w, h = global_data.world_size
     
     clock = pygame.time.Clock()
@@ -277,6 +279,14 @@ def run():
         if render_game_world:
             world.render(screen)
         print_fps(clock, screen)
+        
+        #Let's Draw the Mini_Map
+        mini_map.render(world, screen)
+        
+        #the_background = pygame.surface.Surface((256, 170)).convert()
+        #the_background.fill((0, 0, 0))
+        #self.surface.blit(self.background, (0, 0))
+        #screen.blit(the_background, (944, 598))
         
         #control_panel.render(screen, world)
         #conStrol_panel.render_base_stats(screen, world, base_1, 25)
