@@ -14,9 +14,13 @@ class Screen_Entity(object):
         """Arguments assumed to be integers."""
         # The upper left anchor point of our viewport [left, top]
         self.anchor = [top, left]
+        self.top = top
+        self.left = left
         # The dimensions of our viewport as [width, height]
         # Assumed width and height are positive.
         self.size = [width, height]
+        self.width = width
+        self.height - height
         # Scales relative to 1 as default.
         self.scale = scale
         #The surface for this screen entity.
@@ -75,12 +79,14 @@ class Screen_Entity(object):
         main_surface.blit(self.surface, ((self.top, self.left)))
 
 class World_Screen_Entity(Screen_Entity):
-    def __init__(self):
+    def __init__(self, world_width, world_height):
         Screen_Entity.__init__(self, 0, 0, global_data.screen_size_x, global_data.screen_size_y, 1, 0, True)
 
         self.zoom_area_width = global_data.screen_size_x
         self.zoom_area_height = global_data.screen_size_y
-
+        self.world_height = world_height
+        self.world_width = world_width
+        
         #Hard coded Zoom level for testing
         #Zoom levels as tuples.
         self.zoom_level_1 = (global_data.screen_size_x/2, global_data.screen_size_y/2)
@@ -88,23 +94,24 @@ class World_Screen_Entity(Screen_Entity):
         self.zoom_level_3 = (global_data.screen_size_x+global_data.screen_size_x/2, global_data.screen_size_y+global_data.screen_size_y/2)
         self.zoom_level_4 = (global_data.screen_size_x*2, global_data.screen_size_y*2)
         self.zoom_level_5 = (global_data.screen_size_x*3, global_data.screen_size_y*3)
+        self.zoom_level_6 = (self.world_width, self.world_height)
         #List of tuples representing the zoom levels
-        self.zoom_levels = (self.zoom_level_1, self.zoom_level_2, self.zoom_level_3, self.zoom_level_4, self.zoom_level_5)
+        self.zoom_levels = (self.zoom_level_1, self.zoom_level_2, self.zoom_level_3, self.zoom_level_4, self.zoom_level_5, self.zoom_level_6)
 
         #default zoom level
         self.zoom_level = 2
 
         #Scroll speeds that will be used based on zoom level
-        self.scroll_speeds = (5, 10, 20, 40, 60)
+        self.scroll_speeds = (5, 10, 20, 40, 60, 100)
         #default scroll speed
         self.scroll_speed = 10
 
-        self.viewport_center_x = global_data.world_size_x / 2
+        self.viewport_center_x = self.world_width / 2
         self.viewport_center_min_x = self.zoom_area_width/2
-        self.viewport_center_max_x = global_data.world_size_x - self.zoom_area_width/2
-        self.viewport_center_y = global_data.world_size_y / 2
+        self.viewport_center_max_x = self.world_width - self.zoom_area_width/2
+        self.viewport_center_y = self.world_height / 2
         self.viewport_center_min_y = self.zoom_area_height/2
-        self.viewport_center_max_y = global_data.world_size_y - self.zoom_area_height/2
+        self.viewport_center_max_y = self.world_height - self.zoom_area_height/2
 
         #Defining the rectangle of the viewport
         self.viewport_x_rect = self.viewport_center_x - self.zoom_area_width/2
@@ -198,10 +205,10 @@ class World_Screen_Entity(Screen_Entity):
         self.zoom_area_height = y
     
         self.viewport_center_min_x = self.zoom_area_width/2
-        self.viewport_center_max_x = global_data.world_size_x - self.zoom_area_width/2
+        self.viewport_center_max_x = self.world_width - self.zoom_area_width/2
 
         self.viewport_center_min_y = self.zoom_area_height/2
-        self.viewport_center_max_y = global_data.world_size_y - self.zoom_area_height/2
+        self.viewport_center_max_y = self.world_height - self.zoom_area_height/2
     
         #Test to see if viewport center is out of range after the the zoom, if so, fix'um up.  This can happen if you're at the edge of the screen and then zoom out - the center will be close to the edge.
         if self.viewport_center_x > self.viewport_center_max_x:
@@ -240,19 +247,22 @@ class World_Screen_Entity(Screen_Entity):
                 self.zoom_level = self.zoom_level - 1
                 self.update_zoom_level(self.zoom_levels[self.zoom_level])
         if direction == "out":
-            if self.zoom_level < 4:
+            if self.zoom_level < 5:
                 self.zoom_level = self.zoom_level + 1
                 self.update_zoom_level(self.zoom_levels[self.zoom_level])
 
 #Mini_Map
 class Mini_Map(Screen_Entity):
-    def __init__(self, top=0, left=0, width=256, height=256):
+    def __init__(self, top=0, left=0, width=256, height=256, world_width=1024, world_height=768):
         Screen_Entity.__init__(self, top, left, width, height, 1, 0, True)
 
-        self.x_scale_factor = global_data.world_size_x / width
-        self.y_scale_factor = global_data.world_size_y / height
+        self.world_width = world_width
+        self.world_height = world_height
         
-        self.background = pygame.surface.Surface((width, height)).convert()
+        self.x_scale_factor = self.world_width / self.width         #28.125
+        self.y_scale_factor = self.world_height / self.height        #27.106
+        
+        self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
     
         print str(self.top)
@@ -268,9 +278,10 @@ class Mini_Map(Screen_Entity):
             minimap_x = x_location/self.x_scale_factor
             minimap_y = y_location/self.y_scale_factor
             self.surface.set_at((int(minimap_x), int(minimap_y)), entity.color)
-            pygame.draw.rect(self.surface, entity.color, (int(minimap_x), int(minimap_y), 4, 4))
-        
+            pygame.draw.rect(self.surface, entity.color, (int(minimap_x), int(minimap_y), 2, 2))
+            #print str(minimap_x), str(minimap_y), x_location, y_location
         screen.blit(self.surface, (944, 598))
+        #exit()
         #screen.blit(self.surface, (self.top, self.left))
 
 

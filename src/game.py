@@ -90,12 +90,16 @@ class ControlPanel(object):
 
 class World(object):
     
-    def __init__(self):
+    def __init__(self, x, y):
+        
+        #The size of the world for x and y
+        self.width = x
+        self.height = y
         
         self.entities = {}    #Dictionary of all the entities
         self.entity_id = 0
         #viewport is the screen entity that contains the view of the game world.
-        self.viewport = screen_entity.World_Screen_Entity()
+        self.viewport = screen_entity.World_Screen_Entity(self.width, self.height)
         self.sri = False
 
         
@@ -170,12 +174,12 @@ def run():
     pygame.init()
     screen = pygame.display.set_mode(global_data.screen_size, 0, 32)
     
-    world = World()
+    world = World(global_data.world_size_x, global_data.world_size_y)
     #control_panel = ControlPanel(world)
     
     #Mini_Map Init
-    mini_map = screen_entity.Mini_Map(1200-256, 768-170, 256, 170)
-    w, h = global_data.world_size
+    mini_map = screen_entity.Mini_Map(1200-256, 768-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+
     
     clock = pygame.time.Clock()
     
@@ -191,10 +195,10 @@ def run():
     seth_image = pygame.image.load("assets/seth.png")
     sri_image = pygame.image.load("assets/sri.png")
     #Let's make hut 1 for our little ants.
-    base_1 = entities.Base(world, base_image, 1, (0,0,0))
+    base_1 = entities.Base(world, base_image, 1, (255,255,255))
     base_1.location = (global_data.NEST_POSITION)
     
-    base_2 = entities.Base(world, base_image_2, 2, (0,0,0))
+    base_2 = entities.Base(world, base_image_2, 2, (255,255,255))
     base_2.location = (global_data.NEST_POSITION_2)
     
     world.add_entity(base_1)
@@ -203,18 +207,14 @@ def run():
     for ant_no in xrange(global_data.ANT_COUNT):
         #Team 1
         ant = entities.Ant(world, ant_image, base_1, (255, 0, 0))
-        ant.location = Vector2(randint(0, w), randint(0, h))
+        ant.location = Vector2(randint(0, world.width), randint(0, world.height))
         ant.brain.set_state("exploring")
         world.add_entity(ant)
         #Team 2
         ant = entities.Ant(world, ant_image_2, base_2, (0, 0, 255))
-        ant.location = Vector2(randint(0, w), randint(0, h))
+        ant.location = Vector2(randint(0, world.width), randint(0, world.height))
         ant.brain.set_state("exploring")
         world.add_entity(ant)
-        
-        world.viewport.change_zoom_level("out")
-        world.viewport.change_zoom_level("out")
-        world.viewport.change_zoom_level("out")
     
     while True:
         
@@ -270,7 +270,7 @@ def run():
         
         if randint(1, 10) == 1:
             leaf = entities.Leaf(world, leaf_image)
-            leaf.location = Vector2(randint(0, w), randint(0, h))
+            leaf.location = Vector2(randint(0, leaf.world.width), randint(0, leaf.world.height))
             world.add_entity(leaf)
             
 

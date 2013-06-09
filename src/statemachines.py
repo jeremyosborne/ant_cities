@@ -66,8 +66,7 @@ class SethStateExploring(State):
         
     def random_destination(self):
         
-        w, h = global_data.WORLD_SIZE
-        self.seth.destination = Vector2(randint(0, w), randint(0, h))    
+        self.seth.destination = Vector2(randint(0, self.seth.world.width), randint(0, self.seth.world.height))    
     
     def do_actions(self):
         
@@ -208,8 +207,7 @@ class AntStateExploring(State):
         
     def random_destination(self):
         
-        w, h = global_data.world_size
-        self.ant.destination = Vector2(randint(0, w), randint(0, h))    
+        self.ant.destination = Vector2(randint(0, self.ant.world.width), randint(0, self.ant.world.height))    
     
     def do_actions(self):
         

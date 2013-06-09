@@ -5,7 +5,7 @@
 INTERFACE_SIZE = (1200, 256)
 #NEST_POSITION = (944, 256)
 #NEST_POSITION_2 = (256, 256)
-ANT_COUNT = 200
+ANT_COUNT = 20
 NEST_SIZE = 5.
 
 #Screen Based
@@ -19,9 +19,9 @@ screen_size_y = 768
 #screen_size_y = 768
 
 #World Based
-world_size = (1200*24, 768*24)
-world_size_x = 1200*6
-world_size_y = 768*6
+#world_size = (1200*5, 768*5)
+world_size_x = 1200*10
+world_size_y = 768*10
 
 NEST_POSITION = (world_size_x - 256, world_size_y / 2)
 NEST_POSITION_2 = (256, world_size_y / 2)
