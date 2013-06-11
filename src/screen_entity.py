@@ -280,7 +280,7 @@ class Mini_Map(Screen_Entity):
             self.surface.set_at((int(minimap_x), int(minimap_y)), entity.color)
             pygame.draw.rect(self.surface, entity.color, (int(minimap_x), int(minimap_y), 2, 2))
             #print str(minimap_x), str(minimap_y), x_location, y_location
-        screen.blit(self.surface, (944, 598))
+        screen.blit(self.surface, (self.top, self.left))
         #exit()
         #screen.blit(self.surface, (self.top, self.left))
 

@@ -36,6 +36,7 @@ if __name__ == "__main__":
 
 
 #To Do stuff:
+#Set up a version/notes section
 #Levers for the simulation:
 #Hostility level
 #Friendly index
@@ -43,6 +44,7 @@ if __name__ == "__main__":
 #Health minded ants or self sacrafice?
 #Expansionn oriented or homebodies?
 #Conversion or kill?
+#Add scrolling minimap on and off
 
 #evolutionary advancements
 #vision increase
