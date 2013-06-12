@@ -5,14 +5,19 @@ File contents:
 
 Task List.
 
-0.5 Clean up the code.
-1.  Multi-Process, Sim and Render Thread
-2.  Mini map scroll in and out when activated/de-activated.
-3.  Add user input event to bubble to the proper screen.
-4.  Get simulated activities like food consumption to match time and not sim beat.
-5.  Change Screen_Entity to viewport and figure out the right naming convention.
+-  Remove now undeeded sections of the code.
+-  Multi-Process, Sim and Render Thread
+-  Mini map scroll in and out when activated/de-activated.
+-  Add user input event to bubble to the proper screen.
+-  Get simulated activities like food consumption to match time and not sim beat.
+-  Change Screen_Entity to viewport and figure out the right naming convention.
+-  Make something like surface effects that any display port can use.
 
-Version .10 6/11/2013
+Version .02 6/11/2013
+
+- Fixed minimap issue where right side was being cut off.  This was because I wasn't converting the numbers to calculate the scale to float.
+
+Version .01 6/11/2013
 
 Current Implemented Features.
 

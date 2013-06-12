@@ -178,7 +178,7 @@ def run():
     #control_panel = ControlPanel(world)
     
     #Mini_Map Init
-    mini_map = screen_entity.Mini_Map(1200-256, 768-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+    mini_map = screen_entity.Mini_Map(1000-300, 700-270, 256, 170, global_data.world_size_x, global_data.world_size_y)
 
     
     clock = pygame.time.Clock()

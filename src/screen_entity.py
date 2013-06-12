@@ -27,9 +27,22 @@ class Screen_Entity(object):
         self.surface = pygame.surface.Surface(self.size).convert()
         #Layer, can be though of as the sequence of blitting.  0 is the lowest layer.
         self.layer = layer
-        #Should is be rendered?
-        self.is_visable=is_visable 
+        #Should this be rendered?
+        self.is_visable=is_visable
 
+        #Other properties to support functionality.  Not passed in, but can be modified.
+        #self.can_scroll_viewport = False
+        #self.scroll_x_position = 0
+        #self.scroll_y_position = 0
+        #self.current_location_x = 0
+        #self.current_location_y = 0
+        #Scroll status can be:
+        #off = not on screen
+        #on = on the screen
+        #going on
+        #going off
+        #self.scroll_status = "off"
+        
     @property
     def top(self):
         """{int} The relative top coordinate offset."""
@@ -259,14 +272,23 @@ class Mini_Map(Screen_Entity):
         self.world_width = world_width
         self.world_height = world_height
         
-        self.x_scale_factor = self.world_width / self.width         #28.125
-        self.y_scale_factor = self.world_height / self.height        #27.106
+        self.x_scale_factor = float(self.world_width) / float(self.width)         #28.125
+        self.y_scale_factor = float(self.world_height) / float(self.height)        #27.106
         
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
-    
-        print str(self.top)
-        print str(self.left)
+        
+        #Default for the mini map is not visable.  Not used yet.
+        is_visable = False
+
+        #For turning the minimap on and off effect.  
+        self.scroll_top =self.top
+        self.scroll_left = self.left
+        # Scroll_state can moving on, moving off, on, or off.
+        self.scroll_state = "off"
+        
+        print str(self.x_scale_factor)
+        print str(self.y_scale_factor)
         
     def render(self, world, screen):
         
@@ -280,11 +302,23 @@ class Mini_Map(Screen_Entity):
             self.surface.set_at((int(minimap_x), int(minimap_y)), entity.color)
             pygame.draw.rect(self.surface, entity.color, (int(minimap_x), int(minimap_y), 2, 2))
             #print str(minimap_x), str(minimap_y), x_location, y_location
+            
+        # Scroll on or off the screen effect.
+        # We're checking to see if we should be adjusting the location of the mini map.
+        # How it works:
+        # Check to see if it should be scrolling.  If so then:
+        # Check to see if it's going up or down then:
+        # Adjust self.top and self.left numbers below.
+
         screen.blit(self.surface, (self.top, self.left))
         #exit()
         #screen.blit(self.surface, (self.top, self.left))
-
-
+    
+    def turn_on(self):
+        self.scroll_state = "moving on"
+    
+    def turn_off(self):
+        self.scroll_state = "moving off"
 
 
 
