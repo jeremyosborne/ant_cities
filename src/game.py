@@ -178,9 +178,10 @@ def run():
     #control_panel = ControlPanel(world)
     
     #Mini_Map Init
-    mini_map = screen_entity.Mini_Map(1000-300, 700-270, 256, 170, global_data.world_size_x, global_data.world_size_y)
-
-    
+    mini_map = screen_entity.Mini_Map(1000-256, 700-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+    #mini_map.turn_on()
+    #mini_map.scroll_state = "on"
+        
     clock = pygame.time.Clock()
     
     render_game_world = True
@@ -247,11 +248,11 @@ def run():
                         render_game_world = False
                     else:
                         render_game_world = True
-                if event.key == K_m:   #Toggle mini-map
-                    if toggle_mini_map:
-                        toggle_mini_map = False
-                    else:
-                        toggle_mini_map = True
+                if event.key == K_m:  #Turn mini-map on
+                    mini_map.turn_on()
+                if event.key == K_n:  #Turn mini-map off
+                    mini_map.turn_off()
+                    
             #Handle the mouse wheel for zooming.
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:  #Mouse Scroll Wheel Up, so zoom in

@@ -5,13 +5,23 @@ File contents:
 
 Task List.
 
--  Remove now undeeded sections of the code.
+Key
+* In process
+- Not Started.
+
+-  Remove now un-needed sections of the code. You know, normal clean-up.
 -  Multi-Process, Sim and Render Thread
--  Mini map scroll in and out when activated/de-activated.
 -  Add user input event to bubble to the proper screen.
 -  Get simulated activities like food consumption to match time and not sim beat.
--  Change Screen_Entity to viewport and figure out the right naming convention.
+-  Change Screen_Entity Name to viewport and figure out the right naming convention.
 -  Make something like surface effects that any display port can use.
+-  Create effects system for Viewports.
+
+Version .03 6/12/2013
+
+- Changed top, left variable names to x_right and y_down.  I am less confused and feel smart again.
+- Implemented mini map scroll onto the screen (key press m)
+- Implemented mini map scrool off the screen (key press n
 
 Version .02 6/11/2013
 

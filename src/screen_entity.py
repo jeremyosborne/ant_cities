@@ -10,12 +10,11 @@ import global_data
 
 class Screen_Entity(object):
     """Manages various viewport abstractions."""
-    def __init__(self, top=0, left=0, width=1024, height=768, scale=1, layer=0, is_visable=True):
+    def __init__(self, x_right=0, y_down=0, width=1024, height=768, scale=1, layer=0, is_visable=True):
         """Arguments assumed to be integers."""
-        # The upper left anchor point of our viewport [left, top]
-        self.anchor = [top, left]
-        self.top = top
-        self.left = left
+        # The upper left anchor point of our viewport
+        self.x_right = x_right
+        self.y_down = y_down
         # The dimensions of our viewport as [width, height]
         # Assumed width and height are positive.
         self.size = [width, height]
@@ -43,33 +42,33 @@ class Screen_Entity(object):
         #going off
         #self.scroll_status = "off"
         
-    @property
-    def top(self):
-        """{int} The relative top coordinate offset."""
-        return self.anchor[1]
+#    @property
+#    def top(self):
+#        """{int} The relative top coordinate offset."""
+#        return self.anchor[1]
     
-    @top.setter
-    def top(self, value):
-        self.anchor[1] = value
+#    @top.setter
+#    def top(self, value):
+#        self.anchor[1] = value
     
-    @property
-    def left(self):
-        """{int} The relative left coordinate offset."""
-        return self.anchor[0]
+ #   @property
+ #   def left(self):
+ #       """{int} The relative left coordinate offset."""
+ #       return self.anchor[0]
     
-    @left.setter
-    def left(self, value):
-        self.anchor[0] = value
+#    @left.setter
+#    def left(self, value):
+#        self.anchor[0] = value
     
-    @property
-    def right(self):
-        """{int} The relative right coordinate (offset + width)."""
-        return self.anchor[0] + self.size[0]
+#    @property
+#    def right(self):
+#        """{int} The relative right coordinate (offset + width)."""
+#        return self.anchor[0] + self.size[0]
 
-    @property
-    def bottom(self):
-        """{int} The relative bottom coordinate (offset + height)."""
-        return self.anchor[1] + self.size[1]
+#    @property
+#    def bottom(self):
+#        """{int} The relative bottom coordinate (offset + height)."""
+#        return self.anchor[1] + self.size[1]
     
     @property
     def width(self):
@@ -89,7 +88,7 @@ class Screen_Entity(object):
 
     #Render this Screen Entity into whatever surface is passed in.    
     def render(self, main_surface):
-        main_surface.blit(self.surface, ((self.top, self.left)))
+        main_surface.blit(self.surface, ((self.x_right, self.y_down)))
 
 class World_Screen_Entity(Screen_Entity):
     def __init__(self, world_width, world_height):
@@ -266,8 +265,8 @@ class World_Screen_Entity(Screen_Entity):
 
 #Mini_Map
 class Mini_Map(Screen_Entity):
-    def __init__(self, top=0, left=0, width=256, height=256, world_width=1024, world_height=768):
-        Screen_Entity.__init__(self, top, left, width, height, 1, 0, True)
+    def __init__(self, x_right=0, y_down=0, width=256, height=256, world_width=1024, world_height=768):
+        Screen_Entity.__init__(self, x_right, y_down, width, height, 1, 0, True)
 
         self.world_width = world_width
         self.world_height = world_height
@@ -282,13 +281,13 @@ class Mini_Map(Screen_Entity):
         is_visable = False
 
         #For turning the minimap on and off effect.  
-        self.scroll_top =self.top
-        self.scroll_left = self.left
+        self.scroll_x_right =self.x_right
+        self.scroll_y_down = self.y_down
         # Scroll_state can moving on, moving off, on, or off.
         self.scroll_state = "off"
         
-        print str(self.x_scale_factor)
-        print str(self.y_scale_factor)
+        #print str(self.x_scale_factor)
+        #print str(self.y_scale_factor)
         
     def render(self, world, screen):
         
@@ -309,17 +308,35 @@ class Mini_Map(Screen_Entity):
         # Check to see if it should be scrolling.  If so then:
         # Check to see if it's going up or down then:
         # Adjust self.top and self.left numbers below.
-
-        screen.blit(self.surface, (self.top, self.left))
+        
+        if self.scroll_state == "moving on":
+            self.scroll_y_down -= 1
+            if self.scroll_y_down <= self.y_down:
+                self.scroll_state = "on"
+            screen.blit(self.surface, (self.x_right, self.scroll_y_down))
+            print self.x_right, self.scroll_y_down
+        if self.scroll_state == "moving off":
+            self.scroll_y_down += 1 
+            if self.scroll_y_down >= self.y_down + self.height:
+                self.scroll_state = "off"
+            screen.blit(self.surface, (self.x_right, self.scroll_y_down))
+            print self.x_right, self.scroll_y_down, self.y_down + self.height
+        if self.scroll_state == "on":
+            screen.blit(self.surface, (self.x_right, self.y_down))
         #exit()
-        #screen.blit(self.surface, (self.top, self.left))
+        #screen.blit(self.surface, (self.top, self.y_down))
     
+    #Set up initial values to scroll the mini map onto the screen
     def turn_on(self):
         self.scroll_state = "moving on"
-    
+        #The starting position for y
+        self.scroll_y_down = global_data.screen_size_y
+
+        
+    #Set up initial values to scrool the mini map off of the screen
     def turn_off(self):
         self.scroll_state = "moving off"
-
+        self.scroll_y_down = self.y_down
 
 
 
@@ -339,17 +356,17 @@ if __name__ == "__main__":
     print "Testing..."
     v = Screen_Entity()
     print "Initial viewport width: %s" % v.width
-    print "Left anchor: %s" % v.left
+    print "Left anchor: %s" % v.y_down
     print "Right anchor: %s" % v.right
     print "Changing left anchor point by 100."
-    v.left = 100
-    print "Left anchor: %s" % v.left
+    v.y_down = 100
+    print "Left anchor: %s" % v.y_down
     print "Right anchor: %s" % v.right
 
     print "Initial viewport height: %s" % v.height
-    print "Top anchor: %s" % v.top
+    print "Top anchor: %s" % v.x_right
     print "Bottom anchor: %s" % v.bottom
     print "Changing top anchor point by 100."
-    v.top = 100
-    print "Top anchor: %s" % v.top
+    v.x_right = 100
+    print "Top anchor: %s" % v.x_right
     print "Bottom anchor: %s" % v.bottom

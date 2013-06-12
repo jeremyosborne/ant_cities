@@ -20,8 +20,8 @@ screen_size_y = 700
 
 #World Based
 #world_size = (1200*5, 768*5)
-world_size_x = 1200*10
-world_size_y = 700*10
+world_size_x = 1200*5
+world_size_y = 700*5
 
 NEST_POSITION = (world_size_x - 256, world_size_y / 2)
 NEST_POSITION_2 = (256, world_size_y / 2)
