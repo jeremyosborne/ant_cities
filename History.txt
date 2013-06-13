@@ -17,6 +17,12 @@ Key
 -  Make something like surface effects that any display port can use.
 -  Create effects system for Viewports.
 
+Version .04 
+
+- Deleted old code segments no longer needed and copied to old-code.txt for reference if needed.
+- Doing checkin now because I'm going to workout checking the Screen_Entity class names to Viewport.
+
+
 Version .03 6/12/2013
 
 - Changed top, left variable names to x_right and y_down.  I am less confused and feel smart again.

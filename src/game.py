@@ -22,71 +22,7 @@ import entities
 import statemachines
 import global_data
 import screen_entity
-
-
-      
-class ControlPanel(object):
-    
-    def __init__(self, world):
-        
-        self.font = pygame.font.SysFont("arial", 16);
-        screen_width, screen_height = global_data.screen_size
-        panel_height = 256
-        panel_starting_position = screen_height - panel_height
-        size_of_world_stats = 280
-        size_of_team_stats = 445
-        
-        #Draw static elements on the control panel.
-        #Horizontal Line
-        pygame.draw.line(world.background, (0, 0, 255), (0, panel_starting_position), (screen_width, panel_starting_position), 5)
-        #First deliminator
-        pygame.draw.line(world.background, (0, 0, 255), (size_of_world_stats, panel_starting_position), (size_of_world_stats, screen_height), 5)
-        #second deliminator
-        pygame.draw.line(world.background, (0, 0, 255), (740, 512), (740, 768), 5)
-        
-        font = pygame.font.SysFont("arial", 16);
-        label = font.render("World Statistics", True, (0, 0, 0))
-        world.background.blit(label, (5, screen_height - panel_height + 7))
-        label = font.render("Total Number of Ants: ", True, (0, 0, 0))
-        world.background.blit(label, (5, screen_height - panel_height + 32))
-        label = font.render("Number of Leaves on Screen: ", True, (0, 0, 0))
-        world.background.blit(label, (5, screen_height - panel_height + 57))
-        label = font.render("Number of Returned Leaves: ", True, (0, 0, 0))
-        world.background.blit(label, (290, screen_height - panel_height + 32))
-        label = font.render("Number of Leaves in Base: ", True, (0, 0, 0))
-        world.background.blit(label, (290, screen_height - panel_height + 57))       
-        label = font.render("Number of Food Units: ", True, (0, 0, 0))
-        world.background.blit(label, (290, screen_height - panel_height + 82))
-        label = font.render("Team 1      Team 2", True, (0, 0, 0))
-        world.background.blit(label, (525, screen_height - panel_height + 7))
-        label = font.render("MiniMap", True, (0, 0, 0))
-        world.background.blit(label, (850, screen_height - panel_height + 7))
-        #Other Stuff
-        self.ant_location = (225, screen_height - panel_height + 32)
-        self.leaf_location = (225, screen_height - panel_height + 57)
-        self.leaf_returned_location = (520, screen_height - panel_height + 32)
-        self.leaf_in_base_location = (520, screen_height - panel_height + 57)
-        self.food_units_location = (520, screen_height - panel_height + 82)
-        
-    #Let's render all the interesting things about the world        
-    def render(self, surface, world):
-  
-        label = self.font.render(str(world.count("ant")), True, (0, 0, 0))
-        surface.blit(label, self.ant_location)
-        label = self.font.render(str(world.count("leaf")), True, (0, 0, 0))
-        surface.blit(label, self.leaf_location)   
-    
-    def render_base_stats(self, surface, world, base, offset):
-        label = self.font.render(str(base.leaves_returned), True, (0, 0, 0))
-        x, y = self.leaf_returned_location
-        surface.blit(label, (x + offset, y))
-        label = self.font.render(str(base.leaves), True, (0, 0, 0))
-        x, y = self.leaf_in_base_location
-        surface.blit(label, (x + offset, y))
-        label = self.font.render(str(base.food_units), True, (0, 0, 0))
-        x, y = self.food_units_location
-        surface.blit(label, (x + offset, y))
-        
+       
 
 class World(object):
     
@@ -191,12 +127,9 @@ def run():
     ant_image = pygame.image.load("assets/ant.png").convert_alpha()
     ant_image_2 = pygame.image.load("assets/ant-blue.png").convert_alpha()
     leaf_image = pygame.image.load("assets/leaf.png").convert_alpha()
-    spider_image = pygame.image.load("assets/spider.png").convert_alpha()
     base_image = pygame.image.load("assets/hut1.png").convert_alpha()
     base_image_2 = pygame.image.load("assets/hut1.png").convert_alpha()
     base_image_2 = pygame.transform.flip(base_image_2, 1, 0)
-    seth_image = pygame.image.load("assets/seth.png")
-    sri_image = pygame.image.load("assets/sri.png")
     #Let's make hut 1 for our little ants.
     base_1 = entities.Base(world, base_image, 1, (255,255,255))
     base_1.location = (global_data.NEST_POSITION)

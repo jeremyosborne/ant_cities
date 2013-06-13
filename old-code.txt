@@ -1,0 +1,362 @@
+class ControlPanel(object):
+    
+    def __init__(self, world):
+        
+        self.font = pygame.font.SysFont("arial", 16);
+        screen_width, screen_height = global_data.screen_size
+        panel_height = 256
+        panel_starting_position = screen_height - panel_height
+        size_of_world_stats = 280
+        size_of_team_stats = 445
+        
+        #Draw static elements on the control panel.
+        #Horizontal Line
+        pygame.draw.line(world.background, (0, 0, 255), (0, panel_starting_position), (screen_width, panel_starting_position), 5)
+        #First deliminator
+        pygame.draw.line(world.background, (0, 0, 255), (size_of_world_stats, panel_starting_position), (size_of_world_stats, screen_height), 5)
+        #second deliminator
+        pygame.draw.line(world.background, (0, 0, 255), (740, 512), (740, 768), 5)
+        
+        font = pygame.font.SysFont("arial", 16);
+        label = font.render("World Statistics", True, (0, 0, 0))
+        world.background.blit(label, (5, screen_height - panel_height + 7))
+        label = font.render("Total Number of Ants: ", True, (0, 0, 0))
+        world.background.blit(label, (5, screen_height - panel_height + 32))
+        label = font.render("Number of Leaves on Screen: ", True, (0, 0, 0))
+        world.background.blit(label, (5, screen_height - panel_height + 57))
+        label = font.render("Number of Returned Leaves: ", True, (0, 0, 0))
+        world.background.blit(label, (290, screen_height - panel_height + 32))
+        label = font.render("Number of Leaves in Base: ", True, (0, 0, 0))
+        world.background.blit(label, (290, screen_height - panel_height + 57))       
+        label = font.render("Number of Food Units: ", True, (0, 0, 0))
+        world.background.blit(label, (290, screen_height - panel_height + 82))
+        label = font.render("Team 1      Team 2", True, (0, 0, 0))
+        world.background.blit(label, (525, screen_height - panel_height + 7))
+        label = font.render("MiniMap", True, (0, 0, 0))
+        world.background.blit(label, (850, screen_height - panel_height + 7))
+        #Other Stuff
+        self.ant_location = (225, screen_height - panel_height + 32)
+        self.leaf_location = (225, screen_height - panel_height + 57)
+        self.leaf_returned_location = (520, screen_height - panel_height + 32)
+        self.leaf_in_base_location = (520, screen_height - panel_height + 57)
+        self.food_units_location = (520, screen_height - panel_height + 82)
+        
+    #Let's render all the interesting things about the world        
+    def render(self, surface, world):
+  
+        label = self.font.render(str(world.count("ant")), True, (0, 0, 0))
+        surface.blit(label, self.ant_location)
+        label = self.font.render(str(world.count("leaf")), True, (0, 0, 0))
+        surface.blit(label, self.leaf_location)   
+    
+    def render_base_stats(self, surface, world, base, offset):
+        label = self.font.render(str(base.leaves_returned), True, (0, 0, 0))
+        x, y = self.leaf_returned_location
+        surface.blit(label, (x + offset, y))
+        label = self.font.render(str(base.leaves), True, (0, 0, 0))
+        x, y = self.leaf_in_base_location
+        surface.blit(label, (x + offset, y))
+        label = self.font.render(str(base.food_units), True, (0, 0, 0))
+        x, y = self.food_units_location
+        surface.blit(label, (x + offset, y))
+        
+        
+class SethStateExploring(State):
+    
+    def __init__(self, seth):
+        
+        State.__init__(self, "exploring")
+        self.seth = seth
+        
+    def random_destination(self):
+        
+        self.seth.destination = Vector2(randint(0, self.seth.world.width), randint(0, self.seth.world.height))    
+    
+    def do_actions(self):
+        
+        if randint(1, 20) == 1:
+            self.random_destination()
+            
+    def check_conditions(self):
+
+        if self.seth.world.sri == True:
+            return "panic"                        
+        leaf = self.seth.world.get_close_entity("leaf", self.seth.location)        
+        if leaf is not None:
+            self.seth.leaf_id = leaf.id
+            return "seeking"        
+        
+        return None
+    
+    def entry_actions(self):
+        
+        self.seth.speed = 120. + randint(-30, 30)
+        self.random_destination()
+        
+class SethStateSeeking(State):
+    
+    def __init__(self, seth):
+        
+        State.__init__(self, "seeking")
+        self.seth = seth
+        self.leaf_id = None
+    
+    def check_conditions(self):
+ 
+        if self.seth.world.sri == True:
+            return "panic"       
+        
+        leaf = self.seth.world.get(self.seth.leaf_id)
+        if leaf is None:
+            return "exploring"
+        
+        if self.seth.location.get_distance_to(leaf.location) < 5.0:
+            self.seth.world.remove_entity(leaf)  #Removing leaf from the world
+            self.seth.hungry = 0
+            return "eating"
+        
+        return None
+    
+    def entry_actions(self):
+    
+        leaf = self.seth.world.get(self.seth.leaf_id)
+        if leaf is not None:                        
+            self.seth.destination = leaf.location
+            self.seth.speed = 160. + randint(-20, 20)
+
+class SethStateEating(State):
+    
+    def __init__(self, seth):
+        
+        State.__init__(self, "eating")
+        self.seth = seth
+        
+        
+    def check_conditions(self):
+
+        if self.seth.world.sri == True:
+            return "panic"        
+        #Have we eaten our fill?        
+        if self.seth.hungry < 1000:
+            self.seth.hungry += 25
+        else:
+            return "exploring"            
+        return None
+        
+        
+    def entry_actions(self):
+        
+        self.seth.speed = 0.        
+        #random_offset = Vector2(randint(-20, 20), randint(-20, 20))
+        #self.ant.destination = Vector2(*self.ant.base_location) # + random_offset
+
+class SethStatePanic(State):
+    
+    def __init__(self, seth):
+        
+        State.__init__(self, "panic")
+        self.seth = seth
+        
+    def check_conditions(self):
+        
+        #Have we paniced enough yet?        
+        if self.seth.panic < 1000:
+            self.seth.panic += 25
+        else:
+            return "running"            
+        return None
+        
+        
+    def entry_actions(self):
+        
+        self.seth.speed = 0.
+        
+class SethStateRunning(State):
+    
+    def __init__(self, seth):
+        
+        State.__init__(self, "running")
+        self.seth = seth
+        
+        
+    def check_conditions(self):
+        
+        #Have we eaten our fill?        
+        #if self.seth.world.sri == True:
+        #    pass
+        #else:
+        #    return "exploring"            
+        return None
+        
+        
+    def entry_actions(self):
+        
+        self.seth.speed = 200.
+        w, h = global_data.WORLD_SIZE
+        if randint(1, 2) == 1:
+            self.seth.destination = Vector2(w+50, randint(0, h))
+        else:
+            self.seth.destination = Vector2(w-2048, randint(0, h))        
+        #random_offset = Vector2(randint(-20, 20), randint(-20, 20))
+        #self.ant.destination = Vector2(*self.ant.base_location) # + random_offset   
+        
+        
+        
+class Sri(GameEntity):
+    
+    def __init__(self, world, image):
+        GameEntity.__init__(self, world, "sri", image)
+        self.font = pygame.font.SysFont("arial", 24);
+        self.state = "Moving"
+        self.time = 0
+        self.speed = 50. + randint(-20, 20)
+        self.color = (128,128,128)
+        self.location = (512, -50)
+        self.destination = Vector2(512, 128)
+
+        
+    def render(self, surface):
+        
+        GameEntity.render(self, surface)
+        
+        if self.state == "Yell":     
+            x, y = self.location
+            label = self.font.render("Seth!", True, (0, 0, 0))
+            surface.blit(label, (x-30, y-50))
+        if self.state == "Bloody":
+            x, y = self.location
+            label = self.font.render("Bloody Hell!", True, (0, 0, 0))
+            surface.blit(label, (x-60, y-50))
+        
+    def process(self, time_passed):
+        
+        x, y = self.location
+        if x > global_data.WORLD_SIZE[0] + 2:
+            self.world.remove_entity(self)
+            return
+        if y == 128:
+            if self.time == 0:
+                self.state = "Wait to Yell"
+            self.time += 25
+            if self.time == 1000:
+                self.state = "Yell"
+                self.world.add_sri()
+            if self.time == 5000:
+                self.state= "Bloody"
+            if self.time == 8000:
+                self.destination = Vector2(512, -2048)
+            
+        GameEntity.process(self, time_passed)
+        
+        
+
+        class Seth(GameEntity):
+    
+    def __init__(self, world, image):
+        GameEntity.__init__(self, world, "seth", image)
+        self.dead_image = pygame.transform.flip(image, 0, 1)
+        self.health = 100
+        self.speed = 50. + randint(-20, 20)
+        self.hungry = 1000
+        self.panic = 0
+        self.font = pygame.font.SysFont("arial", 16);
+        
+        exploring_state = statemachines.SethStateExploring(self)
+        seeking_state = statemachines.SethStateSeeking(self)
+        eating_state = statemachines.SethStateEating(self)
+        panic_state = statemachines.SethStatePanic(self)
+        running_state = statemachines.SethStateRunning(self)
+        
+        self.brain.add_state(exploring_state)
+        self.brain.add_state(seeking_state)
+        self.brain.add_state(eating_state)
+        self.brain.add_state(panic_state)
+        self.brain.add_state(running_state)
+        
+        self.color = (230, 230, 230)
+        
+        
+    def bitten(self):
+        
+        self.health -= 1
+        if self.health <= 0:
+            self.speed = 0.
+            self.image = self.dead_image
+        self.speed = 140.
+        
+    def render(self, surface):
+        
+        GameEntity.render(self, surface)
+        
+        if self.hungry < 1000 and self.panic == 0:
+            x, y = self.location
+            label = self.font.render("YUM!", True, (0, 0, 0))
+            surface.blit(label, (x, y+20))
+            
+        if self.panic > 0 and self.panic < 1000:
+            x, y = self.location
+            label = self.font.render("OH NO!", True, (0, 0, 0))
+            surface.blit(label, (x-30, y-35))
+            
+        if self.panic == 1000:
+            x, y = self.location
+            label = self.font.render("RUN!", True, (0, 0, 0))
+            surface.blit(label, (x-20, y-40))
+                    
+        #x, y = self.location
+        #w, h = self.image.get_size()
+        #bar_x = x - 12
+        #bar_y = y + h/2
+        #surface.fill( (255, 0, 0), (bar_x, bar_y, 25, 4))
+        #surface.fill( (0, 255, 0), (bar_x, bar_y, self.health, 4))
+        
+    def process(self, time_passed):
+        
+        x, y = self.location
+        if x > global_data.WORLD_SIZE[0] + 2:
+            self.world.remove_entity(self)
+            return
+        
+        GameEntity.process(self, time_passed)
+        
+        
+class Spider(GameEntity):
+    
+    def __init__(self, world, image):
+        GameEntity.__init__(self, world, "spider", image)
+        self.dead_image = pygame.transform.flip(image, 0, 1)
+        self.health = 25
+        self.speed = 50. + randint(-20, 20)
+        self.color = (128,128,128)
+        
+    def bitten(self):
+        
+        self.health -= 1
+        if self.health <= 0:
+            self.speed = 0.
+            self.image = self.dead_image
+        self.speed = 140.
+        
+    def render(self, surface):
+        
+        GameEntity.render(self, surface)
+                
+        x, y = self.location
+        w, h = self.image.get_size()
+        bar_x = x - 12
+        bar_y = y + h/2
+        surface.fill( (255, 0, 0), (bar_x, bar_y, 25, 4))
+        surface.fill( (0, 255, 0), (bar_x, bar_y, self.health, 4))
+        
+    def process(self, time_passed):
+        
+        x, y = self.location
+        if x > global_data.WORLD_SIZE[0] + 2:
+            self.world.remove_entity(self)
+            return
+        
+        GameEntity.process(self, time_passed)
+        
+        
+        
+        
