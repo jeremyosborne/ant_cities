@@ -21,7 +21,8 @@ from gameobjects.vector2 import Vector2
 import entities
 import statemachines
 import global_data
-import screen_entity
+import viewport
+import ui_elements
        
 
 class World(object):
@@ -35,7 +36,7 @@ class World(object):
         self.entities = {}    #Dictionary of all the entities
         self.entity_id = 0
         #viewport is the screen entity that contains the view of the game world.
-        self.viewport = screen_entity.World_Screen_Entity(self.width, self.height)
+        self.viewport = ui_elements.World_Viewport(self.width, self.height)
         self.sri = False
 
         
@@ -114,7 +115,7 @@ def run():
     #control_panel = ControlPanel(world)
     
     #Mini_Map Init
-    mini_map = screen_entity.Mini_Map(1000-256, 700-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+    mini_map = ui_elements.Mini_Map(1000-256, 700-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
     #mini_map.turn_on()
     #mini_map.scroll_state = "on"
         
@@ -158,14 +159,6 @@ def run():
             if event.type == QUIT:
                 return
             if event.type == KEYDOWN:
-                if event.key == K_s:
-                    seth = entities.Seth(world, seth_image)
-                    seth.location = Vector2(-50, randint(0, h))
-                    seth.brain.set_state("exploring")
-                    world.add_entity(seth)
-                if event.key == K_z:
-                    sri = entities.Sri(world, sri_image) 
-                    world.add_entity(sri)
                 if event.key == K_3:
                     world.viewport.update_zoom_level(world.viewport.zoom_level_3)
                 if event.key == K_1:

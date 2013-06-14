@@ -2,22 +2,26 @@ File contents:
 1.  Task List/New Features to add.
 2.  Version History and Notes.
 
-
 Task List.
 
 Key
 * In process
 - Not Started.
 
--  Remove now un-needed sections of the code. You know, normal clean-up.
 -  Multi-Process, Sim and Render Thread
 -  Add user input event to bubble to the proper screen.
 -  Get simulated activities like food consumption to match time and not sim beat.
 -  Change Screen_Entity Name to viewport and figure out the right naming convention.
 -  Make something like surface effects that any display port can use.
--  Create effects system for Viewports.
 
-Version .04 
+Version .05 6/14/2013
+
+-  Changed Screen_Entity class name to Viewport
+-  Made Viewport inherit from surface rather than being a general object (Jeremy suggestion.)  This begins us thinking of viewport as an extension to pygame.
+-  Moved World Viewport out the the viewport module and into the ui_elements model.  The world viewport is too specific to this game to be general.
+-  A little more code cleanup.
+
+Version .04 6/13/2013
 
 - Deleted old code segments no longer needed and copied to old-code.txt for reference if needed.
 - Doing checkin now because I'm going to workout checking the Screen_Entity class names to Viewport.

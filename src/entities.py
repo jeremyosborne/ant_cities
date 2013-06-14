@@ -6,7 +6,7 @@ from gameobjects.vector2 import Vector2
 
 import statemachines
 import global_data
-import screen_entity
+import viewport
 
 
 class GameEntity(object):
@@ -30,14 +30,7 @@ class GameEntity(object):
       
         #Let's call the viewport entity render.  It will determine if it's on screen.
        
-        viewport.render_entity(self.image, x, y)
-        
-        #render mini-map
-        #map is 256 across and 192 down
-#       minimap_x = x/4. + 750
-#       minimap_y = y/4. + 550
-        #surface.set_at((int(minimap_x), int(minimap_y)), self.color)
-#        pygame.draw.rect(surface, self.color, (int(minimap_x), int(minimap_y), 4, 4))   
+        viewport.render_entity(self.image, x, y)  
         
     def process(self, time_passed):
         
