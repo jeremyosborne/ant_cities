@@ -9,10 +9,17 @@ Key
 - Not Started.
 
 -  Multi-Process, Sim and Render Thread
--  Add user input event to bubble to the proper screen.
+*  Add "class management code for viewport to support the following functionality:
+   - User input routing to the right surface.
+   - Single functional call to render all viewports to single surface.
+- 
 -  Get simulated activities like food consumption to match time and not sim beat.
--  Change Screen_Entity Name to viewport and figure out the right naming convention.
 -  Make something like surface effects that any display port can use.
+
+Version .06 6/15/2013
+
+-  Bug Fixes.
+-  Added comments in the area where the viewport class management code might be.
 
 Version .05 6/14/2013
 
