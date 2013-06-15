@@ -8,8 +8,20 @@ from pygame.locals import *
 import global_data
 
 
-class Viewport(object):
+class Viewport(pygame.Surface):
     """Manages various viewport abstractions."""
+    
+
+    #Class variables section.
+    #These class variables will be used in managing the rendering and event processing layers.
+    #Class methods will be used to manage the data.
+
+    #A List of all the surfaces.
+    #Purpose:  Can be iterated through for the following tasks:
+    #  - Final rendering - blit the surfaces in the order defined by layer.
+    #  - Find the surface that belongs to a coordinate belongs to based on
+    #    the highest layer.
+    
     def __init__(self, x_right=0, y_down=0, width=1024, height=768, scale=1, layer=0, is_visable=True):
         """Arguments assumed to be integers."""
         # The upper left anchor point of our viewport
@@ -29,18 +41,7 @@ class Viewport(object):
         #Should this be rendered?
         self.is_visable=is_visable
 
-        #Other properties to support functionality.  Not passed in, but can be modified.
-        #self.can_scroll_viewport = False
-        #self.scroll_x_position = 0
-        #self.scroll_y_position = 0
-        #self.current_location_x = 0
-        #self.current_location_y = 0
-        #Scroll status can be:
-        #off = not on screen
-        #on = on the screen
-        #going on
-        #going off
-        #self.scroll_status = "off"
+
         
 #    @property
 #    def top(self):
