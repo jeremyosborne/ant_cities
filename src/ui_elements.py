@@ -256,7 +256,12 @@ class Mini_Map(viewport.Viewport):
         self.scroll_y_down = global_data.screen_size_y
 
         
-    #Set up initial values to scrool the mini map off of the screen
+    #Set up initial values to scroll the mini map off of the screen
     def turn_off(self):
         self.scroll_state = "moving off"
         self.scroll_y_down = self.y_down
+        
+    def delete_me(self):
+        self.delete()
+        del self
+        #self = None

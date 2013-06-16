@@ -30,33 +30,3 @@ if __name__ == "__main__":
     game.run()
     print "Game has exited if we are here. All necessary cleanup should have happened before this point."
     print "Thank you for playing."
-
-
-
-
-
-#To Do stuff:
-#Set up a version/notes section
-#Levers for the simulation:
-#Hostility level
-#Friendly index
-#Helpful level
-#Health minded ants or self sacrafice?
-#Expansionn oriented or homebodies?
-#Conversion or kill?
-#Add scrolling minimap on and off
-
-#evolutionary advancements
-#vision increase
-#conversion capability
-
-#Food is converted into:
-#food for the ants
-#new ants
-#evolutionary advancements 
-
-#Different Ant types
-#New food types
-
-
-#The Swarm

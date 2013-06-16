@@ -120,8 +120,6 @@ def run():
     clock = pygame.time.Clock()
     
     render_game_world = True
-    toggle_mini_map = False
-    
     
     ant_image = pygame.image.load("assets/ant.png").convert_alpha()
     ant_image_2 = pygame.image.load("assets/ant-blue.png").convert_alpha()
@@ -177,7 +175,8 @@ def run():
                 if event.key == K_n:  #Turn mini-map off
                     mini_map.turn_off()
                 if event.key == K_c:  #Crash the program
-                    mini_map.remove_viewport(mini_map)
+                    mini_map.delete_me()
+                    del mini_map
             #Handle the mouse wheel for zooming.
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:  #Mouse Scroll Wheel Up, so zoom in

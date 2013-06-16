@@ -35,22 +35,21 @@ class Viewport(pygame.Surface):
     #  - Final rendering - blit the surfaces in the order defined by layer.
     #  - Find the right viewport the user input belongs to.
 
-    # Dictionary to contain all the viewports.
-    viewports = {}    
-    viewport_id = 0
+    # List to contain all the viewports.  Using a list instead of a dictionary
+    # because I want to sort them based on layer.
+    viewports = []    
 
     @classmethod
     def add_viewport(cls, viewport):
-        """  Add a viewport to the tracking dictionary.  """
-        cls.viewports[cls.viewport_id] = viewport
-        viewport.id = cls.viewport_id
-        cls.viewport_id += 1
+        """  Add a viewport to the tracking list.  """
+        cls.viewports.append(viewport)
+        #Sort list on layer.
+        cls.viewports.sort(key = lambda x: x.layer)
 
     @classmethod        
     def remove_viewport(cls, viewport):
-        """  Delete viewport from dictionary """
-        del cls.viewports[viewport.id]
-        del viewport  #This doesn't work.
+        """  Delete viewport from list """
+        cls.viewports.remove(viewport)
 
     @classmethod                
     def render(cls):
@@ -71,15 +70,15 @@ class Viewport(pygame.Surface):
         self.height - height
         # Scales relative to 1 as default.
         self.scale = scale
-        #The surface for this screen entity.
+        # The surface for this screen entity.
         self.surface = pygame.surface.Surface(self.size).convert()
-        #Layer, can be though of as the sequence of blitting.  0 is the lowest layer.
+        # Layer, can be thought of as the sequence of blitting onto a layer.
+        # 0 is the lowest layer.
         self.layer = layer
         #Should this be rendered?
         self.is_visable=is_visable
 
-        #ID of the viewport, will be set by the add_viewport classmethod.
-        self.id = 0
+        # Add to viewport management list.
         self.add_viewport(self)
         
 #    @property
@@ -130,8 +129,12 @@ class Viewport(pygame.Surface):
     def render(self, main_surface):
         main_surface.blit(self.surface, ((self.x_right, self.y_down)))
 
+    #We should fix this so that the normal del can be used.  Or maybe change 
+    #the name to remove, just like a list.
     def delete(self):
-        pass
+        self.remove_viewport(self)
+        del self
+        #self = None
         
 if __name__ == "__main__":
     

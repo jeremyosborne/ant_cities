@@ -8,6 +8,7 @@ Key
 * In process
 - Not Started.
 
+-  Fix removing viewports, code doesn't work and I don't know why.
 -  Multi-Process, Sim and Render Thread
 *  Add "class management code for viewport to support the following functionality:
    - User input routing to the right surface.
@@ -15,7 +16,12 @@ Key
 -  Get simulated activities like food consumption to match time and not sim beat.
 -  Make something like surface effects that any display port can use.
 
-Versopm .07 6/15/2013
+Version .08 6/16/2013
+
+ - Added list data structure for managing viewports.
+ - new experiments directory.
+ 
+Version .07 6/15/2013
 
 - Working on viewport class management code.
 
@@ -55,5 +61,36 @@ Current Implemented Features.
 2.  Panning
 3.  Mini Map
 4.  Generalized classes for windows/screens
+
+
+
+
+Dribble:
+
+#To Do stuff:
+#Set up a version/notes section
+#Levers for the simulation:
+#Hostility level
+#Friendly index
+#Helpful level
+#Health minded ants or self sacrafice?
+#Expansionn oriented or homebodies?
+#Conversion or kill?
+#Add scrolling minimap on and off
+
+#evolutionary advancements
+#vision increase
+#conversion capability
+
+#Food is converted into:
+#food for the ants
+#new ants
+#evolutionary advancements 
+
+#Different Ant types
+#New food types
+
+
+#The Swarm
 
 
