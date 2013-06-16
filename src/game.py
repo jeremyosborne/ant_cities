@@ -37,8 +37,6 @@ class World(object):
         self.entity_id = 0
         #viewport is the screen entity that contains the view of the game world.
         self.viewport = ui_elements.World_Viewport(self.width, self.height)
-        self.sri = False
-
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.
         
@@ -178,7 +176,8 @@ def run():
                     mini_map.turn_on()
                 if event.key == K_n:  #Turn mini-map off
                     mini_map.turn_off()
-                    
+                if event.key == K_c:  #Crash the program
+                    mini_map.remove_viewport(mini_map)
             #Handle the mouse wheel for zooming.
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:  #Mouse Scroll Wheel Up, so zoom in

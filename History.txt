@@ -11,10 +11,13 @@ Key
 -  Multi-Process, Sim and Render Thread
 *  Add "class management code for viewport to support the following functionality:
    - User input routing to the right surface.
-   - Single functional call to render all viewports to single surface.
-- 
+   - Single functional call to render all viewports to single surface.- 
 -  Get simulated activities like food consumption to match time and not sim beat.
 -  Make something like surface effects that any display port can use.
+
+Versopm .07 6/15/2013
+
+- Working on viewport class management code.
 
 Version .06 6/15/2013
 
