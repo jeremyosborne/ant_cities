@@ -15,6 +15,7 @@ class Employee(object):
         
     @classmethod
     def remove_employee(cls, employee):
+        """ Remove the employee from the list.  """
         cls.employees.remove(employee)
     
     @classmethod
@@ -36,7 +37,10 @@ class Employee(object):
         self.last = last
     
     def delete(self):
+        """  Delete this employee object. """
+        # Delete from the list first.
         self.remove_employee(self)
+        #Is this the problem?
         del self
         
 if __name__ == "__main__":
@@ -48,6 +52,7 @@ if __name__ == "__main__":
     print "First printing of the list.  All three should display."
     Employee.print_employees()
 
+    #This is the problem child.
     employee_3.delete()
     #print sys.getrefcount(employee_3)
 
@@ -55,6 +60,10 @@ if __name__ == "__main__":
     Employee.print_employees()
    
     print "Attempt to print deleted employee, should error out, but it prints." 
+    print employee_3.last
+    
+    print "Let's Delete it outright - that works"
+    del employee_3
     print employee_3.last
     
     exit()   
