@@ -8,14 +8,25 @@ Key
 * In process
 - Not Started.
 
+Jeremy review:
 -  Fix removing viewports, code doesn't work and I don't know why.
+-  Quick look at how I'm using decorators in viewport.
+
 -  Multi-Process, Sim and Render Thread
 *  Add "class management code for viewport to support the following functionality:
-   - User input routing to the right surface.
-   - Single functional call to render all viewports to single surface.- 
+   - User input routing to the right surface. 
 -  Get simulated activities like food consumption to match time and not sim beat.
 -  Make something like surface effects that any display port can use.
+   -  Add mini map scrolling back into the game.
 
+Version .09 6/18/2013
+
+- Screens now render with the Viewport Class render_viewports method  (That was
+  Single functional call to render all viewports to single surface on the task
+  list.)  Breaks the animated scrolling action of the minimap entrance and exit
+  from the screen.
+  
+  
 Version .08 6/16/2013
 
  - Added list data structure for managing viewports.

@@ -44,17 +44,27 @@ class Viewport(pygame.Surface):
         """  Add a viewport to the tracking list.  """
         cls.viewports.append(viewport)
         #Sort list on layer.
-        cls.viewports.sort(key = lambda x: x.layer)
+        cls.sort_viewports()
 
+    @classmethod
+    def sort_viewports(cls):
+        """  Sort viewports by layer for rendering and user input routing.  """
+        cls.viewports.sort(key = lambda x: x.layer)
+        
     @classmethod        
     def remove_viewport(cls, viewport):
         """  Delete viewport from list """
         cls.viewports.remove(viewport)
 
     @classmethod                
-    def render(cls):
+    def render_viewports(cls, main_surface):
         """  Render the viewports from layer 0 to highest layer.  """
-        pass
+        for i in cls.viewports:
+            #Is it viewable?
+            if i.is_visable:
+                main_surface.blit(i.surface, ((i.x_right, i.y_down)))
+                print "Rendering:  " + i.description
+            
  
  
  #----------------------------------------------------------------------------#   
@@ -74,12 +84,25 @@ class Viewport(pygame.Surface):
         self.surface = pygame.surface.Surface(self.size).convert()
         # Layer, can be thought of as the sequence of blitting onto a layer.
         # 0 is the lowest layer.
-        self.layer = layer
+        self._layer = layer
         #Should this be rendered?
         self.is_visable=is_visable
-
+        
+        self.description = "Not defined"
+        
         # Add to viewport management list.
         self.add_viewport(self)
+
+    @property
+    def layer(self):
+        """{int}  0 = lowest layer, no upper bound."""
+        return self._layer
+    
+    @layer.setter
+    def layer(self, value):
+        """  Set's layer value and sorts the viewports on this value.  """
+        self._layer = value
+        Viewport.sort_viewports()
         
 #    @property
 #    def top(self):
@@ -144,17 +167,22 @@ if __name__ == "__main__":
     print "Testing..."
     v = Viewport()
     print "Initial viewport width: %s" % v.width
+    print "Viewport layer: %s" % v.layer
+    print "Changing Viewport layer number to 10"
+    v.layer = 10
+    print "Viewport layer: %s" % v.layer
+    
     print "Left anchor: %s" % v.y_down
-    print "Right anchor: %s" % v.right
+    #print "Right anchor: %s" % v.right
     print "Changing left anchor point by 100."
     v.y_down = 100
     print "Left anchor: %s" % v.y_down
-    print "Right anchor: %s" % v.right
+    #print "Right anchor: %s" % v.right
 
     print "Initial viewport height: %s" % v.height
     print "Top anchor: %s" % v.x_right
-    print "Bottom anchor: %s" % v.bottom
+    #print "Bottom anchor: %s" % v.bottom
     print "Changing top anchor point by 100."
     v.x_right = 100
     print "Top anchor: %s" % v.x_right
-    print "Bottom anchor: %s" % v.bottom
+    #print "Bottom anchor: %s" % v.bottom

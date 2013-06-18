@@ -37,6 +37,7 @@ class World(object):
         self.entity_id = 0
         #viewport is the screen entity that contains the view of the game world.
         self.viewport = ui_elements.World_Viewport(self.width, self.height)
+        self.viewport.description = "Game world viewport."
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.
         
@@ -61,16 +62,16 @@ class World(object):
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
             
-    def render(self, surface):
+    def render(self):
         
-        #Prepares for the next frame.  Clears the background, etc.
+        #Prepares for this frame.  Clears the background, etc.
         self.viewport.prepare_new_frame()
         
         #Render each entity onto the framebuffer.
         for entity in self.entities.itervalues():
             entity.render(self.viewport)
-        #Render the framebuffer onto the screen    
-        self.viewport.render(surface)
+        #Render the framebuffer onto viewport surface.    
+        self.viewport.render(self.viewport.surface)
         
             
     def get_close_entity(self, name, location, range=100.):
@@ -114,8 +115,7 @@ def run():
     
     #Mini_Map Init
     mini_map = ui_elements.Mini_Map(1000-256, 700-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
-    #mini_map.turn_on()
-    #mini_map.scroll_state = "on"
+    mini_map.description = "Mini Map"
         
     clock = pygame.time.Clock()
     
@@ -209,11 +209,12 @@ def run():
         
         world.process(time_passed)
         if render_game_world:
-            world.render(screen)
-        print_fps(clock, screen)
+            world.render()
+            
+        #print_fps(clock, screen)
         
         #Let's Draw the Mini_Map
-        mini_map.render(world, screen)
+        mini_map.update(world)
         
         #the_background = pygame.surface.Surface((256, 170)).convert()
         #the_background.fill((0, 0, 0))
@@ -225,7 +226,7 @@ def run():
         #control_panel.render_base_stats(screen, world, base_2, 100)
         
 
-
+        viewport.Viewport.render_viewports(screen)
         pygame.display.update()
     
 if __name__ == "__main__":    

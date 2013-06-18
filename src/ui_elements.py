@@ -212,7 +212,7 @@ class Mini_Map(viewport.Viewport):
         #print str(self.x_scale_factor)
         #print str(self.y_scale_factor)
         
-    def render(self, world, screen):
+    def update(self, world):
         
         #Clear the mini map.
         self.surface.blit(self.background, (0, 0))
@@ -232,20 +232,20 @@ class Mini_Map(viewport.Viewport):
         # Check to see if it's going up or down then:
         # Adjust self.top and self.left numbers below.
         
-        if self.scroll_state == "moving on":
-            self.scroll_y_down -= 1
-            if self.scroll_y_down <= self.y_down:
-                self.scroll_state = "on"
-            screen.blit(self.surface, (self.x_right, self.scroll_y_down))
-            print self.x_right, self.scroll_y_down
-        if self.scroll_state == "moving off":
-            self.scroll_y_down += 1 
-            if self.scroll_y_down >= self.y_down + self.height:
-                self.scroll_state = "off"
-            screen.blit(self.surface, (self.x_right, self.scroll_y_down))
-            print self.x_right, self.scroll_y_down, self.y_down + self.height
-        if self.scroll_state == "on":
-            screen.blit(self.surface, (self.x_right, self.y_down))
+#        if self.scroll_state == "moving on":
+#            self.scroll_y_down -= 1
+#            if self.scroll_y_down <= self.y_down:
+#                self.scroll_state = "on"
+#            screen.blit(self.surface, (self.x_right, self.scroll_y_down))
+#            print self.x_right, self.scroll_y_down
+#        if self.scroll_state == "moving off":
+#            self.scroll_y_down += 1 
+#            if self.scroll_y_down >= self.y_down + self.height:
+#                self.scroll_state = "off"
+#            screen.blit(self.surface, (self.x_right, self.scroll_y_down))
+#            print self.x_right, self.scroll_y_down, self.y_down + self.height
+#        if self.scroll_state == "on":
+#            screen.blit(self.surface, (self.x_right, self.y_down))
         #exit()
         #screen.blit(self.surface, (self.top, self.y_down))
     
