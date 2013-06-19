@@ -81,9 +81,6 @@ class World_Viewport(viewport.Viewport):
     def in_field_of_vision(self):
         pass
 
-    def render(self, surface):
-        pygame.transform.scale(self.zoom_frame_buffer, (global_data.screen_size_x, global_data.screen_size_y), surface)
-
     #A function for updating the viewport center point.  Other variables are updated also to keep everything in sync.  Called only from the x, y adjustment functions found further below.
     #On the other hand, one could call this directly if one was implementing a feature to follow a moving unit.
     def update_viewport_center(self, x, y):
@@ -169,10 +166,10 @@ class World_Viewport(viewport.Viewport):
     
     
     #This function is called to do the final scaling of the image to fit the viewport/screen size.
-    def finalize_image(self, surface):
+    def finalize_image(self):
     
         #Let's take the zoom frame buffer and transform to the resolution of the screen and then copy it to the screen surface.
-        pygame.transform.scale(self.zoom_frame_buffer, (global_data.screen_size_x, global_data.screen_size_y), surface)
+        pygame.transform.scale(self.zoom_frame_buffer, (global_data.screen_size_x, global_data.screen_size_y), self.surface)
 
     def change_zoom_level(self, direction):
     

@@ -18,83 +18,16 @@ from pygame.locals import *
 from random import randint, choice
 from gameobjects.vector2 import Vector2
 
+import game_world
 import entities
 import statemachines
 import global_data
 import viewport
 import ui_elements
-       
+                
+def set_up_game_world():
+    pass
 
-class World(object):
-    
-    def __init__(self, x, y):
-        
-        #The size of the world for x and y
-        self.width = x
-        self.height = y
-        
-        self.entities = {}    #Dictionary of all the entities
-        self.entity_id = 0
-        #viewport is the screen entity that contains the view of the game world.
-        self.viewport = ui_elements.World_Viewport(self.width, self.height)
-        self.viewport.description = "Game world viewport."
-        
-    def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.
-        
-        self.entities[self.entity_id] = entity
-        entity.id = self.entity_id
-        self.entity_id += 1
-        
-    def remove_entity(self, entity):
-        
-        del self.entities[entity.id]
-                
-    def get(self, entity_id):
-        
-        if entity_id in self.entities:
-            return self.entities[entity_id]
-        else:
-            return None
-        
-    def process(self, time_passed):
-                
-        time_passed_seconds = time_passed / 1000.0        
-        for entity in self.entities.values():
-            entity.process(time_passed_seconds)
-            
-    def render(self):
-        
-        #Prepares for this frame.  Clears the background, etc.
-        self.viewport.prepare_new_frame()
-        
-        #Render each entity onto the framebuffer.
-        for entity in self.entities.itervalues():
-            entity.render(self.viewport)
-        #Render the framebuffer onto viewport surface.    
-        self.viewport.render(self.viewport.surface)
-        
-            
-    def get_close_entity(self, name, location, range=100.):
-        
-        location = Vector2(*location)        
-        
-        for entity in self.entities.itervalues():            
-            if entity.name == name:                
-                distance = location.get_distance_to(entity.location)
-                if distance < range:
-                    return entity        
-        return None
-
-    def count(self, name):
-        entity_count = 0
-        for entity in self.entities.itervalues():
-            if entity.name == name:
-                entity_count += 1
-        return entity_count
-    
-    def add_sri(self):
-        self.sri = True
-                
 def print_fps(clock, screen):
     
     fps = clock.get_fps()
@@ -109,17 +42,9 @@ def run():
     
     pygame.init()
     screen = pygame.display.set_mode(global_data.screen_size, 0, 32)
-    
-    world = World(global_data.world_size_x, global_data.world_size_y)
-    #control_panel = ControlPanel(world)
-    
-    #Mini_Map Init
-    mini_map = ui_elements.Mini_Map(1000-256, 700-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
-    mini_map.description = "Mini Map"
-        
-    clock = pygame.time.Clock()
-    
-    render_game_world = True
+  
+    #Set up game world  
+    world = game_world.World(global_data.world_size_x, global_data.world_size_y)
     
     ant_image = pygame.image.load("assets/ant.png").convert_alpha()
     ant_image_2 = pygame.image.load("assets/ant-blue.png").convert_alpha()
@@ -130,7 +55,7 @@ def run():
     #Let's make hut 1 for our little ants.
     base_1 = entities.Base(world, base_image, 1, (255,255,255))
     base_1.location = (global_data.NEST_POSITION)
-    
+    #Let's make hut 2 for our little ants.
     base_2 = entities.Base(world, base_image_2, 2, (255,255,255))
     base_2.location = (global_data.NEST_POSITION_2)
     
@@ -148,7 +73,19 @@ def run():
         ant.location = Vector2(randint(0, world.width), randint(0, world.height))
         ant.brain.set_state("exploring")
         world.add_entity(ant)
+
+
+    #Setup UI elements.
+
+    #Mini_Map Init
+    mini_map = ui_elements.Mini_Map(1000-256, 700-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+    mini_map.description = "Mini Map"
+        
+    clock = pygame.time.Clock()
     
+    render_game_world = True
+
+    #Main game loop    
     while True:
         
         for event in pygame.event.get():
@@ -216,16 +153,6 @@ def run():
         #Let's Draw the Mini_Map
         mini_map.update(world)
         
-        #the_background = pygame.surface.Surface((256, 170)).convert()
-        #the_background.fill((0, 0, 0))
-        #self.surface.blit(self.background, (0, 0))
-        #screen.blit(the_background, (944, 598))
-        
-        #control_panel.render(screen, world)
-        #conStrol_panel.render_base_stats(screen, world, base_1, 25)
-        #control_panel.render_base_stats(screen, world, base_2, 100)
-        
-
         viewport.Viewport.render_viewports(screen)
         pygame.display.update()
     

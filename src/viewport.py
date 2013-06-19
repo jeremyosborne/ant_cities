@@ -64,7 +64,10 @@ class Viewport(pygame.Surface):
             if i.is_visable:
                 main_surface.blit(i.surface, ((i.x_right, i.y_down)))
                 print "Rendering:  " + i.description
-            
+    
+    def route_event(self, event, top_layer = -1):
+        """  Determines which layer should handle event """
+        pass
  
  
  #----------------------------------------------------------------------------#   
@@ -87,12 +90,20 @@ class Viewport(pygame.Surface):
         self._layer = layer
         #Should this be rendered?
         self.is_visable=is_visable
-        
+        #User defined description field.
         self.description = "Not defined"
         
         # Add to viewport management list.
         self.add_viewport(self)
 
+        #User Input attributes
+        self.mouse_events = False
+        self.keyboard_events = False
+        #Proposed attribute to restrict the area to monitor for input.
+        self.event_area = None
+        #When visiable, no input should be passed below this layer.
+        self.exclusive = False
+        
     @property
     def layer(self):
         """{int}  0 = lowest layer, no upper bound."""
@@ -148,9 +159,18 @@ class Viewport(pygame.Surface):
     def height(self, value):
         self.size[1] += value
 
+    def resize(self, width, height):
+        """ Resizes the surface """
+        pass
+    
     #Render this Screen Entity into whatever surface is passed in.    
     def render(self, main_surface):
         main_surface.blit(self.surface, ((self.x_right, self.y_down)))
+        
+    def handle_event(self, event_input):
+        """ Dummy method for handling event input. Programmer should
+            create own method in classes that require event handling"""
+        pass
 
     #We should fix this so that the normal del can be used.  Or maybe change 
     #the name to remove, just like a list.

@@ -11,6 +11,8 @@ Key
 Jeremy review:
 -  Fix removing viewports, code doesn't work and I don't know why.
 -  Quick look at how I'm using decorators in viewport.
+-  Should user input be valid for more than one layer, i.e. should more than
+   one viewport act on the same user input?
 
 -  Multi-Process, Sim and Render Thread
 *  Add "class management code for viewport to support the following functionality:
@@ -18,6 +20,11 @@ Jeremy review:
 -  Get simulated activities like food consumption to match time and not sim beat.
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
+
+Version .10 6/19/2013
+
+- General fixes and cleanup.
+- Game_world class moved into it's own file.
 
 Version .09 6/18/2013
 
@@ -77,6 +84,9 @@ Current Implemented Features.
 
 
 Dribble:
+
+If resolution changes are allowed, should their be a viewport option to
+autoscale and or keep aspect ratio.
 
 #To Do stuff:
 #Set up a version/notes section
