@@ -13,6 +13,11 @@ Jeremy review:
 -  Quick look at how I'm using decorators in viewport.
 -  Should user input be valid for more than one layer, i.e. should more than
    one viewport act on the same user input?
+-  What functionality should a viewport provide?
+-  Change render function name to paste?
+-  What's our coding and documentation standards, i.e. 80 col screen?
+-  Should viewport allow more than one layer at equal layer values or should
+   it more or less handle the layers like a stack?
 
 -  Multi-Process, Sim and Render Thread
 *  Add "class management code for viewport to support the following functionality:
@@ -20,6 +25,10 @@ Jeremy review:
 -  Get simulated activities like food consumption to match time and not sim beat.
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
+
+Version .11 6/20/2013
+
+-Added class methods to viewport.
 
 Version .10 6/19/2013
 

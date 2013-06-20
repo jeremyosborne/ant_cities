@@ -1,3 +1,20 @@
+ 
+ 
+    @classmethod
+    def find_screen_mapped_rect(cls, viewport):
+        """  Determines viewports rectangle on screen.  """
+        
+        #We're interested in current_w and current_h
+        screen_attributes = pygame.display.Info()
+        #Rect for the physical screen.
+        screen_rect = (0, 0, screen_attributes.current_w, screen_attributes.current_h)
+        #Rect for the viewport being passed in.
+        passed_in_rect = pygame.Surface.get_rect(viewport.surface)
+
+
+
+
+
 class ControlPanel(object):
     
     def __init__(self, world):

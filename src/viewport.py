@@ -22,9 +22,11 @@ class Viewport(pygame.Surface):
     2.  Manages user input such that user input is directed to the proper
         viewport to be acted upon.  This is based on mouse location, or
         definition of the viewport as exclusive or not.
+        
+    This class can manage routing of events such as mouse clicks and keyboard
+    events.  This class will not manage mouse movements without clicks.
     
     """
-    
 
     #  Class variables section.
     #  These class variables will be used in managing the rendering and event processing layers.
@@ -63,13 +65,39 @@ class Viewport(pygame.Surface):
             #Is it viewable?
             if i.is_visable:
                 main_surface.blit(i.surface, ((i.x_right, i.y_down)))
-                print "Rendering:  " + i.description
+                #This is for debug purposes.
+                #print "Rendering:  " + i.description
     
-    def route_event(self, event, top_layer = -1):
+    @classmethod
+    def highest_layer(cls):
+        """  Returns the current highest layer as integer.  Developers may
+             call this function when placing a new window on screen """
+        try:
+            return cls.viewports[-1]._layer
+        except:
+            return -1
+
+         
+    @classmethod
+    def route_event(cls, event, top_layer = -1):
         """  Determines which layer should handle event """
+        
+        #If top_layer = -1 then set top_layer to the last in the list.
+        top_layer = cls.viewports[-1]._layer
+        
+        for i in reversed(cls.viewports):
+            #Do various tests to determine if input goes to this viewport.
+            #important attributes to check in sequence:
+            #  1.  Is it =< than the top_layer value
+            #  2.  is_viewable  -  Is it an active window?
+            #  3.  is_exclusive -  Can input only go to this window regardless
+            #      mouse position?
+            #  4.  is the mouse over this viewport
+            #  5.
+            
+            pass
         pass
- 
- 
+  
  #----------------------------------------------------------------------------#   
     def __init__(self, x_right=0, y_down=0, width=1024, height=768, scale=1, layer=0, is_visable=True):
         """Arguments assumed to be integers."""
@@ -91,11 +119,12 @@ class Viewport(pygame.Surface):
         #Should this be rendered?
         self.is_visable=is_visable
         #User defined description field.
-        self.description = "Not defined"
-        
+        self.description = "Not defined"       
         # Add to viewport management list.
         self.add_viewport(self)
-
+        # Rectangle area matching the actual screen area this viewport maps to.
+        self.rect = (self.x_right, self.y_down, self.width, self.height)
+        
         #User Input attributes
         self.mouse_events = False
         self.keyboard_events = False
@@ -178,6 +207,13 @@ class Viewport(pygame.Surface):
         self.remove_viewport(self)
         del self
         #self = None
+
+
+
+
+
+
+
         
 if __name__ == "__main__":
     
@@ -206,3 +242,4 @@ if __name__ == "__main__":
     v.x_right = 100
     print "Top anchor: %s" % v.x_right
     #print "Bottom anchor: %s" % v.bottom
+    
