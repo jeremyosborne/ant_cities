@@ -71,7 +71,7 @@ class Viewport(pygame.Surface):
     @classmethod
     def highest_layer(cls):
         """  Returns the current highest layer as integer.  Developers may
-             call this function when placing a new window on screen """
+             call this function when creating a new window on screen """
         try:
             return cls.viewports[-1]._layer
         except:
@@ -94,7 +94,9 @@ class Viewport(pygame.Surface):
             #      mouse position?
             #  4.  is the mouse over this viewport
             #  5.
-            
+            if i._layer <= top_layer:
+                if i.is_viewable:
+                    pass
             pass
         pass
   
