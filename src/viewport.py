@@ -90,7 +90,7 @@ class Viewport(pygame.Surface):
             #important attributes to check in sequence:
             #  1.  Is it =< than the top_layer value
             #  2.  is_viewable  -  Is it an active window?
-            #  3.  is_exclusive -  Can input only go to this window regardless
+            #  3.  is_exclusive -  Can input only go to this window regardless (modal window)
             #      mouse position?
             #  4.  is the mouse over this viewport
             #  5.
