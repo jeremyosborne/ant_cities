@@ -8,16 +8,7 @@ Key
 * In process
 - Not Started.
 
-Jeremy review:
--  Fix removing viewports, code doesn't work and I don't know why.
--  Quick look at how I'm using decorators in viewport.
--  Should user input be valid for more than one layer, i.e. should more than
-   one viewport act on the same user input?
--  What functionality should a viewport provide?
--  Change render function name to paste?
--  What's our coding and documentation standards, i.e. 80 col screen?
--  Should viewport allow more than one layer at equal layer values or should
-   it more or less handle the layers like a stack?
+* Currently rewriting some of the code.
 
 -  Multi-Process, Sim and Render Thread
 *  Add "class management code for viewport to support the following functionality:
@@ -25,6 +16,13 @@ Jeremy review:
 -  Get simulated activities like food consumption to match time and not sim beat.
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
+
+Version .12 6/25/2013  Rewriting or re-organizing the code.
+- Removed all statemachine and entities references to spiders.
+- Started to move world init items into the world class.  I want the world
+  to be completely self contained so I can play with python multiprocessing
+  at a later date.
+  
 
 Version .11 6/20/2013
 

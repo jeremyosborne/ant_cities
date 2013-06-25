@@ -147,13 +147,14 @@ def run():
         world.process(time_passed)
         if render_game_world:
             world.render()
-            
-        #print_fps(clock, screen)
         
         #Let's Draw the Mini_Map
         mini_map.update(world)
         
         viewport.Viewport.render_viewports(screen)
+
+        print_fps(clock, screen)
+
         pygame.display.update()
     
 if __name__ == "__main__":    

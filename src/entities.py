@@ -82,7 +82,6 @@ class Ant(GameEntity):
         exploring_state = statemachines.AntStateExploring(self)
         seeking_state = statemachines.AntStateSeeking(self)
         delivering_state = statemachines.AntStateDelivering(self)
-        hunting_state = statemachines.AntStateHunting(self)
         hungry_state = statemachines.AntStateHungry(self)
         eating_state = statemachines.AntStateEating(self)
 
@@ -92,7 +91,6 @@ class Ant(GameEntity):
         self.brain.add_state(exploring_state)
         self.brain.add_state(seeking_state)
         self.brain.add_state(delivering_state)
-        self.brain.add_state(hunting_state)
         self.brain.add_state(hungry_state)
         self.brain.add_state(eating_state)
         

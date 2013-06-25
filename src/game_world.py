@@ -17,7 +17,7 @@ import global_data
 import viewport
 
 class World(object):
-    
+        
     def __init__(self, x, y):
         
         #The size of the world for x and y
@@ -29,6 +29,42 @@ class World(object):
         #viewport is the screen entity that contains the view of the game world.
         self.viewport = ui_elements.World_Viewport(self.width, self.height)
         self.viewport.description = "Game world viewport."
+        
+#-----------------------------------------------------------------------
+#Setting up initial entity elements.
+#-----------------------------------------------------------------------
+
+        self.ant_image = pygame.image.load("assets/ant.png").convert_alpha()
+        self.ant_image_2 = pygame.image.load("assets/ant-blue.png").convert_alpha()
+        self.leaf_image = pygame.image.load("assets/leaf.png").convert_alpha()
+        self.base_image = pygame.image.load("assets/hut1.png").convert_alpha()
+        self.base_image_2 = pygame.image.load("assets/hut1.png").convert_alpha()
+        self.base_image_2 = pygame.transform.flip(self.base_image_2, 1, 0)
+        #Let's make hut 1 for our little ants.
+        self.base_1 = entities.Base(self, self.base_image, 1, (255,255,255))
+        self.base_1.location = (global_data.NEST_POSITION)
+        #Let's make hut 2 for our little ants.
+        self.base_2 = entities.Base(self, self.base_image_2, 2, (255,255,255))
+        self.base_2.location = (global_data.NEST_POSITION_2)
+    
+        self.add_entity(self.base_1)
+        self.add_entity(self.base_2)
+        
+        for ant_no in xrange(global_data.ANT_COUNT):
+            #Team 1
+            ant = entities.Ant(world, ant_image, base_1, (255, 0, 0))
+            ant.location = Vector2(randint(0, world.width), randint(0, world.height))
+            ant.brain.set_state("exploring")
+            world.add_entity(ant)
+            #Team 2
+            ant = entities.Ant(world, ant_image_2, base_2, (0, 0, 255))
+            ant.location = Vector2(randint(0, world.width), randint(0, world.height))
+            ant.brain.set_state("exploring")
+            world.add_entity(ant)
+            
+#------------------------------------------------------------------------
+#Done setting up initial entity elements.
+#------------------------------------------------------------------------
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.
         
