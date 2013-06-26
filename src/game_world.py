@@ -52,15 +52,15 @@ class World(object):
         
         for ant_no in xrange(global_data.ANT_COUNT):
             #Team 1
-            ant = entities.Ant(world, ant_image, base_1, (255, 0, 0))
-            ant.location = Vector2(randint(0, world.width), randint(0, world.height))
+            ant = entities.Ant(self, self.ant_image, self.base_1, (255, 0, 0))
+            ant.location = Vector2(randint(0, self.width), randint(0, self.height))
             ant.brain.set_state("exploring")
-            world.add_entity(ant)
+            self.add_entity(ant)
             #Team 2
-            ant = entities.Ant(world, ant_image_2, base_2, (0, 0, 255))
-            ant.location = Vector2(randint(0, world.width), randint(0, world.height))
+            ant = entities.Ant(self, self.ant_image_2, self.base_2, (0, 0, 255))
+            ant.location = Vector2(randint(0, self.width), randint(0, self.height))
             ant.brain.set_state("exploring")
-            world.add_entity(ant)
+            self.add_entity(ant)
             
 #------------------------------------------------------------------------
 #Done setting up initial entity elements.
@@ -85,7 +85,15 @@ class World(object):
         
     def process(self, time_passed):
                 
-        time_passed_seconds = time_passed / 1000.0        
+        time_passed_seconds = time_passed / 1000.0
+        
+        #Here's our chance to throw in a new leaf
+        
+        if randint(1, 10) == 1:
+            leaf = entities.Leaf(self, self.leaf_image)
+            leaf.location = Vector2(randint(0, leaf.world.width), randint(0, leaf.world.height))
+            self.add_entity(leaf)
+                    
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
             

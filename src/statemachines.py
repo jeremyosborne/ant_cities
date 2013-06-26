@@ -130,11 +130,11 @@ class AntStateDelivering(State):
         State.__init__(self, "delivering")
         self.ant = ant
         
-        
+    #Question for Jeremy start position    
     def check_conditions(self):
-                
+               
         if Vector2(*self.ant.base_location).get_distance_to(self.ant.location) < global_data.NEST_SIZE:
-            self.ant.drop(self.ant.world)  # Drops leaf onto the background frame.
+            self.ant.drop(self.ant.world)  # Removes leaf.
             return "exploring"
             
         return None

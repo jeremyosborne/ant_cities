@@ -11,8 +11,9 @@ import viewport
 
 class GameEntity(object):
     
-    def __init__(self, world, name, image):
+    def __init__(self, world,name, image):
         
+        #a way for an entity to get at attributes about the world.
         self.world = world
         self.name = name
         self.image = image
@@ -77,7 +78,6 @@ class Ant(GameEntity):
     def __init__(self, world, image, base, color):
         
         GameEntity.__init__(self, world, "ant", image)
-
      
         exploring_state = statemachines.AntStateExploring(self)
         seeking_state = statemachines.AntStateSeeking(self)
@@ -105,11 +105,8 @@ class Ant(GameEntity):
         self.carry_image = image
         
     def drop(self, world):
-        
+        #Question for Jeremy stop position
         if self.carry_image:
-            x, y = self.location
-            w, h = self.carry_image.get_size()
-            # surface.blit(self.carry_image, (x-w, y-h/2))  #Let's not draw the leaf on the background when dropped.
             self.carry_image = None
             #We need to tell the base that an item has arrived.
             self.base.increment_leaf()

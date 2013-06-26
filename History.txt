@@ -2,14 +2,20 @@ File contents:
 1.  Task List/New Features to add.
 2.  Version History and Notes.
 
+
+Questions for Jeremy.
+1.  How should we handle saving settings.
+2.  Ask question about ant carrying leaf problem.
+
 Task List.
 
 Key
 * In process
 - Not Started.
 
-* Currently rewriting some of the code.
-
+-  Turn fps display into a viewport/ui-element.
+-  Create control panel class
+-  experiment with full screen class
 -  Multi-Process, Sim and Render Thread
 *  Add "class management code for viewport to support the following functionality:
    - User input routing to the right surface. 
@@ -17,6 +23,11 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .13 6/25/2013
+- Gameworld now appears to be self contained inside the world object.  All world init
+  items are now inside the init of the world class.
+- game module now cleaner.
+  
 Version .12 6/25/2013  Rewriting or re-organizing the code.
 - Removed all statemachine and entities references to spiders.
 - Started to move world init items into the world class.  I want the world
