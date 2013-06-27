@@ -97,8 +97,9 @@ def run():
         if mouse_y > (world.viewport.height-10):
             world.viewport.add_to_viewport_y(world.viewport.scroll_speed)
         
+        #Time_passed is in miliseconds.
         time_passed = clock.tick(60)
-        
+
         world.process(time_passed)
         if render_game_world:
             world.render()

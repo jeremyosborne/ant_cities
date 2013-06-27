@@ -14,15 +14,19 @@ Key
 - Not Started.
 
 -  Turn fps display into a viewport/ui-element.
--  Create control panel class
+*  Create control panel class
+-  Fix ant eating to be time based (like ant hunger.)
 -  experiment with full screen class
 -  Multi-Process, Sim and Render Thread
-*  Add "class management code for viewport to support the following functionality:
+-  Add "class management code for viewport to support the following functionality:
    - User input routing to the right surface. 
--  Get simulated activities like food consumption to match time and not sim beat.
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .14 6/27/2013
+- Fixed ant hunger to be time based (was based on time when rendered, meaning
+  that ant consumed a set amount of food when the screen was rendered.
+  
 Version .13 6/25/2013
 - Gameworld now appears to be self contained inside the world object.  All world init
   items are now inside the init of the world class.

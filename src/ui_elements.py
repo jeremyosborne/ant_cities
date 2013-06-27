@@ -262,3 +262,8 @@ class Mini_Map(viewport.Viewport):
         self.delete()
         del self
         #self = None
+        
+#User Panel that contains game information.        
+class User_Panel(viewport.Viewport):
+    pass
+

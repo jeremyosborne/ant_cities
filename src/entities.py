@@ -95,6 +95,7 @@ class Ant(GameEntity):
         self.brain.add_state(eating_state)
         
         self.hunger = 1000.
+        self.food_consumption_per_second = 10.
         
         self.carry_image = None
         
@@ -132,6 +133,9 @@ class Ant(GameEntity):
         viewport.render_entity(self.bar_surface, x-30, y+10)
 
     def process(self, time_passed):
-        self.hunger -= 1
+        
+        #Process food consumption
+        self.hunger = self.hunger - ((time_passed/1000.) * self.food_consumption_per_second)
+        
         GameEntity.process(self, time_passed)
         

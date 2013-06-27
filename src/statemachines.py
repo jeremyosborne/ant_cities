@@ -143,8 +143,7 @@ class AntStateDelivering(State):
     def entry_actions(self):
         
         self.ant.speed = 60.        
-        #random_offset = Vector2(randint(-20, 20), randint(-20, 20))
-        self.ant.destination = Vector2(*self.ant.base_location) # + random_offset       
+        self.ant.destination = Vector2(*self.ant.base_location)     
        
 class AntStateHungry(State):
     
@@ -166,8 +165,7 @@ class AntStateHungry(State):
     def entry_actions(self):
         
         self.ant.speed = 60.        
-        #random_offset = Vector2(randint(-20, 20), randint(-20, 20))
-        self.ant.destination = Vector2(*self.ant.base_location) # + random_offset
+        self.ant.destination = Vector2(*self.ant.base_location)
 
 class AntStateEating(State):
     
@@ -190,7 +188,4 @@ class AntStateEating(State):
         
     def entry_actions(self):
         
-        self.ant.speed = 0.        
-        #random_offset = Vector2(randint(-20, 20), randint(-20, 20))
-        #self.ant.destination = Vector2(*self.ant.base_location) # + random_offset
-        
+        self.ant.speed = 0.
