@@ -18,16 +18,19 @@ import viewport
 
 class World(object):
         
-    def __init__(self, x, y):
+    def __init__(self, x, y, w, h):
         
         #The size of the world for x and y
         self.width = x
         self.height = y
         
+        self.viewable_width = w
+        self.viewable_height = h
+        
         self.entities = {}    #Dictionary of all the entities
         self.entity_id = 0
         #viewport is the screen entity that contains the view of the game world.
-        self.viewport = ui_elements.World_Viewport(self.width, self.height)
+        self.viewport = ui_elements.World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport.description = "Game world viewport."
         
 #-----------------------------------------------------------------------

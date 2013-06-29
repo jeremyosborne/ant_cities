@@ -13,24 +13,11 @@ import global_data
 #So it doesn't belong in the main viewport class.
 
 class World_Viewport(viewport.Viewport):
-    def __init__(self, world_width, world_height):
-        viewport.Viewport.__init__(self, 0, 0, global_data.screen_size_x, global_data.screen_size_y, 1, 0, True)
+    def __init__(self, world_width, world_height, viewable_width, viewable_height):
+        viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
 
-        self.zoom_area_width = global_data.screen_size_x
-        self.zoom_area_height = global_data.screen_size_y
         self.world_height = world_height
         self.world_width = world_width
-        
-        #Hard coded Zoom level for testing
-        #Zoom levels as tuples.
-        self.zoom_level_1 = (global_data.screen_size_x/2, global_data.screen_size_y/2)
-        self.zoom_level_2 = (global_data.screen_size_x, global_data.screen_size_y)
-        self.zoom_level_3 = (global_data.screen_size_x+global_data.screen_size_x/2, global_data.screen_size_y+global_data.screen_size_y/2)
-        self.zoom_level_4 = (global_data.screen_size_x*2, global_data.screen_size_y*2)
-        self.zoom_level_5 = (global_data.screen_size_x*3, global_data.screen_size_y*3)
-        self.zoom_level_6 = (self.world_width, self.world_height)
-        #List of tuples representing the zoom levels
-        self.zoom_levels = (self.zoom_level_1, self.zoom_level_2, self.zoom_level_3, self.zoom_level_4, self.zoom_level_5, self.zoom_level_6)
 
         #default zoom level
         self.zoom_level = 2
@@ -39,6 +26,48 @@ class World_Viewport(viewport.Viewport):
         self.scroll_speeds = (5, 10, 20, 40, 60, 100)
         #default scroll speed
         self.scroll_speed = 10
+        
+        self.setup_viewable_area()
+        
+    @viewport.Viewport.width.setter
+    def width(self, value):
+        self.width = value
+        self.setup_viewable_area()
+        
+    @viewport.Viewport.height.setter
+    def height(self, value):
+        self._height = value
+        self.setup_viewable_area()
+               
+    def prepare_new_frame(self):
+        self.zoom_frame_buffer.blit(self.background, (0, 0))
+
+    #We check to see if it's in the field of vision and render if so.
+    def render_entity(self, image, x, y):
+        
+        w, h = image.get_size()
+        
+        if self.viewport_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
+            #We're in view.
+            #Convert object's coordinates to the surface we're drawing on.
+            x = x - (self.viewport_center_x - self.zoom_area_width/2)
+            y = y - (self.viewport_center_y - self.zoom_area_height/2)
+            self.zoom_frame_buffer.blit(image, (x-w/2, y-h/2))
+    
+    def setup_viewable_area(self):
+
+        self.zoom_area_width = self.width
+        self.zoom_area_height = self.height
+        
+        #Zoom levels as tuples.
+        self.zoom_level_1 = (self.width/2, self.height/2)
+        self.zoom_level_2 = (self.width, self.height)
+        self.zoom_level_3 = (self.width+self.width/2, self.height+self.height/2)
+        self.zoom_level_4 = (self.width*2, self.height*2)
+        self.zoom_level_5 = (self.width*3, self.height*3)
+        self.zoom_level_6 = (self.world_width, self.world_height)
+        #List of tuples representing the zoom levels, not used and probably should be removed.
+        self.zoom_levels = (self.zoom_level_1, self.zoom_level_2, self.zoom_level_3, self.zoom_level_4, self.zoom_level_5, self.zoom_level_6)
 
         self.viewport_center_x = self.world_width / 2
         self.viewport_center_min_x = self.zoom_area_width/2
@@ -55,29 +84,13 @@ class World_Viewport(viewport.Viewport):
         #The zoom_frame_buffer is the surface where everything is rendered (blited) to.  It will then be scaled to fit the viewport.
         self.zoom_frame_buffer = pygame.surface.Surface((self.zoom_area_width, self.zoom_area_height)).convert()
         
+        #Setting the surface to the correct size
+        self.surface = pygame.surface.Surface((self.width, self.height)).convert()
+        
         #Let's prepare the backgound image.  It will just be white.
         self.background = pygame.surface.Surface((self.zoom_area_width, self.zoom_area_height)).convert()
         self.background.fill((255, 255, 255))
-
-    def prepare_new_frame(self):
-        self.zoom_frame_buffer.blit(self.background, (0, 0))
-
-    #We check to see if it's in the field of vision and render if so.
-    def render_entity(self, image, x, y):
         
-        w, h = image.get_size()
-        
-        if self.viewport_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
-            #We're in view.
-            #Convert object's coordinates to the surface we're drawing on.
-            x = x - (self.viewport_center_x - self.zoom_area_width/2)
-            y = y - (self.viewport_center_y - self.zoom_area_height/2)
-            self.zoom_frame_buffer.blit(image, (x-w/2, y-h/2))
-    
-    #Maybe sometime in the future
-    def calculate_zoom_levels(self):
-        pass
-
     def in_field_of_vision(self):
         pass
 
@@ -169,7 +182,8 @@ class World_Viewport(viewport.Viewport):
     def finalize_image(self):
     
         #Let's take the zoom frame buffer and transform to the resolution of the screen and then copy it to the screen surface.
-        pygame.transform.scale(self.zoom_frame_buffer, (global_data.screen_size_x, global_data.screen_size_y), self.surface)
+        pygame.transform.scale(self.zoom_frame_buffer, (self.width, self.height), self.surface)
+        #pass
 
     def change_zoom_level(self, direction):
     

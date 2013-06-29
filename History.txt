@@ -5,15 +5,18 @@ File contents:
 
 Questions for Jeremy.
 1.  How should we handle saving settings.
-2.  Ask question about ant carrying leaf problem.
+2.  Ask question about ant carrying leaf problem - (find in comments - search
+    for jeremy.
+
 
 Task List.
 
 Key
 * In process
-- Not Started.
+- Not Started or on hold.
 
 -  Turn fps display into a viewport/ui-element.
+-  Cleanup mini-map like World_Viewport (version .15)
 *  Create control panel class
 -  Fix ant eating to be time based (like ant hunger.)
 -  experiment with full screen class
@@ -22,6 +25,12 @@ Key
    - User input routing to the right surface. 
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
+
+Version .15 6/28/2013
+-  Can now resize the game world view on the fly.  That's cool.  To make the
+   change, just update the width or height.  New code added in ui_elements
+   World_Viewport are setters that override those in Viewport.
+-  Changed World_Viewport to no longer look at global variables.
 
 Version .14 6/27/2013
 - Fixed ant hunger to be time based (was based on time when rendered, meaning

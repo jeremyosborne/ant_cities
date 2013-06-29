@@ -36,7 +36,7 @@ def run():
     screen = pygame.display.set_mode(global_data.screen_size, 0, 32)
   
     #Set up game world  
-    world = game_world.World(global_data.world_size_x, global_data.world_size_y)
+    world = game_world.World(global_data.world_size_x, global_data.world_size_y, global_data.screen_size_x, global_data.screen_size_y)
     
     #Setup UI elements.
     #Mini_Map Init
@@ -76,6 +76,8 @@ def run():
                 if event.key == K_c:  #Crash the program
                     mini_map.delete_me()
                     del mini_map
+                if event.key == K_r:  #resize the game window.
+                    world.viewport.height = 500
             #Handle the mouse wheel for zooming.
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:  #Mouse Scroll Wheel Up, so zoom in

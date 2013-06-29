@@ -108,13 +108,12 @@ class Viewport(pygame.Surface):
         self.y_down = y_down
         # The dimensions of our viewport as [width, height]
         # Assumed width and height are positive.
-        self.size = [width, height]
-        self.width = width
-        self.height - height
+        self._width = width
+        self._height = height
         # Scales relative to 1 as default.
         self.scale = scale
         # The surface for this screen entity.
-        self.surface = pygame.surface.Surface(self.size).convert()
+        self.surface = pygame.surface.Surface((self._width, self._height)).convert()
         # Layer, can be thought of as the sequence of blitting onto a layer.
         # 0 is the lowest layer.
         self._layer = layer
@@ -125,7 +124,7 @@ class Viewport(pygame.Surface):
         # Add to viewport management list.
         self.add_viewport(self)
         # Rectangle area matching the actual screen area this viewport maps to.
-        self.rect = (self.x_right, self.y_down, self.width, self.height)
+        self.rect = (self.x_right, self.y_down, self._width, self._height)
         
         #User Input attributes
         self.mouse_events = False
@@ -176,23 +175,25 @@ class Viewport(pygame.Surface):
     
     @property
     def width(self):
-        return self.size[0]
+        return self._width
     
     @width.setter
     def width(self, value):
-        self.size[0] = value
+        self._width = value
+        self.resize()
     
     @property
     def height(self):
-        return self.size[1]
+        return self._height
     
     @height.setter
     def height(self, value):
-        self.size[1] += value
-
-    def resize(self, width, height):
-        """ Resizes the surface """
-        pass
+        self._height = value
+        self.resize_surface()
+        
+    def resize_surface(self, width, height):
+        """ Resizes the surface, called when width or height is changed. """
+        self.surface = pygame.surface.Surface((self._width, self._height)).convert()
     
     #Render this Screen Entity into whatever surface is passed in.    
     def render(self, main_surface):
