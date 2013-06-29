@@ -17,19 +17,6 @@ import global_data
 import viewport
 import ui_elements
                 
-def set_up_game_world():
-    pass
-
-def print_fps(clock, screen):
-    
-    fps = clock.get_fps()
-    
-    #Since we're stopping normal rendering, we have clear the area where the text will be written.
-    pygame.draw.rect(screen, (255, 255, 255), (5, global_data.screen_size_y - 50, 125, 20), 0)
-    font = pygame.font.SysFont("arial", 16);
-    label = font.render(str(fps), True, (0, 0, 0))
-    screen.blit(label, (5, global_data.screen_size_y - 50))
-    
 def run():
     
     pygame.init()
@@ -43,6 +30,8 @@ def run():
     mini_map = ui_elements.Mini_Map(1000-256, 700-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
     mini_map.description = "Mini Map"
 
+    #FPS Display
+    fps_display = ui_elements.FPS_Display()
     clock = pygame.time.Clock()
     
     render_game_world = True
@@ -106,14 +95,14 @@ def run():
         if render_game_world:
             world.render()
         
-        #Let's Draw the Mini_Map
+        #Let's process the Mini_Map
         mini_map.update(world)
         
+        fps_display.draw_fps(clock)
+                
         #Call the method that renders all the viewport layers in the proper sequence.
         viewport.Viewport.render_viewports(screen)
-
-        print_fps(clock, screen)
-
+        
         pygame.display.update()
     
 if __name__ == "__main__":    

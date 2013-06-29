@@ -15,7 +15,6 @@ Key
 * In process
 - Not Started or on hold.
 
--  Turn fps display into a viewport/ui-element.
 -  Cleanup mini-map like World_Viewport (version .15)
 *  Create control panel class
 -  Fix ant eating to be time based (like ant hunger.)
@@ -26,6 +25,11 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .16 6/29/2013
+-  FPS display is now a viewport inside of ui-elements.  It's also the first
+   time I used colorkey.  This allowed me to pick the text on the screen
+   with a transparent background.
+   
 Version .15 6/28/2013
 -  Can now resize the game world view on the fly.  That's cool.  To make the
    change, just update the width or height.  New code added in ui_elements

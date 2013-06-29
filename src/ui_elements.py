@@ -196,7 +196,7 @@ class World_Viewport(viewport.Viewport):
                 self.zoom_level = self.zoom_level + 1
                 self.update_zoom_level(self.zoom_levels[self.zoom_level])
 
-
+#-------------------------------------------------------------------------------
 #Mini_Map
 class Mini_Map(viewport.Viewport):
     def __init__(self, x_right=0, y_down=0, width=256, height=256, world_width=1024, world_height=768):
@@ -276,7 +276,29 @@ class Mini_Map(viewport.Viewport):
         self.delete()
         del self
         #self = None
+
+#-------------------------------------------------------------------------------
+# FPS display.
+class FPS_Display(viewport.Viewport):
+    def __init__(self):
+        viewport.Viewport.__init__(self, 5, 5, 125, 20, 1, 10, True)
+        self.font = pygame.font.SysFont("arial", 16);
+        self.background = pygame.surface.Surface((125, 20)).convert()
+        self.background.fill((255, 255, 255))
+        #Make it such that when the surface is blitted on something else,
+        #the background is transparent.
+        self.surface.set_colorkey((255, 255, 255))
         
+    def draw_fps(self, clock):
+        fps = clock.get_fps()
+
+        #Clear the surface.
+        self.surface.blit(self.background, (0, 0))    
+
+        label = self.font.render(str(fps), True, (0, 0, 0))
+        self.surface.blit(label, (0, 0))
+
+#-------------------------------------------------------------------------------            
 #User Panel that contains game information.        
 class User_Panel(viewport.Viewport):
     pass
