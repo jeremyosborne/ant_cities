@@ -68,7 +68,7 @@ class AntStateExploring(State):
     def random_destination(self):
         
         self.ant.destination = Vector2(randint(0, self.ant.world.width), randint(0, self.ant.world.height))    
-    
+        print Vector2(randint(0, self.ant.world.width), randint(0, self.ant.world.height)) 
     def do_actions(self):
         
         if randint(1, 20) == 1:

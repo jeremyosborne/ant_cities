@@ -15,6 +15,8 @@ Key
 * In process
 - Not Started or on hold.
 
+-  Add more realistic motion.
+-  Add collision detection so that entities can not run over each other.
 -  Cleanup mini-map like World_Viewport (version .15)
 *  Create control panel class
 -  Fix ant eating to be time based (like ant hunger.)
