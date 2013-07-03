@@ -68,7 +68,7 @@ class AntStateExploring(State):
     def random_destination(self):
         
         self.ant.destination = Vector2(randint(0, self.ant.world.width), randint(0, self.ant.world.height))    
-        print Vector2(randint(0, self.ant.world.width), randint(0, self.ant.world.height)) 
+ 
     def do_actions(self):
         
         if randint(1, 20) == 1:
@@ -89,7 +89,9 @@ class AntStateExploring(State):
     
     def entry_actions(self):
         
-        self.ant.speed = 120. + randint(-30, 30)
+        self.ant.target_speed = 120.
+        self.ant.acceleration = 10.
+        self.ant.speed = 10.
         self.random_destination()
         
         
@@ -142,7 +144,11 @@ class AntStateDelivering(State):
         
     def entry_actions(self):
         
-        self.ant.speed = 60.        
+        #Reducing speed because it's carring a leaf.
+        self.ant.target_speed = 60.
+        self.ant.acceleration = 5.
+        self.ant.speed = 5.
+                
         self.ant.destination = Vector2(*self.ant.base_location)     
        
 class AntStateHungry(State):

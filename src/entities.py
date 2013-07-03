@@ -20,6 +20,8 @@ class GameEntity(object):
         self.location = Vector2(0, 0)
         self.destination = Vector2(0, 0)
         self.speed = 0.
+        self.target_speed = 0.
+        self.acceleration = 0
         
         self.brain = statemachines.StateMachine()
         
@@ -39,11 +41,16 @@ class GameEntity(object):
         
         if self.speed > 0. and self.location != self.destination:
             
+            if self.speed < self.target_speed:
+                self.speed += self.acceleration * time_passed
             vec_to_destination = self.destination - self.location        
             distance_to_destination = vec_to_destination.get_length()
             heading = vec_to_destination.get_normalized()
+            print "heading: ", heading, " vector to destination: ", vec_to_destination
             travel_distance = min(distance_to_destination, time_passed * self.speed)
             self.location += travel_distance * heading
+            
+            #let's calculate 
             
 class Base (GameEntity):
     def __init__(self, world, image, base_id, color):

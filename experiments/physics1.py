@@ -62,6 +62,8 @@ while play:
     # .. new position based on current position, speed and direction
     x, y = position
     rad = direction * math.pi / 180
+    print "rad: ", rad, "direction: ", direction, " * pi/180"
+    
     x += speed*math.sin(rad)
     y += speed*math.cos(rad)
     # make sure the car doesn't exit the screen
@@ -80,10 +82,6 @@ while play:
     # .. position the car on screen
     rect = rotated.get_rect()
     rect.center = position
-    print "Position: ",  position 
-    print "Rad: ", rad
-    print "k-up: ", k_up
-    print "k-down:", k_down
     
     # .. render the car to screen
     screen.blit(rotated, rect)
