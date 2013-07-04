@@ -18,6 +18,8 @@ speed = 0.  #Our starting speed.
 acceleration = 10.
 target_speed = 120.
 direction = 0.
+slow_down_distance = 60.
+slow_down_acceleration = -30.
 
 
 if __name__ == '__main__':
@@ -46,21 +48,31 @@ if __name__ == '__main__':
                 
         time_passed = float(clock.tick(30)/1000.)
         
-        #Render and simulation spot.
-        
-        if speed < target_speed:
-            speed += acceleration * time_passed
-        vec_to_destination = destination - location
-        print "vec_to_destination: ", vec_to_destination, " destination: ", destination, " location: ", location, "speed: ", speed       
-        distance_to_destination = vec_to_destination.get_length()
-        heading = vec_to_destination.get_normalized()
-        print "heading: ", heading, " vector to destination: ", vec_to_destination
-        travel_distance = min(distance_to_destination, time_passed * speed)
-        location += travel_distance * heading
-        
-        direction = (math.atan2(heading.y, heading.x)*(180/math.pi))+90
-        print "degree_heading: ", direction
-        
+        if location != destination:
+            #Acceleration code
+            if acceleration > 0:  #Then we're accelerating.
+                if speed < target_speed:
+                    speed += acceleration * time_passed
+            elif acceleration < 0:  #Then we're slowing down.
+                if (speed + acceleration) > 0: 
+                    speed += acceleration * time_passed
+                else:
+                    speed = (slow_down_acceleration / 2.) * -1.
+                    
+            vec_to_destination = destination - location       
+            distance_to_destination = vec_to_destination.get_length()
+            heading = vec_to_destination.get_normalized()
+            travel_distance = min(distance_to_destination, time_passed * speed)
+            location += travel_distance * heading
+            print "Travel Distance: ", travel_distance, "Distance_to_destination: ", distance_to_destination
+            print "Speed: ", speed
+            #Direction used for rotating the image.
+            direction = (math.atan2(heading.y, heading.x)*(180/math.pi))+90
+    
+            #Are we there yet?
+            if distance_to_destination <= slow_down_distance:
+                acceleration = slow_down_acceleration
+                    
         screen.blit(background, (0,0))
         #screen.blit(ant, (location))
         screen.blit((pygame.transform.rotate(ant, (direction*-1.))), location)
