@@ -10,16 +10,19 @@ from pygame.locals import *
 from gameobjects.vector2 import Vector2
 
 start_position = Vector2(20, 300)
-end_position = Vector2(200, 100)
+end_position = Vector2(20, 100)
 
 location = start_position
 destination = end_position
 speed = 0.  #Our starting speed.
-acceleration = 10.
+speed_up_acceleration = 10.
+acceleration = speed_up_acceleration
 target_speed = 120.
 direction = 0.
-slow_down_distance = 60.
+slow_down_distance = 120.
 slow_down_acceleration = -30.
+current_heading = Vector2(0., 1.)
+
 
 
 if __name__ == '__main__':
@@ -27,7 +30,6 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
     ant = pygame.image.load('../assets/red-ant.png')
-    #ant = pygame.transform.rotate(ant, -90.)
     clock = pygame.time.Clock()
     
     background = pygame.surface.Surface((800, 600)).convert()
@@ -45,6 +47,11 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == QUIT:
                 exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  #left click and new destination selected
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    destination = Vector2(mouse_x, mouse_y)
+                    acceleration = speed_up_acceleration
                 
         time_passed = float(clock.tick(30)/1000.)
         
@@ -62,6 +69,7 @@ if __name__ == '__main__':
             vec_to_destination = destination - location       
             distance_to_destination = vec_to_destination.get_length()
             heading = vec_to_destination.get_normalized()
+            print "Heading: ", heading
             travel_distance = min(distance_to_destination, time_passed * speed)
             location += travel_distance * heading
             print "Travel Distance: ", travel_distance, "Distance_to_destination: ", distance_to_destination
@@ -71,6 +79,9 @@ if __name__ == '__main__':
     
             #Are we there yet?
             if distance_to_destination <= slow_down_distance:
+                #replace with formula that takes into consideration current speed.
+                #also change test, such that the slow down distance is also based
+                #on the current speed.
                 acceleration = slow_down_acceleration
                     
         screen.blit(background, (0,0))
