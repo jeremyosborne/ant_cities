@@ -3,7 +3,9 @@ import pygame
 from pygame.locals import *
 
 from random import randint, choice
-from gameobjects.vector2 import Vector2
+
+import pymunk
+from pymunk.vec2d import Vec2d
 
 import global_data
 
@@ -67,7 +69,7 @@ class AntStateExploring(State):
         
     def random_destination(self):
         
-        self.ant.destination = Vector2(randint(0, self.ant.world.width), randint(0, self.ant.world.height))    
+        self.ant.destination = Vec2d(randint(0, self.ant.world.width), randint(0, self.ant.world.height))    
  
     def do_actions(self):
         
@@ -109,7 +111,7 @@ class AntStateSeeking(State):
         if leaf is None:
             return "exploring"
         
-        if self.ant.location.get_distance_to(leaf.location) < 5.0:
+        if self.ant.location.get_distance(leaf.location) < 5.0:
         
             self.ant.carry(leaf.image)
             self.ant.world.remove_entity(leaf)  #Removing leaf from the world
@@ -135,7 +137,7 @@ class AntStateDelivering(State):
     #Question for Jeremy start position    
     def check_conditions(self):
                
-        if Vector2(*self.ant.base_location).get_distance_to(self.ant.location) < global_data.NEST_SIZE:
+        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < global_data.NEST_SIZE:
             self.ant.drop(self.ant.world)  # Removes leaf.
             return "exploring"
             
@@ -149,7 +151,7 @@ class AntStateDelivering(State):
         self.ant.acceleration = 5.
         self.ant.speed = 5.
                 
-        self.ant.destination = Vector2(*self.ant.base_location)     
+        self.ant.destination = Vec2d(*self.ant.base_location)     
        
 class AntStateHungry(State):
     
@@ -162,7 +164,7 @@ class AntStateHungry(State):
     def check_conditions(self):
         
         #Did we make it back to base to eat yet?        
-        if Vector2(*self.ant.base_location).get_distance_to(self.ant.location) < global_data.NEST_SIZE:
+        if Vec2d(*self.ant.base_location).get_distance_to(self.ant.location) < global_data.NEST_SIZE:
             # Time to eat.
             return "eating"            
         return None
@@ -171,7 +173,7 @@ class AntStateHungry(State):
     def entry_actions(self):
         
         self.ant.speed = 60.        
-        self.ant.destination = Vector2(*self.ant.base_location)
+        self.ant.destination = Vec2d(*self.ant.base_location)
 
 class AntStateEating(State):
     

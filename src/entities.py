@@ -2,7 +2,9 @@ import pygame
 from pygame.locals import *
 
 from random import randint, choice
-from gameobjects.vector2 import Vector2
+
+import pymunk
+from pymunk.vec2d import Vec2d
 
 import statemachines
 import global_data
@@ -17,8 +19,12 @@ class GameEntity(object):
         self.world = world
         self.name = name
         self.image = image
-        self.location = Vector2(0, 0)
-        self.destination = Vector2(0, 0)
+        self.brain = statemachines.StateMachine()
+        self.id = 0
+        
+        #Movement in the game world
+        self.location = Vec2d(0, 0)
+        self.destination = Vec2d(0, 0)
         self.speed = 0.
         self.target_speed = 0.
         self.acceleration = 0
@@ -45,7 +51,7 @@ class GameEntity(object):
                 self.speed += self.acceleration * time_passed
             vec_to_destination = self.destination - self.location        
             distance_to_destination = vec_to_destination.get_length()
-            heading = vec_to_destination.get_normalized()
+            heading = vec_to_destination.normalized()
             print "heading: ", heading, " vector to destination: ", vec_to_destination
             travel_distance = min(distance_to_destination, time_passed * self.speed)
             self.location += travel_distance * heading

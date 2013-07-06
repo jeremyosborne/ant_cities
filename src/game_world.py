@@ -8,7 +8,8 @@ import pygame
 from pygame.locals import *
 
 from random import randint, choice
-from gameobjects.vector2 import Vector2
+import pymunk
+from pymunk.vec2d import Vec2d
 
 import ui_elements
 import entities
@@ -56,12 +57,12 @@ class World(object):
         for ant_no in xrange(global_data.ANT_COUNT):
             #Team 1
             ant = entities.Ant(self, self.ant_image, self.base_1, (255, 0, 0))
-            ant.location = Vector2(randint(0, self.width), randint(0, self.height))
+            ant.location = Vec2d(randint(0, self.width), randint(0, self.height))
             ant.brain.set_state("exploring")
             self.add_entity(ant)
             #Team 2
             ant = entities.Ant(self, self.ant_image_2, self.base_2, (0, 0, 255))
-            ant.location = Vector2(randint(0, self.width), randint(0, self.height))
+            ant.location = Vec2d(randint(0, self.width), randint(0, self.height))
             ant.brain.set_state("exploring")
             self.add_entity(ant)
             
@@ -94,7 +95,7 @@ class World(object):
         
         if randint(1, 10) == 1:
             leaf = entities.Leaf(self, self.leaf_image)
-            leaf.location = Vector2(randint(0, leaf.world.width), randint(0, leaf.world.height))
+            leaf.location = Vec2d(randint(0, leaf.world.width), randint(0, leaf.world.height))
             self.add_entity(leaf)
                     
         for entity in self.entities.values():
@@ -113,11 +114,11 @@ class World(object):
             
     def get_close_entity(self, name, location, range=100.):
         
-        location = Vector2(*location)        
+        location = Vec2d(*location)        
         
         for entity in self.entities.itervalues():            
             if entity.name == name:                
-                distance = location.get_distance_to(entity.location)
+                distance = location.get_distance(entity.location)
                 if distance < range:
                     return entity        
         return None
