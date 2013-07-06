@@ -16,14 +16,12 @@ class Ant(object):
         
         self.location = Vec2d(600, 300) # Our default starting location.
         self.destination = Vec2d(600, 100) # Our default end position.
-        #self.current_heading = Vec2d(0, 0) # Where we're currently pointing.
-        #self.desired_heading = Vec2d(0, 0) # Where we want to be going.
         self.current_heading = (self.destination - self.location).normalized()
         self.desired_heading = self.current_heading
-        self.speed = 10.0 # Our starting speed.
+        self.speed = 0 # Our starting speed.
         self.acceleration = 0.0 # Our current acceleration, can be + or -
-        self.speed_up_acceleration = 1.
-        self.slow_down_acceleration = -30.
+        self.speed_up_acceleration = 30.
+        self.slow_down_acceleration = -50.
         self.slow_down_distance = 120.  #Change this with a function
         self.max_speed = 120.
         self.direction = 0.  #Direction we're pointed to in degrees
@@ -34,21 +32,20 @@ class Ant(object):
     def apply_acceleration(self, time_passed, distance_to_destination):
 
         #If we're at 0 and location != destination, then we should start moving.
-        #If we're moving, should we be slowing down.
-        #If not, then speed up.
-        #slow_down_distance = 
         if (self.location != self.destination) and (self.speed == 0):
             self.speed = 1.
         else:
+            #calculate the distance needed to stop.  If the travel distance is greater,
+            #then keep going, else start stopping.
             if abs(self.speed / self.slow_down_acceleration) > (distance_to_destination/self.speed):
                 #slow down
                 self.acceleration = self.slow_down_acceleration
-                self.speed += self.acceleration
+                self.speed += self.acceleration * time_passed
                 if self.speed < 0: self.speed = 5
             else:
                 #speed up
                 self.acceleration = self.speed_up_acceleration
-                self.speed += self.acceleration
+                self.speed += self.acceleration * time_passed
                 if self.speed > self.max_speed:
                     self.speed = self.max_speed
                 
@@ -56,22 +53,18 @@ class Ant(object):
         
         #How much we can steer this tick of the clock.
         steer_time_tick = self.rotation_per_second * time_passed
-        print "steer:", steer_time_tick, time_passed
+
         #Is the angle we must turn less than steer_time_clock?  If so, then
-        #we're done.
-        print "Angle between vectors < steer_time_tick:  ", (abs(angle_between_vectors)), steer_time_tick
+        #we're done, steer the last little bit.        
         if (abs(angle_between_vectors)) < steer_time_tick:
             self.current_heading = self.desired_heading
-            print "We're not steering."
+
         else:  # We must steer.
             angle_to_steer = self.rotation_per_second * time_passed
             if angle_between_vectors < 0:
                 angle_to_steer *= -1.
-            print "angle_to_steer:", angle_to_steer
-            #Why do I have to do this?
+            #Do the rotation
             self.current_heading = self.current_heading.rotated_degrees(angle_to_steer).normalized()
-            print "inside steer, printing self.current_heading: ", self.current_heading
-
                     
     def move(self, time_passed):
         
@@ -81,14 +74,10 @@ class Ant(object):
         #Do we have to change direction?
         if angle_between_vectors != 0.0:
             self.steer(angle_between_vectors, time_passed)    
-        print "current heading:", self.current_heading
-        print "desired_heading:", self.desired_heading
-        print "angle_between vectors:", angle_between_vectors
         
         #Update location.
         vec_to_destination = ant.destination - ant.location
         distance_to_destination = vec_to_destination.get_length()
-        print "distance: ", distance_to_destination
         travel_distance = min(distance_to_destination, time_passed * ant.speed)
         self.location += travel_distance * self.current_heading
         
@@ -133,7 +122,6 @@ if __name__ == '__main__':
             ant.move(time_passed)
                     
         screen.blit(background, (0,0))
-        #screen.blit(ant, (location))
         w, h = ant.image.get_size()
         screen.blit((pygame.transform.rotate(ant.image, (ant.direction*-1.))), (ant.location.x-w/2, ant.location.y-h/2))
         
