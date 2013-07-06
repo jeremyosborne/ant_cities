@@ -34,7 +34,8 @@ while play:
         if not hasattr(event, 'key'):
             continue
         # check if presses a key or left it
-        down = event.type == KEYDOWN # key down or up?        
+        down = event.type == KEYDOWN # key down or up?
+        print "down: ", down        
         # key events: http://pygame.org/docs/ref/key.html
         if event.key == K_RIGHT:
             k_right = down * TURN_SPEED
@@ -59,6 +60,7 @@ while play:
     if speed < MAX_REVERSE_SPEED:
         speed = MAX_REVERSE_SPEED
     direction += (k_right - k_left) # TODO is this the right direction?
+    print "k_right: ", k_right, " k_left: ", k_left,
     # .. new position based on current position, speed and direction
     x, y = position
     rad = direction * math.pi / 180
@@ -66,6 +68,7 @@ while play:
     
     x += speed*math.sin(rad)
     y += speed*math.cos(rad)
+    print x, y
     # make sure the car doesn't exit the screen
     if y < 0:
         y = 0 # TODO is there another way to treat this?
