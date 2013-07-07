@@ -27,6 +27,9 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .19 7/7.2013
+-  Added display box in the minimap.
+
 Version .18 7/6/2013
 -  More realistic motion added.
 

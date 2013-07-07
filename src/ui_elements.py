@@ -235,7 +235,15 @@ class Mini_Map(viewport.Viewport):
             self.surface.set_at((int(minimap_x), int(minimap_y)), entity.color)
             pygame.draw.rect(self.surface, entity.color, (int(minimap_x), int(minimap_y), 2, 2))
             #print str(minimap_x), str(minimap_y), x_location, y_location
-            
+        #Let's put rectangle that shows what's in the gamewindow on the minimap.
+        #For polygon
+        point_pair_1 = (int(world.viewport.viewport_x_rect/self.x_scale_factor), int(world.viewport.viewport_y_rect/self.y_scale_factor))
+        point_pair_2 = (int((world.viewport.viewport_x_rect+world.viewport.zoom_area_width)/self.x_scale_factor),  int(world.viewport.viewport_y_rect/self.y_scale_factor))
+        point_pair_3 = (int(world.viewport.viewport_x_rect/self.x_scale_factor), int((world.viewport.viewport_y_rect+world.viewport.zoom_area_height)/self.y_scale_factor))
+        point_pair_4 = (int((world.viewport.viewport_x_rect+world.viewport.zoom_area_width)/self.x_scale_factor), int((world.viewport.viewport_y_rect+world.viewport.zoom_area_height)/self.y_scale_factor))
+        
+        pygame.draw.polygon(self.surface, (255, 255, 0), (point_pair_1, point_pair_3, point_pair_4, point_pair_2), 2)
+                                
         # Scroll on or off the screen effect.
         # We're checking to see if we should be adjusting the location of the mini map.
         # How it works:
