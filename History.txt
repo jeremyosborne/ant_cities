@@ -15,7 +15,7 @@ Key
 * In process
 - Not Started or on hold.
 
--  Add more realistic motion.
+-  Adjust leaf carrying position from back to the mouth.
 -  Add collision detection so that entities can not run over each other.
 -  Cleanup mini-map like World_Viewport (version .15)
 *  Create control panel class
@@ -26,6 +26,9 @@ Key
    - User input routing to the right surface. 
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
+
+Version .18 7/6/2013
+-  More realistic motion added.
 
 Version .17 7/6/2013
 -  gameobjects removed; pymunk now used for 2d vector work.

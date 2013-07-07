@@ -22,7 +22,6 @@ class Ant(object):
         self.acceleration = 0.0 # Our current acceleration, can be + or -
         self.speed_up_acceleration = 30.
         self.slow_down_acceleration = -50.
-        self.slow_down_distance = 120.  #Change this with a function
         self.max_speed = 120.
         self.direction = 0.  #Direction we're pointed to in degrees
         self.rotation_per_second = 90. # Degrees per second we can turn.

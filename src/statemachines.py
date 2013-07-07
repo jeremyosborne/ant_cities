@@ -91,9 +91,9 @@ class AntStateExploring(State):
     
     def entry_actions(self):
         
-        self.ant.target_speed = 120.
-        self.ant.acceleration = 10.
-        self.ant.speed = 10.
+        #self.ant.target_speed = 120.
+        #self.ant.acceleration = 10.
+        self.ant.speed += 1.
         self.random_destination()
         
         
@@ -124,7 +124,7 @@ class AntStateSeeking(State):
         leaf = self.ant.world.get(self.ant.leaf_id)
         if leaf is not None:                        
             self.ant.destination = leaf.location
-            self.ant.speed = 160. + randint(-20, 20)
+            #self.ant.speed = 160. + randint(-20, 20)
         
         
 class AntStateDelivering(State):
@@ -147,9 +147,9 @@ class AntStateDelivering(State):
     def entry_actions(self):
         
         #Reducing speed because it's carring a leaf.
-        self.ant.target_speed = 60.
-        self.ant.acceleration = 5.
-        self.ant.speed = 5.
+        #self.ant.target_speed = 60.
+        #self.ant.acceleration = 5.
+        #self.ant.speed = 5.
                 
         self.ant.destination = Vec2d(*self.ant.base_location)     
        
@@ -164,7 +164,7 @@ class AntStateHungry(State):
     def check_conditions(self):
         
         #Did we make it back to base to eat yet?        
-        if Vec2d(*self.ant.base_location).get_distance_to(self.ant.location) < global_data.NEST_SIZE:
+        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < global_data.NEST_SIZE:
             # Time to eat.
             return "eating"            
         return None
@@ -172,7 +172,7 @@ class AntStateHungry(State):
         
     def entry_actions(self):
         
-        self.ant.speed = 60.        
+        #self.ant.speed = 60.        
         self.ant.destination = Vec2d(*self.ant.base_location)
 
 class AntStateEating(State):

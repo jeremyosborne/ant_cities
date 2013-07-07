@@ -38,8 +38,8 @@ class World(object):
 #Setting up initial entity elements.
 #-----------------------------------------------------------------------
 
-        self.ant_image = pygame.image.load("assets/ant.png").convert_alpha()
-        self.ant_image_2 = pygame.image.load("assets/ant-blue.png").convert_alpha()
+        self.ant_image = pygame.image.load("assets/red-ant.png").convert_alpha()
+        self.ant_image_2 = pygame.image.load("assets/blue-ant.png").convert_alpha()
         self.leaf_image = pygame.image.load("assets/leaf.png").convert_alpha()
         self.base_image = pygame.image.load("assets/hut1.png").convert_alpha()
         self.base_image_2 = pygame.image.load("assets/hut1.png").convert_alpha()
