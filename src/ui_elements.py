@@ -200,25 +200,36 @@ class World_Viewport(viewport.Viewport):
 #Mini_Map
 class Mini_Map(viewport.Viewport):
     def __init__(self, x_right=0, y_down=0, width=256, height=256, world_width=1024, world_height=768):
+        
+        self.border_size = 10
+        self.border_color = (165,42,42)  #Brown
+        
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 0, True)
 
+        self.minimap_width = self.width - self.border_size * 2
+        self.minimap_height = self.height - self.border_size * 2
+        
+        self.minimap_surface = pygame.surface.Surface((self.minimap_width, self.minimap_height)).convert()
+        
         self.world_width = world_width
         self.world_height = world_height
         
-        self.x_scale_factor = float(self.world_width) / float(self.width)         #28.125
-        self.y_scale_factor = float(self.world_height) / float(self.height)        #27.106
+        self.x_scale_factor = float(self.world_width) / float(self.minimap_width)
+        self.y_scale_factor = float(self.world_height) / float(self.minimap_height)
         
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
-        self.background.fill((0, 0, 0))
+        self.background.fill(self.border_color)
+        self.minimap_background = pygame.surface.Surface((self.minimap_width, self.minimap_height)).convert()
+        self.minimap_background.fill((0, 0, 0))
         
         #Default for the mini map is not visable.  Not used yet.
         is_visable = False
 
         #For turning the minimap on and off effect.  
-        self.scroll_x_right =self.x_right
-        self.scroll_y_down = self.y_down
+        #self.scroll_x_right =self.x_right
+        #self.scroll_y_down = self.y_down
         # Scroll_state can moving on, moving off, on, or off.
-        self.scroll_state = "off"
+        #self.scroll_state = "off"
         
         #print str(self.x_scale_factor)
         #print str(self.y_scale_factor)
@@ -226,24 +237,28 @@ class Mini_Map(viewport.Viewport):
     def update(self, world):
         
         #Clear the mini map.
-        self.surface.blit(self.background, (0, 0))
+        self.minimap_surface.blit(self.minimap_background, (0, 0))
         #Let's go through all the entities and put them on the mini_map
         for entity in world.entities.itervalues():
             x_location, y_location = entity.location
             minimap_x = x_location/self.x_scale_factor
             minimap_y = y_location/self.y_scale_factor
-            self.surface.set_at((int(minimap_x), int(minimap_y)), entity.color)
-            pygame.draw.rect(self.surface, entity.color, (int(minimap_x), int(minimap_y), 2, 2))
+            self.minimap_surface.set_at((int(minimap_x), int(minimap_y)), entity.color)
+            pygame.draw.rect(self.minimap_surface, entity.color, (int(minimap_x), int(minimap_y), 2, 2))
             #print str(minimap_x), str(minimap_y), x_location, y_location
         #Let's put rectangle that shows what's in the gamewindow on the minimap.
         #For polygon
         point_pair_1 = (int(world.viewport.viewport_x_rect/self.x_scale_factor), int(world.viewport.viewport_y_rect/self.y_scale_factor))
-        point_pair_2 = (int((world.viewport.viewport_x_rect+world.viewport.zoom_area_width)/self.x_scale_factor),  int(world.viewport.viewport_y_rect/self.y_scale_factor))
-        point_pair_3 = (int(world.viewport.viewport_x_rect/self.x_scale_factor), int((world.viewport.viewport_y_rect+world.viewport.zoom_area_height)/self.y_scale_factor))
-        point_pair_4 = (int((world.viewport.viewport_x_rect+world.viewport.zoom_area_width)/self.x_scale_factor), int((world.viewport.viewport_y_rect+world.viewport.zoom_area_height)/self.y_scale_factor))
+        point_pair_2 = (int((world.viewport.viewport_x_rect+world.viewport.zoom_area_width)/self.x_scale_factor)-2,  int(world.viewport.viewport_y_rect/self.y_scale_factor))
+        point_pair_3 = (int(world.viewport.viewport_x_rect/self.x_scale_factor), int((world.viewport.viewport_y_rect+world.viewport.zoom_area_height)/self.y_scale_factor)-2)
+        point_pair_4 = (int((world.viewport.viewport_x_rect+world.viewport.zoom_area_width)/self.x_scale_factor)-2, int((world.viewport.viewport_y_rect+world.viewport.zoom_area_height)/self.y_scale_factor)-2)
         
-        pygame.draw.polygon(self.surface, (255, 255, 0), (point_pair_1, point_pair_3, point_pair_4, point_pair_2), 2)
-                                
+        pygame.draw.polygon(self.minimap_surface, (255, 255, 0), (point_pair_1, point_pair_3, point_pair_4, point_pair_2), 2)
+        
+        #Put minimap together with the border.
+        self.surface.blit(self.background, (0, 0))
+        self.surface.blit(self.minimap_surface, ((self.border_size, self.border_size)))
+                            
         # Scroll on or off the screen effect.
         # We're checking to see if we should be adjusting the location of the mini map.
         # How it works:
