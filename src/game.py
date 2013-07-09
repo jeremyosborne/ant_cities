@@ -21,9 +21,16 @@ import ui_elements
 def run():
     
     pygame.init()
-    screen = pygame.display.set_mode(global_data.screen_size, 0, 32)
+    
+    #Normal pygame window mode.
+    screen = pygame.display.set_mode(global_data.screen_size, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
   
-    #Set up game world  
+    #Normal pygame full screen mode.
+    #screen = pygame.display.set_mode(global_data.screen_size, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
+    #Set up game world
+    
+    print pygame.display.Info()
+      
     world = game_world.World(global_data.world_size_x, global_data.world_size_y, global_data.screen_size_x, global_data.screen_size_y)
     
     #Setup UI elements.
@@ -37,6 +44,8 @@ def run():
     
     render_game_world = True
 
+    display_minimap = True
+    
     #Main game loop    
     while True:
         
@@ -60,9 +69,9 @@ def run():
                     else:
                         render_game_world = True
                 if event.key == K_m:  #Turn mini-map on
-                    mini_map.turn_on()
+                    display_minimap = True
                 if event.key == K_n:  #Turn mini-map off
-                    mini_map.turn_off()
+                    display_minimap = False
                 if event.key == K_c:  #Crash the program
                     mini_map.delete_me()
                     del mini_map
@@ -90,14 +99,15 @@ def run():
             world.viewport.add_to_viewport_y(world.viewport.scroll_speed)
         
         #Time_passed is in miliseconds.
-        time_passed = clock.tick(60)
+        time_passed = clock.tick(30)
 
         world.process(time_passed)
         if render_game_world:
             world.render()
         
         #Let's process the Mini_Map
-        mini_map.update(world)
+        if display_minimap == True:
+            mini_map.update(world)
         
         fps_display.draw_fps(clock)
                 

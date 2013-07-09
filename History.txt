@@ -29,9 +29,14 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .21 7/9/2013
+-  Just playing around with hardware acceleration.  It appears that this program
+   is not invoking hardware acceleration and that's the reason I thing the program
+   is slow when rendering the whole world to the viewable screen.
+   
 Version .20 7/8/2013
 -  Added border around minimap to help with implementation of movement based on
-   interation with the minimap.  I didn't want the minimap to overlap with
+   interaction with the minimap.  I didn't want the minimap to overlap with
    scrolling around the map.
    
 Version .19 7/7.2013
