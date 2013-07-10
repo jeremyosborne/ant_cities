@@ -10,9 +10,13 @@ NEST_SIZE = 5.
 
 #Screen Based
 
-screen_size = (1000,700)
-screen_size_x = 1000
-screen_size_y = 700
+#screen_size = (1000,700)
+#screen_size_x = 1000
+#screen_size_y = 700
+
+screen_size = (1280,800)
+screen_size_x = 1280
+screen_size_y = 800
 
 #screen_size = (1900,1130)
 #screen_size_x = 1900
