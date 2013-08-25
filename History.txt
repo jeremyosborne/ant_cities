@@ -29,6 +29,15 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .22 8/25/2013
+
+-  Done playing with hardware acceleration. It just doesn't work.  In the experiment
+   folder, have determined the number of entities that can be rendered to the screen
+   in a timely manner.
+-  This commit represents the last time zooming is based on a digital zoom and cut
+   of a single surface.  Will begin developing zoom based on rendering to the screen
+   surface scaled objects.
+   
 Version .21 7/9/2013
 -  Just playing around with hardware acceleration.  It appears that this program
    is not invoking hardware acceleration and that's the reason I thing the program

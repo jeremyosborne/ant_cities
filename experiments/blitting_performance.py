@@ -16,7 +16,7 @@ screen_size_x = 1200
 screen_size_y = 700
 #For larger than screen size surface
 scale_factor = 5
-number_of_entities_to_blit = 1500
+number_of_entities_to_blit = 2500
 
 #image = pygame.image.load('../assets/red-ant.png')
 
@@ -118,9 +118,9 @@ if __name__ == '__main__':
     #Descriptions of each experiment are above with the procedure.
     #--------------------------------------------------------------------------------------------------
         #experiment_1(screen, image)
-        experiment_2(screen, secondary_surface, background, image)
+        #experiment_2(screen, secondary_surface, background, image)
         #experiment_3(screen, big_surface, big_background, image)
-        #experiment_4(screen)
+        experiment_4(screen)
         #experiment_6(screen, big_surface, big_background)
         
     #--------------------------------------------------------------------------------------------------    
