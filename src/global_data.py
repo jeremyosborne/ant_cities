@@ -10,9 +10,9 @@ NEST_SIZE = 5.
 
 #Screen Based
 
-screen_size = (1900,1100)
-screen_size_x = 1900
-screen_size_y = 1100
+screen_size = (1200,700)
+screen_size_x = 1200
+screen_size_y = 700
 
 #screen_size = (1280,800)
 #screen_size_x = 1280
@@ -24,8 +24,8 @@ screen_size_y = 1100
 
 #World Based
 #world_size = (1200*5, 768*5)
-world_size_x = 1200*5
-world_size_y = 700*5
+world_size_x = 1200*6
+world_size_y = 700*6
 
 NEST_POSITION = (world_size_x - 256, world_size_y / 2)
 NEST_POSITION_2 = (256, world_size_y / 2)

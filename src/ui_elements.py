@@ -201,25 +201,50 @@ class World_Viewport(viewport.Viewport):
 class Mini_Map(viewport.Viewport):
     def __init__(self, x_right=0, y_down=0, width=256, height=256, world_width=1024, world_height=768):
         
-        self.border_size = 10
+        self.border_size = 10  #Made it 10 to match the screen scrolling width.
         self.border_color = (165,42,42)  #Brown
         
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 0, True)
 
+        self.world_width = world_width
+        self.world_height = world_height
+                            
         self.minimap_width = self.width - self.border_size * 2
         self.minimap_height = self.height - self.border_size * 2
         
-        self.minimap_surface = pygame.surface.Surface((self.minimap_width, self.minimap_height)).convert()
+        #Adjust for minimap aspect ratio, world size vs minimap size.
+        #Determine the aspect ratio of the minimap.
+        self.minimap_aspect_ratio = float(self.minimap_width/self.minimap_height)
+        #determine the aspect ratio of the world.
+        self.world_aspect_ratio = float(self.world_width/self.world_height)
         
-        self.world_width = world_width
-        self.world_height = world_height
+        #Should we go full width or height with the minimap based on the aspect ratio?  
+        if (self.world_aspect_ratio >= 1) and (self.world_aspect_ratio >= self.minimap_aspect_ratio):
+            #Use width of the minimap.
+            self.minimap_usable_width = self.minimap_width
+            self.minimap_usable_height = self.world_height / float((self.world_width) / float(self.minimap_width))
+            #Calculate the offset of the minimap based on the aspect ratio.
+            self.minimap_offset_width = 0
+            self.minimap_offset_height = (self.minimap_height - self.minimap_usable_height) / 2
+        else:
+            #Use height of the minimap.
+            self.minimap_usable_width = self.world_width / float((self.world_height) / float(self.minimap_height))
+            self.minimap_usable_height = self.minimap_height
+            #Calculate the offset of the minimap based on the aspect ratio.
+            self.minimap_offset_width = (self.minimap_width - self.minimap_usable_width) / 2
+            self.minimap_offset_height = 0
         
-        self.x_scale_factor = float(self.world_width) / float(self.minimap_width)
-        self.y_scale_factor = float(self.world_height) / float(self.minimap_height)
-        
+        self.x_scale_factor = float(self.world_width) / float(self.minimap_usable_width)
+        self.y_scale_factor = float(self.world_height) / float(self.minimap_usable_height)
+
+        #For debugging
+        print "self.minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
+        print "self.minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height
+               
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill(self.border_color)
-        self.minimap_background = pygame.surface.Surface((self.minimap_width, self.minimap_height)).convert()
+        self.minimap_surface = pygame.surface.Surface((self.minimap_usable_width, self.minimap_usable_height)).convert()
+        self.minimap_background = pygame.surface.Surface((self.minimap_usable_width, self.minimap_usable_height)).convert()
         self.minimap_background.fill((0, 0, 0))
         
         #Default for the mini map is not visable.  Not used yet.
@@ -260,9 +285,9 @@ class Mini_Map(viewport.Viewport):
         
         pygame.draw.polygon(self.minimap_surface, (255, 255, 0), (point_pair_1, point_pair_3, point_pair_4, point_pair_2), 2)
         
-        #Put minimap together with the border.
+        #Put minimap together with the border with any offsets calculated for aspect ratio.
         self.surface.blit(self.background, (0, 0))
-        self.surface.blit(self.minimap_surface, ((self.border_size, self.border_size)))
+        self.surface.blit(self.minimap_surface, ((self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height)))
                             
         # Scroll on or off the screen effect.
         # We're checking to see if we should be adjusting the location of the mini map.

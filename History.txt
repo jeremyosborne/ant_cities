@@ -5,9 +5,6 @@ File contents:
 
 Questions for Jeremy.
 1.  How should we handle saving settings.
-2.  Ask question about ant carrying leaf problem - (find in comments - search
-    for jeremy.
-
 
 Task List.
 
@@ -15,6 +12,8 @@ Key
 * In process
 - Not Started or on hold.
 
+-  Change zooming code based on rendering scaled objects rather than
+   rendering normal size and then scaling image to fit the screen. 
 -  Allowing movement of the main game screen based on interaction with the
    minimap.
 -  Adjust leaf carrying position from back to the mouth.
@@ -29,6 +28,11 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .23 8/26/2013
+
+-  Modified minimap to keep aspect ratio of the world.  Did this in preperation of
+   doing the same for the game viewport.
+   
 Version .22 8/25/2013
 
 -  Done playing with hardware acceleration. It just doesn't work.  In the experiment
