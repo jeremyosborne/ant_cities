@@ -60,17 +60,7 @@ Input to class method:
             #      mouse position?
             #  4.  is the mouse over this viewport
             #  5.
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+           
             
             
 Multiprocess model.
@@ -97,6 +87,7 @@ Any zoom in to this size could easily be the normal rendering of the screen and 
 
 Should it be a smooth zoom, able to be at any given some level or should there be a predetermined number of zoom levels?
 
+
 There must be a cutoff zoom level that goes from actual images to squares representing the entities.
 
 To determine the zoom level cutover, calculate the smallest you want an image to be represented as.
@@ -116,3 +107,12 @@ then number of zoom levels = 5
 world size = 10,000 by 10,000
 screen size = 1000x1000
 the number of zoom levels = 10?
+
+Zoom level change for every 50 percent growth?
+
+world size is 10000x10000
+screen size is 100x100
+zoom level 3 would cover world size 150x150
+zoom level 4 would cover world size 225x225
+etc.
+

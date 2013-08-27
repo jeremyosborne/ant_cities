@@ -9,6 +9,26 @@ import viewport
 import global_data
 
 
+class World_Viewport2(viewport.Viewport):
+    def __init__(self, world_width, world_height, viewable_width, viewable_height):
+        viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
+        
+        self.world_height = world_height
+        self.world_width = world_width
+
+    @viewport.Viewport.width.setter
+    def width(self, value):
+        self.width = value
+        self.setup_viewable_area()
+        
+    @viewport.Viewport.height.setter
+    def height(self, value):
+        self._height = value
+        self.setup_viewable_area()
+        
+        
+        
+        
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
 #So it doesn't belong in the main viewport class.
 

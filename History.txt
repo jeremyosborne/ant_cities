@@ -28,9 +28,14 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .24 8/26/2013
+
+-  Starting on new world viewport design to support new zoom methods and proper
+   aspect ratios.
+   
 Version .23 8/26/2013
 
--  Modified minimap to keep aspect ratio of the world.  Did this in preperation of
+-  Modified minimap to keep aspect ratio of the world.  Did this in preparation of
    doing the same for the game viewport.
    
 Version .22 8/25/2013
