@@ -28,6 +28,10 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .241 8/27/2013
+
+-Working on zooming.
+
 Version .24 8/26/2013
 
 -  Starting on new world viewport design to support new zoom methods and proper

@@ -16,6 +16,28 @@ class World_Viewport2(viewport.Viewport):
         self.world_height = world_height
         self.world_width = world_width
 
+        self.setup_viewable_area()
+
+        self.zoom_levels = {}
+        
+    #Setup    
+    def setup_viewable_area(self):
+        #Calculate the zoom levels.
+        self.calculate_zoom_levels()
+        
+    def calculate_zoom_levels(self):
+        #Zoom levels get bigger by a factor of 1.5.
+        #Most zoomed in level available.  We're starting at index 1.
+        self.zoom_levels[1] =  (self.width / 1.5, self.height / 1.5)
+        #Default zoom level no scaling.
+        self.zoom_levels[2] =  (self.width, self.height)
+        #Calculate the remaining levels.
+        finished_processing = False
+        
+        while finished_processing:
+            index = 3
+            if self.zoom_levels[index - 1] 
+            
     @viewport.Viewport.width.setter
     def width(self, value):
         self.width = value
