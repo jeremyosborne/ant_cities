@@ -31,6 +31,7 @@ class World(object):
         self.entities = {}    #Dictionary of all the entities
         self.entity_id = 0
         #viewport is the screen entity that contains the view of the game world.
+        self.viewport2 = ui_elements.World_Viewport2(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport = ui_elements.World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport.description = "Game world viewport."
         

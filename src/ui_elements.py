@@ -15,28 +15,47 @@ class World_Viewport2(viewport.Viewport):
         
         self.world_height = world_height
         self.world_width = world_width
+        self.zoom_level_ranges = {}
 
         self.setup_viewable_area()
-
-        self.zoom_levels = {}
         
     #Setup    
     def setup_viewable_area(self):
         #Calculate the zoom levels.
-        self.calculate_zoom_levels()
+        self.calculate_zoom_level_ranges()
+        print "Printing zoom level ranges"
+        print self.zoom_level_ranges
         
-    def calculate_zoom_levels(self):
+        
+        
+    def calculate_zoom_level_ranges(self):
         #Zoom levels get bigger by a factor of 1.5.
         #Most zoomed in level available.  We're starting at index 1.
-        self.zoom_levels[1] =  (self.width / 1.5, self.height / 1.5)
+        self.zoom_level_ranges[1] =  (self.width / 1.5, self.height / 1.5)
         #Default zoom level no scaling.
-        self.zoom_levels[2] =  (self.width, self.height)
-        #Calculate the remaining levels.
-        finished_processing = False
+        self.zoom_level_ranges[2] =  (self.width, self.height)
         
+        #Calculate the remaining levels.
+        finished_processing = True
+        index = 2
         while finished_processing:
-            index = 3
-            if self.zoom_levels[index - 1] 
+            index += 1
+            #Test width and height of the next zoom level, is the next range still smaller than the world?
+            if ((self.zoom_level_ranges[index - 1][0] * 1.5) <= self.world_width) and ((self.zoom_level_ranges[index -1][1] * 1.5) <= self.world_height):
+                #Create the next zoom level entry.
+                print "Creating next zoom level ", index
+                self.zoom_level_ranges[index] = (self.zoom_level_ranges[index - 1][0] * 1.5, self.zoom_level_ranges[index - 1][1] * 1.5)
+            else:
+            #We're at the end of the line, so clean it up and end it.
+                finished_processing = False
+                #Check to see if we are already at the end of the line.  
+                if self.zoom_level_ranges[index - 1][0] == self.width and self.zoom_level_ranges[index - 1][1] == self.world_height:
+                    #We are at the end of the line and the last calculated zoom level is the highest.
+                    self.zoom_level_ranges['number_of_zoom_levels'] = index - 1
+                else:
+                    self.zoom_level_ranges[index] = (self.world_width, self.world_height)
+                    self.zoom_level_ranges['number_of_zoom_levels'] = index
+                        
             
     @viewport.Viewport.width.setter
     def width(self, value):
@@ -280,8 +299,8 @@ class Mini_Map(viewport.Viewport):
         self.y_scale_factor = float(self.world_height) / float(self.minimap_usable_height)
 
         #For debugging
-        print "self.minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
-        print "self.minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height
+        #print "self.minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
+        #print "self.minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height
                
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill(self.border_color)

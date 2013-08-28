@@ -28,6 +28,11 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .242 8/28/2013
+
+-  Added code to calculate the number and dimensions of zoom levels based on screen size
+   and world size.
+   
 Version .241 8/27/2013
 
 -Working on zooming.
