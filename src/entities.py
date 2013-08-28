@@ -13,7 +13,7 @@ import viewport
 
 class GameEntity(object):
     
-    def __init__(self, world,name, image):
+    def __init__(self, world, name, image):
         
         #a way for an entity to get at attributes about the world.
         self.world = world
@@ -104,7 +104,7 @@ class GameEntity(object):
         #Let's call the viewport entity render.  It will determine if it's on screen.
         w, h =self.image.get_size()
         image = pygame.transform.rotate(self.image, self.direction*-1.)
-        viewport.render_entity(image, x, y)  
+        viewport.render_entity(image, x, y, self)  
         
     def process(self, time_passed):
         

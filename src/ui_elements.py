@@ -9,25 +9,52 @@ import viewport
 import global_data
 
 
-class World_Viewport2(viewport.Viewport):
+class World_Viewport(viewport.Viewport):
     def __init__(self, world_width, world_height, viewable_width, viewable_height):
         viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
         
         self.world_height = world_height
         self.world_width = world_width
+        
+        #A dictionary the holds information about our zoom level ranges.
+        #zoom_level_ranges[1][0] = zoom level 1 width
+        #zoom_level_ranges[1][1] = zoom level 1 height
+        # ... to last zoom level
+        #zoom_level_ranges['number of zoom levels'] = total number of zoom levels.  (integer)
         self.zoom_level_ranges = {}
-
+        
+        #Default zoom level - everything actual size.
+        self.current_zoom_level = 2
+    
         self.setup_viewable_area()
         
     #Setup    
     def setup_viewable_area(self):
+        
         #Calculate the zoom levels.
         self.calculate_zoom_level_ranges()
         print "Printing zoom level ranges"
         print self.zoom_level_ranges
         
-        
-        
+        #Setup variables for calculating the rectangle of the world that will be respresented in the viewport.
+        self.zoom_area_width = self.zoom_level_ranges[self.current_zoom_level][0]
+        self.zoom_area_height = self.zoom_level_ranges[self.current_zoom_level][1]
+
+        #Define the area being represented in the viewport.  We start in the center of the world.
+        self.world_viewable_center_x = self.world_width / 2
+        self.world_viewable_center_min_x = self.zoom_area_width/2
+        self.world_viewable_center_max_x = self.world_width - self.zoom_area_width/2
+        self.world_viewable_center_y = self.world_height / 2
+        self.world_viewable_center_min_y = self.zoom_area_height/2
+        self.world_viewable_center_max_y = self.world_height - self.zoom_area_height/2
+             
+        self.world_viewable_x_rect = self.world_viewable_center_x - self.zoom_area_width/2
+        self.world_viewable_y_rect = self.world_viewable_center_y - self.zoom_area_height/2
+        self.world_viewable_rect = pygame.Rect(self.world_viewable_x_rect, self.world_viewable_y_rect, self.zoom_area_width, self.zoom_area_height)
+      
+        self.background = pygame.surface.Surface((self.width, self.height)).convert()
+        self.background.fill((255, 255, 255))
+                             
     def calculate_zoom_level_ranges(self):
         #Zoom levels get bigger by a factor of 1.5.
         #Most zoomed in level available.  We're starting at index 1.
@@ -66,45 +93,40 @@ class World_Viewport2(viewport.Viewport):
     def height(self, value):
         self._height = value
         self.setup_viewable_area()
-        
-        
-        
-        
-#This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
-#So it doesn't belong in the main viewport class.
 
-class World_Viewport(viewport.Viewport):
-    def __init__(self, world_width, world_height, viewable_width, viewable_height):
-        viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
-
-        self.world_height = world_height
-        self.world_width = world_width
-
-        #default zoom level
-        self.zoom_level = 2
-
-        #Scroll speeds that will be used based on zoom level
-        self.scroll_speeds = (5, 10, 20, 40, 60, 100)
-        #default scroll speed
-        self.scroll_speed = 10
-        
-        self.setup_viewable_area()
-        
-    @viewport.Viewport.width.setter
-    def width(self, value):
-        self.width = value
-        self.setup_viewable_area()
-        
-    @viewport.Viewport.height.setter
-    def height(self, value):
-        self._height = value
-        self.setup_viewable_area()
-               
     def prepare_new_frame(self):
-        self.zoom_frame_buffer.blit(self.background, (0, 0))
+        self.surface.blit(self.background, (0, 0))        
+        
+    def render_entity(self, image, x, y, entity):
+        
+        w, h = image.get_size()
+        
+        #Are we in view?
+        if self.world_viewable_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
+            
+            #Determine scale factor.  Used in calculating position in the viewport.
+            scale_factor_width = self.zoom_area_width/self.width
+            scale_factor_height = self.zoom_area_height/self.height
+            
+            #Convert object's coordinates to the viewport we're drawing on.
+            #Convert world coordinates to world viewable coordinates, then to viewport coordinates.
+            x = (x - (self.world_viewable_center_x - self.zoom_area_width/2)) / scale_factor_width 
+            y = (y - (self.world_viewable_center_y - self.zoom_area_height/2)) / scale_factor_height
+            
+            #Render as scaled image or filled square? 
+            if self.current_zoom_level > 5:
+                #Render as square
+                pass
+            else:
+                #Render as scaled object
+                if self.current_zoom_level != 2:  #Meaning scaling is required:
+                    #scale the image
+                    image = pygame.transform.scale(image, (int(w/scale_factor_width), int(h/scale_factor_height)))
+                    w, h = image.get_size()
+                self.surface.blit(image, (x-w/2, y-h/2))
 
-    #We check to see if it's in the field of vision and render if so.
-    def render_entity(self, image, x, y):
+                     
+    def force_render_entity(self, image, x, y):
         
         w, h = image.get_size()
         
@@ -113,149 +135,12 @@ class World_Viewport(viewport.Viewport):
             #Convert object's coordinates to the surface we're drawing on.
             x = x - (self.viewport_center_x - self.zoom_area_width/2)
             y = y - (self.viewport_center_y - self.zoom_area_height/2)
-            self.zoom_frame_buffer.blit(image, (x-w/2, y-h/2))
-    
-    def setup_viewable_area(self):
-
-        self.zoom_area_width = self.width
-        self.zoom_area_height = self.height
+            self.zoom_frame_buffer.blit(image, (x-w/2, y-h/2)) 
         
-        #Zoom levels as tuples.
-        self.zoom_level_1 = (self.width/2, self.height/2)
-        self.zoom_level_2 = (self.width, self.height)
-        self.zoom_level_3 = (self.width+self.width/2, self.height+self.height/2)
-        self.zoom_level_4 = (self.width*2, self.height*2)
-        self.zoom_level_5 = (self.width*3, self.height*3)
-        self.zoom_level_6 = (self.world_width, self.world_height)
-        #List of tuples representing the zoom levels, not used and probably should be removed.
-        self.zoom_levels = (self.zoom_level_1, self.zoom_level_2, self.zoom_level_3, self.zoom_level_4, self.zoom_level_5, self.zoom_level_6)
+#This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
+#So it doesn't belong in the main viewport class.
 
-        self.viewport_center_x = self.world_width / 2
-        self.viewport_center_min_x = self.zoom_area_width/2
-        self.viewport_center_max_x = self.world_width - self.zoom_area_width/2
-        self.viewport_center_y = self.world_height / 2
-        self.viewport_center_min_y = self.zoom_area_height/2
-        self.viewport_center_max_y = self.world_height - self.zoom_area_height/2
 
-        #Defining the rectangle of the viewport
-        self.viewport_x_rect = self.viewport_center_x - self.zoom_area_width/2
-        self.viewport_y_rect = self.viewport_center_y - self.zoom_area_height/2
-        self.viewport_rect = pygame.Rect(self.viewport_x_rect, self.viewport_y_rect, self.zoom_area_width, self.zoom_area_height)
-
-        #The zoom_frame_buffer is the surface where everything is rendered (blited) to.  It will then be scaled to fit the viewport.
-        self.zoom_frame_buffer = pygame.surface.Surface((self.zoom_area_width, self.zoom_area_height)).convert()
-        
-        #Setting the surface to the correct size
-        self.surface = pygame.surface.Surface((self.width, self.height)).convert()
-        
-        #Let's prepare the backgound image.  It will just be white.
-        self.background = pygame.surface.Surface((self.zoom_area_width, self.zoom_area_height)).convert()
-        self.background.fill((255, 255, 255))
-        
-    def in_field_of_vision(self):
-        pass
-
-    #A function for updating the viewport center point.  Other variables are updated also to keep everything in sync.  Called only from the x, y adjustment functions found further below.
-    #On the other hand, one could call this directly if one was implementing a feature to follow a moving unit.
-    def update_viewport_center(self, x, y):
-       
-        self.viewport_center_x = x
-        self.viewport_center_y = y
-        self.viewport_x_rect = x - self.zoom_area_width/2
-        self.viewport_y_rect = y - self.zoom_area_height/2
-        self.viewport_rect = pygame.Rect(self.viewport_x_rect, self.viewport_y_rect, self.zoom_area_width, self.zoom_area_height)
-    
-    def add_to_viewport_x(self, what_to_add):
-    
-        #Go ahead and make the adjustment if we're not going over the max center point.
-        if self.viewport_center_x + what_to_add < self.viewport_center_max_x:
-            self.update_viewport_center(self.viewport_center_x + what_to_add, self.viewport_center_y) 
-        else:
-            #We might be scrolling with odd numbers, so let's go to the outmost edge.
-            self.update_viewport_center(self.viewport_center_max_x, self.viewport_center_y)
-        
-    def subtract_from_viewport_x(self, what_to_subtract):
-    
-        #Go ahead and make the adjustment if we're not going under the min center point.
-        if self.viewport_center_x - what_to_subtract > self.viewport_center_min_x:
-            self.update_viewport_center(self.viewport_center_x - what_to_subtract, self.viewport_center_y)
-        else:
-            #We might be scrolling with odd numbers, so let's go to the outmost edge.
-            self.update_viewport_center(self.viewport_center_min_x, self.viewport_center_y)
-             
-    def add_to_viewport_y(self, what_to_add):
-    
-        #Go ahead and make the adjustment if we're not going over the max center point.
-        if self.viewport_center_y + what_to_add < self.viewport_center_max_y:
-            self.update_viewport_center(self.viewport_center_x, self.viewport_center_y + what_to_add)
-        else:
-            #We might be scrolling with odd numbers, so let's go to the outmost edge.
-            self.update_viewport_center(self.viewport_center_x, self.viewport_center_max_y) 
-        
-    def subtract_from_viewport_y(self, what_to_subtract):
-    
-        #Go ahead and make the adjustment if we're not going under the min center point.
-        if self.viewport_center_y - what_to_subtract > self.viewport_center_min_y:
-            self.update_viewport_center(self.viewport_center_x, self.viewport_center_y - what_to_subtract)
-        else:
-            #We might be scrolling with odd numbers, so let's go to the outmost edge.
-            self.update_viewport_center(self.viewport_center_x, self.viewport_center_min_y)
-
-    #When the zoom level is changed, several variables must be changed with it.
-    def update_zoom_level(self, level):
-    
-        x, y = level
-    
-        self.zoom_area_width = x
-        self.zoom_area_height = y
-    
-        self.viewport_center_min_x = self.zoom_area_width/2
-        self.viewport_center_max_x = self.world_width - self.zoom_area_width/2
-
-        self.viewport_center_min_y = self.zoom_area_height/2
-        self.viewport_center_max_y = self.world_height - self.zoom_area_height/2
-    
-        #Test to see if viewport center is out of range after the the zoom, if so, fix'um up.  This can happen if you're at the edge of the screen and then zoom out - the center will be close to the edge.
-        if self.viewport_center_x > self.viewport_center_max_x:
-            self.viewport_center_x = self.viewport_center_max_x
-        if self.viewport_center_x < self.viewport_center_min_x:
-            self.viewport_center_x = self.viewport_center_min_x
-        if self.viewport_center_y > self.viewport_center_max_y:
-            self.viewport_center_y = self.viewport_center_max_y
-        if self.viewport_center_y < self.viewport_center_min_y:
-            self.viewport_center_y = self.viewport_center_min_y
-           
-        #Recalculate the other variables by calling update_viewport_center without changing the values of the center.
-        self.update_viewport_center(self.viewport_center_x, self.viewport_center_y)
-    
-        #Redefine the size of the surface for the zoom_frame_buffer
-        self.zoom_frame_buffer = pygame.surface.Surface(level).convert()
-    
-        #Redefine the size of the surface for the background
-        self.background = pygame.surface.Surface(level).convert()
-        self.background.fill((255, 255, 255))
-        
-        #Change the scroll_speed based on the zoom level.
-        self.scroll_speed = self.scroll_speeds[self.zoom_level]
-    
-    
-    #This function is called to do the final scaling of the image to fit the viewport/screen size.
-    def finalize_image(self):
-    
-        #Let's take the zoom frame buffer and transform to the resolution of the screen and then copy it to the screen surface.
-        pygame.transform.scale(self.zoom_frame_buffer, (self.width, self.height), self.surface)
-        #pass
-
-    def change_zoom_level(self, direction):
-    
-        if direction == "in":
-            if self.zoom_level > 0:
-                self.zoom_level = self.zoom_level - 1
-                self.update_zoom_level(self.zoom_levels[self.zoom_level])
-        if direction == "out":
-            if self.zoom_level < 5:
-                self.zoom_level = self.zoom_level + 1
-                self.update_zoom_level(self.zoom_levels[self.zoom_level])
 
 #-------------------------------------------------------------------------------
 #Mini_Map

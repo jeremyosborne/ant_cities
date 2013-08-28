@@ -77,42 +77,27 @@ b.  Screen aspect ratio maintained in all zoom levels.  (Will need to add code t
 
 1.  Determine a maximum zoom in and zoom out.
 
-Given size screen:
+Algorithm:
 
-1200x800
+Zoom level one is standard image size divided by 1.5.
+Zoom level two is standard image size.
+Zoom level three and beyond is calculated by previous zoom level * 1.5 until we hit
+the world size.
 
-Normal zoom is 1200x800
+2.  How to handle zooming.
 
-Any zoom in to this size could easily be the normal rendering of the screen and then and a cut with resize.
+The surface size will remain fixed to the viewport size.
 
-Should it be a smooth zoom, able to be at any given some level or should there be a predetermined number of zoom levels?
+Algorithm:
+
+Define the viewable rectangle based on the world, not the viewport.
+
+zoom_area_width = zoom_level_ranges[current_zoom_level][0]
+zoom_area_height = zoom_level_rangles[current_zoom_level][1]
 
 
-There must be a cutoff zoom level that goes from actual images to squares representing the entities.
 
-To determine the zoom level cutover, calculate the smallest you want an image to be represented as.
-For example, if the typical entity is 50x50, perhaps 10x10 is the smallest you want to go.  Then that is the
-cutoff before the zoom level changes.
 
-Create an asset cache that has all the entities prescaled.
 
-Calculate the number of zoom levels based on the screen size vs. world size.
 
-Examples:
-
-world size = 5000x5000
-screen size = 1000,1000
-then number of zoom levels = 5
-
-world size = 10,000 by 10,000
-screen size = 1000x1000
-the number of zoom levels = 10?
-
-Zoom level change for every 50 percent growth?
-
-world size is 10000x10000
-screen size is 100x100
-zoom level 3 would cover world size 150x150
-zoom level 4 would cover world size 225x225
-etc.
 
