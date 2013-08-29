@@ -35,7 +35,7 @@ def run():
     
     #Setup UI elements.
     #Mini_Map Init
-    mini_map = ui_elements.Mini_Map(1000-256, 700-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+    mini_map = ui_elements.Mini_Map(global_data.screen_size_x-256, global_data.screen_size_y-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
     mini_map.description = "Mini Map"
 
     #FPS Display

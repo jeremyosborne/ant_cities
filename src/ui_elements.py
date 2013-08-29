@@ -113,19 +113,52 @@ class World_Viewport(viewport.Viewport):
         #Are we in view?
         if self.world_viewable_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
             
-            #Determine scale factor.  Used in calculating position in the viewport.
-            scale_factor_width = self.zoom_area_width/self.width
-            scale_factor_height = self.zoom_area_height/self.height
+            #Code for keeping the aspect ratio on the viewport.
+            #Making new copies of these because we might change them based on aspect ratio in the test further down.
+            viewport_usable_width = self.zoom_area_width
+            viewport_usable_height = self.zoom_area_height
+            aspect_ratio_offset_width = 0
+            aspect_ratio_offset_height = 0
             
+            #Determine if adjustments based on aspect ratio are required.
+            if (float(self.zoom_area_width) / float(self.zoom_area_height) - float(self.width) / float(self.height)) > .2:
+                #Determine if it's width or height that's out of wack and then take proper action.
+                viewport_aspect_ratio = float(self.width / self.height)
+                zoom_area_aspect_ratio = float(self.zoom_area_width / self.zoom_area_height)
+            
+                #Should we go full width or height with the minimap based on the aspect ratio?  
+                if (zoom_area_aspect_ratio >= 1) and (zoom_area_aspect_ratio >= viewport_aspect_ratio):
+                    #Use width of the viewport.
+                    viewport_usable_width = self.width
+                    viewport_usable_height = self.zoom_area_height / float((self.zoom_area_width) / float(self.width))
+                    #Calculate the offset of the viewport based on the aspect ratio.
+                    aspect_ratio_offset_width = 0
+                    aspect_ratio_offset_height = (self.height - viewport_usable_height) / 2
+                else:
+                    #Use height of the minimap.
+                    viewport_usable_width = self.zoom_area_width / float((self.zoom_area_height) / float(self.height))
+                    viewport_usable_height = self.height
+                    #Calculate the offset of the viewport based on the aspect ratio.
+                    aspect_ratio_offset_width = (self.width - viewport_usable_width) / 2
+                    aspect_ratio_offset_height = 0
+       
+            
+            print "viewport usable width, height: ", viewport_usable_width, viewport_usable_height
+            #Determine scale factor.  Used in calculating position in the viewport.
+            scale_factor_width = self.zoom_area_width/viewport_usable_width
+            scale_factor_height = self.zoom_area_height/viewport_usable_height
+            
+            print "scale factors: ", scale_factor_width, scale_factor_height
             #Convert object's coordinates to the viewport we're drawing on.
             #Convert world coordinates to world viewable coordinates, then to viewport coordinates.
-            x = (x - (self.world_viewable_center_x - self.zoom_area_width/2)) / scale_factor_width 
-            y = (y - (self.world_viewable_center_y - self.zoom_area_height/2)) / scale_factor_height
+            x = (x - (self.world_viewable_center_x - self.zoom_area_width/2)) / scale_factor_width  + aspect_ratio_offset_width
+            y = (y - (self.world_viewable_center_y - self.zoom_area_height/2)) / scale_factor_height + aspect_ratio_offset_height
             
+            print x, y
             #Render as scaled image or filled square? 
             if self.current_zoom_level > 5:
                 #Render as square
-                self.surface.fill(entity.color, (x-w/2, y-h/2, 10, 10))           
+                self.surface.fill(entity.color, (x-5, y-5, 10, 10))           
             else:
                 #Render as scaled object
                 if self.current_zoom_level != 2:  #Meaning scaling is required:
@@ -221,6 +254,8 @@ class World_Viewport(viewport.Viewport):
         #Change the scroll_speed based on the zoom level.
         self.scroll_speed = int (self.scroll_speed_init * 1.5 * self.current_zoom_level)
 
+        self.print_debug()
+        
     def change_zoom_level(self, direction):
     
         if direction == "in":
@@ -234,7 +269,7 @@ class World_Viewport(viewport.Viewport):
 
     def print_debug(self):
         print "world viewable rectangle:", self.world_viewable_rect
-        
+        print "zoom area width and height: ", self.zoom_area_width, self.zoom_area_height
         
 
 #-------------------------------------------------------------------------------
