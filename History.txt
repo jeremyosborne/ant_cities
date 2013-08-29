@@ -28,6 +28,12 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .244 8/29/2013
+
+-  Continuing rewrite.  New zooming method implemented.  Will be adding maintaining
+   the aspect ratio and fixing a bug that seems to be cutting off the extreme left
+   edge when zooming out.
+   
 Version .243 8/28/2013
 
 -  Rewriting entity rendering in world viewport.

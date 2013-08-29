@@ -31,7 +31,6 @@ class World(object):
         self.entities = {}    #Dictionary of all the entities
         self.entity_id = 0
         #viewport is the screen entity that contains the view of the game world.
-        self.viewport2 = ui_elements.World_Viewport2(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport = ui_elements.World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport.description = "Game world viewport."
         
@@ -46,10 +45,10 @@ class World(object):
         self.base_image_2 = pygame.image.load("assets/hut1.png").convert_alpha()
         self.base_image_2 = pygame.transform.flip(self.base_image_2, 1, 0)
         #Let's make hut 1 for our little ants.
-        self.base_1 = entities.Base(self, self.base_image, 1, (255,255,255))
+        self.base_1 = entities.Base(self, self.base_image, 1, (255,255,0))
         self.base_1.location = (global_data.NEST_POSITION)
         #Let's make hut 2 for our little ants.
-        self.base_2 = entities.Base(self, self.base_image_2, 2, (255,255,255))
+        self.base_2 = entities.Base(self, self.base_image_2, 2, (255,255,0))
         self.base_2.location = (global_data.NEST_POSITION_2)
     
         self.add_entity(self.base_1)
@@ -110,8 +109,7 @@ class World(object):
         #Render each entity onto the framebuffer.
         for entity in self.entities.itervalues():
             entity.render(self.viewport)
-        #Render the framebuffer onto viewport surface.    
-        self.viewport.finalize_image()
+
             
     def get_close_entity(self, name, location, range=100.):
         
