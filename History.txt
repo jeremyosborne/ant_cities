@@ -12,8 +12,6 @@ Key
 * In process
 - Not Started or on hold.
 
--  Change zooming code based on rendering scaled objects rather than
-   rendering normal size and then scaling image to fit the screen. 
 -  Allowing movement of the main game screen based on interaction with the
    minimap.
 -  Adjust leaf carrying position from back to the mouth.
@@ -28,6 +26,17 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .25  8/30/2013
+
+-  New zooming functionality finished.  Skipped implementing aspect ratio correction
+   for the world view at the final zoomed out position.  Since it's mostly a problem
+   for oblong worlds, not a priority now.  So:
+   
+   1.  Zoom levels are calculated at run time based on the world size.
+   2.  Images are scaled to zoom level 5, then turn into squares.
+   3.  Since the surface is screen size and not world size, memory consumption
+       is fine.
+       
 Version .244 8/29/2013
 
 -  Continuing rewrite.  New zooming method implemented.  Will be adding maintaining
