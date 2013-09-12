@@ -36,7 +36,6 @@ def run():
     #Setup UI elements.
     #Mini_Map Init
     mini_map = ui_elements.Mini_Map(global_data.screen_size_x-256, global_data.screen_size_y-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
-    mini_map.description = "Mini Map"
 
     #FPS Display
     fps_display = ui_elements.FPS_Display()
@@ -53,16 +52,6 @@ def run():
             if event.type == QUIT:
                 return
             if event.type == KEYDOWN:
-                if event.key == K_3:
-                    world.viewport.update_zoom_level(world.viewport.zoom_level_3)
-                if event.key == K_1:
-                    world.viewport.update_zoom_level(world.viewport.zoom_level_1)
-                if event.key == K_2:
-                    world.viewport.update_zoom_level(world.viewport.zoom_level_2)
-                if event.key == K_4:
-                    world.viewport.update_zoom_level(world.viewport.zoom_level_4)
-                if event.key == K_5:
-                    world.viewport.update_zoom_level(world.viewport.zoom_level_5)
                 if event.key == K_q:
                     if render_game_world:
                         render_game_world = False
@@ -81,10 +70,12 @@ def run():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:  #Mouse Scroll Wheel Up, so zoom in
                     world.viewport.change_zoom_level("in")
-                if event.button == 5:  #Mouse Scroll Wheel Down, so zoom out
+                elif event.button == 5:  #Mouse Scroll Wheel Down, so zoom out
                     world.viewport.change_zoom_level("out")
+                else:
+                    viewport.Viewport.handle_event(event)
                 
-        #Let's take care of the mouse.            
+        #Let's take care of the mouse pointer location in terms of scrolling the map at screen border.            
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if mouse_x < 10:
             world.viewport.subtract_from_viewport_x(world.viewport.scroll_speed)

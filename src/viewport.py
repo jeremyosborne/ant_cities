@@ -132,7 +132,8 @@ class Viewport(pygame.Surface):
         #Proposed attribute to restrict the area to monitor for input.
         self.event_area = None
         #When visiable, no input should be passed below this layer.
-        self.exclusive = False
+        self.exclusive_mouse = False
+        self.exclusive_keyboard = False
         
     @property
     def layer(self):

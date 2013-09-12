@@ -14,6 +14,8 @@ class World_Viewport(viewport.Viewport):
     def __init__(self, world_width, world_height, viewable_width, viewable_height):
         viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
         
+        self.description = "World Viewport"
+        
         self.world_height = world_height
         self.world_width = world_width
         
@@ -244,6 +246,10 @@ class World_Viewport(viewport.Viewport):
 class Mini_Map(viewport.Viewport):
     def __init__(self, x_right=0, y_down=0, width=256, height=256, world_width=1024, world_height=768):
         
+        self.description = "Mini Map"
+        
+        self.mouse_events = True
+        
         self.border_size = 10  #Made it 10 to match the screen scrolling width.
         self.border_color = (165,42,42)  #Brown
         
@@ -290,17 +296,7 @@ class Mini_Map(viewport.Viewport):
         self.minimap_background = pygame.surface.Surface((self.minimap_usable_width, self.minimap_usable_height)).convert()
         self.minimap_background.fill((0, 0, 0))
         
-        #Default for the mini map is not visable.  Not used yet.
-        is_visable = False
 
-        #For turning the minimap on and off effect.  
-        #self.scroll_x_right =self.x_right
-        #self.scroll_y_down = self.y_down
-        # Scroll_state can moving on, moving off, on, or off.
-        #self.scroll_state = "off"
-        
-        #print str(self.x_scale_factor)
-        #print str(self.y_scale_factor)
         
     def update(self, world):
         
@@ -332,47 +328,15 @@ class Mini_Map(viewport.Viewport):
         self.surface.blit(self.background, (0, 0))
         self.surface.blit(self.minimap_surface, ((self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height)))
                             
-        # Scroll on or off the screen effect.
-        # We're checking to see if we should be adjusting the location of the mini map.
-        # How it works:
-        # Check to see if it should be scrolling.  If so then:
-        # Check to see if it's going up or down then:
-        # Adjust self.top and self.left numbers below.
-        
-#        if self.scroll_state == "moving on":
-#            self.scroll_y_down -= 1
-#            if self.scroll_y_down <= self.y_down:
-#                self.scroll_state = "on"
-#            screen.blit(self.surface, (self.x_right, self.scroll_y_down))
-#            print self.x_right, self.scroll_y_down
-#        if self.scroll_state == "moving off":
-#            self.scroll_y_down += 1 
-#            if self.scroll_y_down >= self.y_down + self.height:
-#                self.scroll_state = "off"
-#            screen.blit(self.surface, (self.x_right, self.scroll_y_down))
-#            print self.x_right, self.scroll_y_down, self.y_down + self.height
-#        if self.scroll_state == "on":
-#            screen.blit(self.surface, (self.x_right, self.y_down))
-        #exit()
-        #screen.blit(self.surface, (self.top, self.y_down))
-    
-    #Set up initial values to scroll the mini map onto the screen
-    def turn_on(self):
-        self.scroll_state = "moving on"
-        #The starting position for y
-        self.scroll_y_down = global_data.screen_size_y
-
-        
-    #Set up initial values to scroll the mini map off of the screen
-    def turn_off(self):
-        self.scroll_state = "moving off"
-        self.scroll_y_down = self.y_down
         
     def delete_me(self):
         self.delete()
         del self
         #self = None
 
+    def user_input(self):
+        pass
+    
 #-------------------------------------------------------------------------------
 # FPS display.
 class FPS_Display(viewport.Viewport):
