@@ -73,7 +73,9 @@ def run():
                 elif event.button == 5:  #Mouse Scroll Wheel Down, so zoom out
                     world.viewport.change_zoom_level("out")
                 else:
-                    viewport.Viewport.handle_event(event)
+                    #Let's send it over to the viewport class to determine which
+                    #viewport should process the input.
+                    viewport.Viewport.route_event(event)
                 
         #Let's take care of the mouse pointer location in terms of scrolling the map at screen border.            
         mouse_x, mouse_y = pygame.mouse.get_pos()

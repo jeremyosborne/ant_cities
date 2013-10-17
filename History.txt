@@ -26,6 +26,12 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+
+Version .26  10/17/2013
+
+-  Added rudimentary routing of mouse click events based on viewports.  You can now click on
+   a viewport and see the description in the console output.
+   
 Version .25  8/30/2013
 
 -  New zooming functionality finished.  Skipped implementing aspect ratio correction

@@ -80,7 +80,10 @@ class Viewport(pygame.Surface):
          
     @classmethod
     def route_event(cls, event, top_layer = -1):
-        """  Determines which layer should handle event """
+        """  Determines which layer should handle event.  If top_layer isn't
+             specified, we default to -1 indicating we should start with the
+             top most layer.  Top_layer is there so that one could override
+             the routing if needed. """
         
         #If top_layer = -1 then set top_layer to the last in the list.
         top_layer = cls.viewports[-1]._layer
@@ -94,9 +97,21 @@ class Viewport(pygame.Surface):
             #      mouse position?
             #  4.  is the mouse over this viewport
             #  5.
+            
+            #Stepping through the layers.
             if i._layer <= top_layer:
-                if i.is_viewable:
-                    pass
+                #Testing if it's currently visable.
+                if i.is_visable:
+                    #Was the mouse click inside this viewport?
+                    if i.rect.collidepoint(pygame.mouse.get_pos()) == True:
+                        print "Clicked on viewport.  Viewport description: %s" % i.description 
+                        #For now, we're done, input has been serviced.  In the furture, we could
+                        #let the method call determine if it wants the input and if not, then
+                        #return false and the walk through the viewports continue.
+                        i.service_user_event(event)
+                        return
+                    #I should also do an exclusive check here too.  If exclusive, then stop
+                    #walking through the viewports.
             pass
         pass
   
@@ -111,6 +126,7 @@ class Viewport(pygame.Surface):
         self._width = width
         self._height = height
         # Scales relative to 1 as default.
+        #Not used yet.
         self.scale = scale
         # The surface for this screen entity.
         self.surface = pygame.surface.Surface((self._width, self._height)).convert()
@@ -124,7 +140,7 @@ class Viewport(pygame.Surface):
         # Add to viewport management list.
         self.add_viewport(self)
         # Rectangle area matching the actual screen area this viewport maps to.
-        self.rect = (self.x_right, self.y_down, self._width, self._height)
+        self.rect = pygame.Rect(self.x_right, self.y_down, self._width, self._height)
         
         #User Input attributes
         self.mouse_events = False
@@ -195,6 +211,11 @@ class Viewport(pygame.Surface):
     def resize_surface(self, width, height):
         """ Resizes the surface, called when width or height is changed. """
         self.surface = pygame.surface.Surface((self._width, self._height)).convert()
+        self.set_rectangle_area()
+        
+    def set_rectangle_area(self):
+        self.rect = pygame.Rect(self.x_right, self.y_down, self._width, self._height)
+        
     
     #Render this Screen Entity into whatever surface is passed in.    
     def render(self, main_surface):

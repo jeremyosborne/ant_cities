@@ -240,6 +240,9 @@ class World_Viewport(viewport.Viewport):
         print "world viewable rectangle:", self.world_viewable_rect
         print "zoom area width and height: ", self.zoom_area_width, self.zoom_area_height
         
+    def service_user_event(self, event):
+        pass
+        
 
 #-------------------------------------------------------------------------------
 #Mini_Map
@@ -260,6 +263,8 @@ class Mini_Map(viewport.Viewport):
                             
         self.minimap_width = self.width - self.border_size * 2
         self.minimap_height = self.height - self.border_size * 2
+        
+        self.description = "Mini-Map display."
         
         #Adjust for minimap aspect ratio, world size vs minimap size.
         #Determine the aspect ratio of the minimap.
@@ -334,8 +339,18 @@ class Mini_Map(viewport.Viewport):
         del self
         #self = None
 
-    def user_input(self):
-        pass
+    def service_user_event(self, event):
+        
+        #Let's take care of the left mouse button.  A left mouse click in this window
+        #recenters the game world view.
+        
+        if event.button == 1:  #left click.
+            #Translate the mouse position into an x,y position for the gameworld
+            
+            #Move gameworld view.
+            
+            #Just print something out for now.
+            print "Left click on the minimap"
     
 #-------------------------------------------------------------------------------
 # FPS display.
@@ -348,6 +363,7 @@ class FPS_Display(viewport.Viewport):
         #Make it such that when the surface is blitted on something else,
         #the background is transparent.
         self.surface.set_colorkey((255, 255, 255))
+        self.description = "FPS display."
         
     def draw_fps(self, clock):
         fps = clock.get_fps()
@@ -357,6 +373,9 @@ class FPS_Display(viewport.Viewport):
 
         label = self.font.render(str(fps), True, (0, 0, 0))
         self.surface.blit(label, (0, 0))
+        
+    def service_user_event(self, event):
+        pass
 
 #-------------------------------------------------------------------------------            
 #User Panel that contains game information.        
