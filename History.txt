@@ -26,6 +26,16 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .27  10/19/2013
+
+-  Clicking on the minimap now re-centers the game view.  Still need to add edge map detection
+   and click and hold map movement on the minimap.
+-  After thinking through what it would mean to do a click and drag/hold action, and how the
+   current game loop doesn't support it, I reworked game loop code such that it's now an object
+   and separate from the main user input loop.  Why is this needed?  Imagine dragging an item from
+   a control panel to the world viewport.  You would want to negate the main user input code and
+   stay inside the code managing the dragging, but you still want the simulation (game loop) to be
+   executed.  So, now you can call the game loop from anywhere now.
 
 Version .26  10/17/2013
 

@@ -79,7 +79,7 @@ class Viewport(pygame.Surface):
 
          
     @classmethod
-    def route_event(cls, event, top_layer = -1):
+    def route_event(cls, event, game_simulation, top_layer = -1):
         """  Determines which layer should handle event.  If top_layer isn't
              specified, we default to -1 indicating we should start with the
              top most layer.  Top_layer is there so that one could override
@@ -108,7 +108,7 @@ class Viewport(pygame.Surface):
                         #For now, we're done, input has been serviced.  In the furture, we could
                         #let the method call determine if it wants the input and if not, then
                         #return false and the walk through the viewports continue.
-                        i.service_user_event(event)
+                        i.service_user_event(event, game_simulation)
                         return
                     #I should also do an exclusive check here too.  If exclusive, then stop
                     #walking through the viewports.
@@ -221,7 +221,7 @@ class Viewport(pygame.Surface):
     def render(self, main_surface):
         main_surface.blit(self.surface, ((self.x_right, self.y_down)))
         
-    def handle_event(self, event_input):
+    def service_user_event(self, event, game_simulation):
         """ Dummy method for handling event input. Programmer should
             create own method in classes that require event handling"""
         pass

@@ -240,7 +240,7 @@ class World_Viewport(viewport.Viewport):
         print "world viewable rectangle:", self.world_viewable_rect
         print "zoom area width and height: ", self.zoom_area_width, self.zoom_area_height
         
-    def service_user_event(self, event):
+    def service_user_event(self, event, game_simulation):
         pass
         
 
@@ -290,10 +290,13 @@ class Mini_Map(viewport.Viewport):
         
         self.x_scale_factor = float(self.world_width) / float(self.minimap_usable_width)
         self.y_scale_factor = float(self.world_height) / float(self.minimap_usable_height)
+        
+        #Scale factors for translating mouse clicks inside the minimap.
+       # self.mouse_x_scale_factor = float(self.)
 
         #For debugging
-        #print "self.minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
-        #print "self.minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height
+        print "self.minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
+        print "self.minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height
                
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill(self.border_color)
@@ -339,7 +342,7 @@ class Mini_Map(viewport.Viewport):
         del self
         #self = None
 
-    def service_user_event(self, event):
+    def service_user_event(self, event, game_simulation):
         
         #Let's take care of the left mouse button.  A left mouse click in this window
         #recenters the game world view.
@@ -347,10 +350,34 @@ class Mini_Map(viewport.Viewport):
         if event.button == 1:  #left click.
             #Translate the mouse position into an x,y position for the gameworld
             
-            #Move gameworld view.
+            #Convert the global x and y coordinates of the mouse to the viewport.
+            mouse_x, mouse_y = pygame.mouse.get_pos()            
+            viewport_mouse_x = mouse_x - self.x_right
+            viewport_mouse_y = mouse_y - self.y_down
+            
+            #print "Minimap mouse coordinates", viewport_mouse_x, viewport_mouse_y
+            
+            #Define a rect that matches the actual area on the viewport where the minimap is, i.e. don't count the borders.
+            minimap_rect = pygame.Rect(self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height, self.minimap_usable_width, self.minimap_usable_height )
+
+            if minimap_rect.collidepoint(viewport_mouse_x, viewport_mouse_y) == True:
+                #Adjust mouse coordinates to match the viewport map.
+                viewport_mouse_x = viewport_mouse_x - self.minimap_offset_width - self.border_size
+                viewport_mouse_y = viewport_mouse_y - self.minimap_offset_height - self.border_size                
+                #Convert into gameworld coordinates.
+                gameworld_x = int(viewport_mouse_x * self.x_scale_factor)
+                gameworld_y = int(viewport_mouse_y * self.y_scale_factor)
+                #print "scale factors: ", self.x_scale_factor, self.y_scale_factor
+                #Change centerpoint of the map
+                game_simulation.world.viewport.update_viewport_center(gameworld_x, gameworld_y)
+                #print viewport_mouse_x, viewport_mouse_y, gameworld_x, gameworld_y
+            
             
             #Just print something out for now.
-            print "Left click on the minimap"
+            print "Left click anywhere on the minimap"
+            
+            #Look for the mouse up event.  Keep moving around the gameworld until it happens.
+            #for event in pygame.event.get():
     
 #-------------------------------------------------------------------------------
 # FPS display.
@@ -374,7 +401,7 @@ class FPS_Display(viewport.Viewport):
         label = self.font.render(str(fps), True, (0, 0, 0))
         self.surface.blit(label, (0, 0))
         
-    def service_user_event(self, event):
+    def service_user_event(self, event, game_simulation):
         pass
 
 #-------------------------------------------------------------------------------            
