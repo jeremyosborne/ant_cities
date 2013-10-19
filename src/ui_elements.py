@@ -149,50 +149,34 @@ class World_Viewport(viewport.Viewport):
             y = y - (self.viewport_center_y - self.zoom_area_height/2)
             self.zoom_frame_buffer.blit(image, (x-w/2, y-h/2)) 
         
-    def update_viewport_center(self, x, y):
+    def update_viewport_center2(self, x, y):
        
         self.world_viewable_center_x = x
         self.world_viewable_center_y = y
         self.world_viewable_x_rect = x - self.zoom_area_width/2
         self.world_viewable_y_rect = y - self.zoom_area_height/2
         self.world_viewable_rect = pygame.Rect(self.world_viewable_x_rect, self.world_viewable_y_rect, self.zoom_area_width, self.zoom_area_height)
-    
-    def add_to_viewport_x(self, what_to_add):
-    
-        #Go ahead and make the adjustment if we're not going over the max center point.
-        if self.world_viewable_center_x + what_to_add < self.world_viewable_center_max_x:
-            self.update_viewport_center(self.world_viewable_center_x + what_to_add, self.world_viewable_center_y) 
-        else:
-            #We might be scrolling with odd numbers, so let's go to the outmost edge.
-            self.update_viewport_center(self.world_viewable_center_max_x, self.world_viewable_center_y)
-        
-    def subtract_from_viewport_x(self, what_to_subtract):
-    
-        #Go ahead and make the adjustment if we're not going under the min center point.
-        if self.world_viewable_center_x - what_to_subtract > self.world_viewable_center_min_x:
-            self.update_viewport_center(self.world_viewable_center_x - what_to_subtract, self.world_viewable_center_y)
-        else:
-            #We might be scrolling with odd numbers, so let's go to the outmost edge.
-            self.update_viewport_center(self.world_viewable_center_min_x, self.world_viewable_center_y)
-             
-    def add_to_viewport_y(self, what_to_add):
-    
-        #Go ahead and make the adjustment if we're not going over the max center point.
-        if self.world_viewable_center_y + what_to_add < self.world_viewable_center_max_y:
-            self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y + what_to_add)
-        else:
-            #We might be scrolling with odd numbers, so let's go to the outmost edge.
-            self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_max_y) 
-        
-    def subtract_from_viewport_y(self, what_to_subtract):
-    
-        #Go ahead and make the adjustment if we're not going under the min center point.
-        if self.world_viewable_center_y - what_to_subtract > self.world_viewable_center_min_y:
-            self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y - what_to_subtract)
-        else:
-            #We might be scrolling with odd numbers, so let's go to the outmost edge.
-            self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_min_y)
 
+    def update_viewport_center(self, x, y):
+        """This method is called whenever one moves the map, i.e. changing the center of the viewport.
+            It does all the necessary checks and corrects bad values passed in."""
+        
+        self.world_viewable_center_x = x
+        self.world_viewable_center_y = y
+        
+        if self.world_viewable_center_x > self.world_viewable_center_max_x:
+            self.world_viewable_center_x = self.world_viewable_center_max_x
+        elif self.world_viewable_center_x < self.world_viewable_center_min_x:
+            self.world_viewable_center_x = self.world_viewable_center_min_x
+        if self.world_viewable_center_y > self.world_viewable_center_max_y:
+            self.world_viewable_center_y = self.world_viewable_center_max_y
+        elif self.world_viewable_center_y < self.world_viewable_center_min_y:
+            self.world_viewable_center_y = self.world_viewable_center_min_y 
+            
+        self.world_viewable_x_rect = self.world_viewable_center_x - self.zoom_area_width/2
+        self.world_viewable_y_rect = self.world_viewable_center_y - self.zoom_area_height/2
+        self.world_viewable_rect = pygame.Rect(self.world_viewable_x_rect, self.world_viewable_y_rect, self.zoom_area_width, self.zoom_area_height)
+            
     #When the zoom level is changed, several variables must be changed with it.
     def update_zoom_level(self, level):
     
@@ -348,36 +332,44 @@ class Mini_Map(viewport.Viewport):
         #recenters the game world view.
         
         if event.button == 1:  #left click.
-            #Translate the mouse position into an x,y position for the gameworld
             
-            #Convert the global x and y coordinates of the mouse to the viewport.
-            mouse_x, mouse_y = pygame.mouse.get_pos()            
-            viewport_mouse_x = mouse_x - self.x_right
-            viewport_mouse_y = mouse_y - self.y_down
+            #When we detect the mouse up event, we'll set the following to False and end
+            #the loop.  All user events except for mouse scrolling and zooming are being 
+            #directed to only this method.
+            mouse_button_is_down = True
             
-            #print "Minimap mouse coordinates", viewport_mouse_x, viewport_mouse_y
-            
-            #Define a rect that matches the actual area on the viewport where the minimap is, i.e. don't count the borders.
-            minimap_rect = pygame.Rect(self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height, self.minimap_usable_width, self.minimap_usable_height )
+            while mouse_button_is_down:
+                #Convert the global x and y coordinates of the mouse to the viewport.  Note
+                #that this is not adjusted to the minimap, just the viewport containing the
+                #actual map and map borders.
+                mouse_x, mouse_y = pygame.mouse.get_pos()            
+                viewport_mouse_x = mouse_x - self.x_right
+                viewport_mouse_y = mouse_y - self.y_down
+                
+                #Define a rect that matches the actual area on the viewport where the minimap is, i.e. don't count the borders.
+                minimap_rect = pygame.Rect(self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height, self.minimap_usable_width, self.minimap_usable_height )
+    
+                if minimap_rect.collidepoint(viewport_mouse_x, viewport_mouse_y) == True:
+                    #Adjust mouse coordinates to match the viewport map.
+                    viewport_mouse_x = viewport_mouse_x - self.minimap_offset_width - self.border_size
+                    viewport_mouse_y = viewport_mouse_y - self.minimap_offset_height - self.border_size
+                                    
+                    #Convert into gameworld coordinates.
+                    gameworld_x = int(viewport_mouse_x * self.x_scale_factor)
+                    gameworld_y = int(viewport_mouse_y * self.y_scale_factor)
 
-            if minimap_rect.collidepoint(viewport_mouse_x, viewport_mouse_y) == True:
-                #Adjust mouse coordinates to match the viewport map.
-                viewport_mouse_x = viewport_mouse_x - self.minimap_offset_width - self.border_size
-                viewport_mouse_y = viewport_mouse_y - self.minimap_offset_height - self.border_size                
-                #Convert into gameworld coordinates.
-                gameworld_x = int(viewport_mouse_x * self.x_scale_factor)
-                gameworld_y = int(viewport_mouse_y * self.y_scale_factor)
-                #print "scale factors: ", self.x_scale_factor, self.y_scale_factor
-                #Change centerpoint of the map
-                game_simulation.world.viewport.update_viewport_center(gameworld_x, gameworld_y)
-                #print viewport_mouse_x, viewport_mouse_y, gameworld_x, gameworld_y
+                    #Change centerpoint of the map
+                    game_simulation.world.viewport.update_viewport_center(gameworld_x, gameworld_y)
+
             
-            
-            #Just print something out for now.
-            print "Left click anywhere on the minimap"
-            
-            #Look for the mouse up event.  Keep moving around the gameworld until it happens.
-            #for event in pygame.event.get():
+                #Process the game world.  We want things to keep going.
+                game_simulation.process_game_loop()
+                
+                #Let's check to see if the mouse_up_event has happened yet, if so, it's time to exit this loop.
+                #We only look at one at a time.
+                new_event = pygame.event.poll()
+                if new_event.type == pygame.MOUSEBUTTONUP and new_event.button == 1:
+                    mouse_button_is_down = False
     
 #-------------------------------------------------------------------------------
 # FPS display.

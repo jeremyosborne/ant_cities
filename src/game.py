@@ -51,17 +51,14 @@ class Game_Simulation():
         #Let's take care of the mouse pointer location in terms of scrolling the map at screen border.            
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if mouse_x < 10:
-            self.world.viewport.subtract_from_viewport_x(self.world.viewport.scroll_speed)
-                
+            self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x - self.world.viewport.scroll_speed, self.world.viewport.world_viewable_center_y)    
         if mouse_x > (self.world.viewport.width-10):
-            self.world.viewport.add_to_viewport_x(self.world.viewport.scroll_speed)
-                
+            self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x + self.world.viewport.scroll_speed, self.world.viewport.world_viewable_center_y)    
         if mouse_y < 10:
-            self.world.viewport.subtract_from_viewport_y(self.world.viewport.scroll_speed)
-                
+            self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x, self.world.viewport.world_viewable_center_y - self.world.viewport.scroll_speed)    
         if mouse_y > (self.world.viewport.height-10):
-            self.world.viewport.add_to_viewport_y(self.world.viewport.scroll_speed)
-        
+            self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x, self.world.viewport.world_viewable_center_y + self.world.viewport.scroll_speed)
+            
         #Time_passed is in miliseconds.
         time_passed = self.clock.tick(30)
 
@@ -95,6 +92,13 @@ def run():
             if event.type == QUIT:
                 return
             if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    return
+                if event.key == K_TAB:
+                    if pygame.event.get_grab():
+                        pygame.event.set_grab(False)
+                    else:
+                        pygame.event.set_grab(True)
                 if event.key == K_q:
                     if game_simulation.render_game_world:
                         game_simulation.render_game_world = False

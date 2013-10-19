@@ -26,6 +26,19 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .28  10/19/2013
+
+-  Added the following key commands:
+	tab - (Toggle) locks/unlocks cursor to screen.  Easy to scroll around now.
+	esc - Exits the progra,
+-  Rewrote ui_elements.World_Viewport.update_viewport_center to do valid input checking.
+   this eliminated the need for the four methods staring with add_to_viewport_(whatever)
+   and makes it easy to call from any other method that needs to change the view.  This
+   change was part of being able to click the minimap to change view.
+-  You can now click and hold and move on the minimap and it will update as the mouse moves.
+   While the mouse button is down, all user input except for mouse location for the map scroll
+   is exclusive to the minimap.
+
 Version .27  10/19/2013
 
 -  Clicking on the minimap now re-centers the game view.  Still need to add edge map detection
