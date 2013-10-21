@@ -77,8 +77,8 @@ class AntStateExploring(State):
             self.random_destination()
             
     def check_conditions(self):
-                        
-        leaf = self.ant.world.get_close_entity("leaf", self.ant.location)        
+               
+        leaf = self.ant.world.get_close_entity(self.ant, "leaf", 100)        
         if leaf is not None:
             self.ant.leaf_id = leaf.id
             return "seeking"        
@@ -104,7 +104,7 @@ class AntStateSeeking(State):
         State.__init__(self, "seeking")
         self.ant = ant
         self.leaf_id = None
-    
+
     def check_conditions(self):
         
         leaf = self.ant.world.get(self.ant.leaf_id)

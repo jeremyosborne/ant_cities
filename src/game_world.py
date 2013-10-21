@@ -16,6 +16,7 @@ import entities
 import statemachines
 import global_data
 import viewport
+import spatial_engine
 
 class World(object):
         
@@ -33,6 +34,8 @@ class World(object):
         #viewport is the screen entity that contains the view of the game world.
         self.viewport = ui_elements.World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport.description = "Game world viewport."
+        
+        self.spatial_index = spatial_engine.spatial_engine(self.width, self.height)
         
 #-----------------------------------------------------------------------
 #Setting up initial entity elements.
@@ -75,9 +78,10 @@ class World(object):
         self.entities[self.entity_id] = entity
         entity.id = self.entity_id
         self.entity_id += 1
+        self.spatial_index.insert(entity)
         
     def remove_entity(self, entity):
-        
+        self.spatial_index.remove(entity)
         del self.entities[entity.id]
                 
     def get(self, entity_id):
@@ -111,16 +115,9 @@ class World(object):
             entity.render(self.viewport)
 
             
-    def get_close_entity(self, name, location, range=100.):
-        
-        location = Vec2d(*location)        
-        
-        for entity in self.entities.itervalues():            
-            if entity.name == name:                
-                distance = location.get_distance(entity.location)
-                if distance < range:
-                    return entity        
-        return None
+    def get_close_entity(self, entity, name, the_range=100.):
+        closest_entity, distance = self.spatial_index.find_closest(entity, the_range, name)
+        return (closest_entity)
 
     def count(self, name):
         entity_count = 0

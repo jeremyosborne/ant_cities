@@ -9,7 +9,7 @@ from pymunk.vec2d import Vec2d
 import statemachines
 import global_data
 import viewport
-
+import game_world
 
 class GameEntity(object):
     
@@ -23,7 +23,9 @@ class GameEntity(object):
         self.id = 0
         
         #Movement in the game world
-        self.location = Vec2d(0., 0.)
+        self._location = Vec2d(0., 0.)
+        #Used for updating spatial index.
+        self.previous_location = Vec2d(0., 0.)
         self.destination = Vec2d(0., 0.)
         self.current_heading = Vec2d(1., 0.)
         self.desired_heading = Vec2d(0., 0.)
@@ -33,8 +35,21 @@ class GameEntity(object):
         self.slow_down_acceleration = 0.
         self.max_speed = 0.
         self.direction = 0.
-        self.rotation_per_second = 0.        
+        self.rotation_per_second = 0.
+        #self.world.spatial_index.insert(self)        
 
+    @property
+    def location(self):
+        """{int}  0 = lowest layer, no upper bound."""
+        return self._location
+    
+    @location.setter
+    def location(self, value):
+        """  Set's layer value and sorts the viewports on this value.  """
+        self.previous_location = self._location
+        self._location = Vec2d(value)
+        self.world.spatial_index.update(self)
+        
     def apply_acceleration(self, time_passed, distance_to_destination):
 
         #If we're at 0 and location != destination, then we should start moving.
