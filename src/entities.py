@@ -220,11 +220,11 @@ class Ant(GameEntity):
                 w, h = self.image.get_size()
                 viewport.render_entity(image, x-w, y-h/2, self)
         
-                #Hunger Bar.  Draw the inital bar.
-                self.bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
-                #Now draw how much food is left over the inital bar
-                self.bar_surface.fill( (0, 255, 0), (0, 0, self.hunger/40, 4))
-                viewport.render_entity(self.bar_surface, x-30, y+10, self)
+            #Hunger Bar.  Draw the inital bar.
+            self.bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
+            #Now draw how much food is left over the inital bar
+            self.bar_surface.fill( (0, 255, 0), (0, 0, self.hunger/40, 4))
+            viewport.render_entity(self.bar_surface, x-30, y+10, self)
 
     def process(self, time_passed):
         

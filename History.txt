@@ -26,6 +26,10 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .30  12/21/2013
+
+	-Fixed bug that prevented the hunger bar from being rendered when at was roaming.
+
 Version .29  10/21/2013
 
 	- The game_world is now spatially indexed and performance for the sim process is way up.
