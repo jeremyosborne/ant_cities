@@ -73,7 +73,7 @@ class AntStateExploring(State):
  
     def do_actions(self):
         
-        if randint(1, 20) == 1:
+        if randint(1, 200) == 1:
             self.random_destination()
             
     def check_conditions(self):

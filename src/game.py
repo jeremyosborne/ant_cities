@@ -36,7 +36,10 @@ class Game_Simulation():
         #Setup UI elements.
         #Mini_Map Init
         self.mini_map = ui_elements.Mini_Map(global_data.screen_size_x-256, global_data.screen_size_y-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
-    
+
+        #Unit information display.
+        self.unit_information_display = ui_elements.View_Unit_Info_Box(global_data.screen_size_x-512, global_data.screen_size_y-170, 256, 170)
+          
         #FPS Display
         self.fps_display = ui_elements.FPS_Display()
         self.clock = pygame.time.Clock()

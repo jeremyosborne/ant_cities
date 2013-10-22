@@ -62,7 +62,7 @@ class GameEntity(object):
                 #slow down
                 self.acceleration = self.slow_down_acceleration
                 self.speed += self.acceleration * time_passed
-                if self.speed < 0: self.speed = 5
+                if self.speed < 0: self.speed = 1
             else:
                 #speed up
                 self.acceleration = self.speed_up_acceleration

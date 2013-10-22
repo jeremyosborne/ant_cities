@@ -376,7 +376,7 @@ class Mini_Map(viewport.Viewport):
 class FPS_Display(viewport.Viewport):
     def __init__(self):
         viewport.Viewport.__init__(self, 5, 5, 125, 20, 1, 10, True)
-        self.font = pygame.font.SysFont("arial", 16);
+        self.font = pygame.font.SysFont("arial", 16)
         self.background = pygame.surface.Surface((125, 20)).convert()
         self.background.fill((255, 255, 255))
         #Make it such that when the surface is blitted on something else,
@@ -401,3 +401,38 @@ class FPS_Display(viewport.Viewport):
 class User_Panel(viewport.Viewport):
     pass
 
+class View_Unit_Info_Box(viewport.Viewport):
+    """ Traditional area that displays information about a single unit a user has clicked on.
+        """
+    def __init__(self, x_right=0, y_down=0, width=256, height=256):
+        
+        viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)
+        self.font = pygame.font.SysFont("arial", 16)
+        self.background = pygame.surface.Surface((self.width, self.height)).convert()
+        self.background.fill((0, 0, 0))
+        
+        #Add title to the background image.
+        label = self.font.render("Unit Information Display", True, (255, 255, 255))
+        w, h = label.get_size()
+        self.background.blit(label, ((self.width / 2) - w / 2, 0))
+        
+        self.surface.blit(self.background, (0, 0))
+
+        self.description = "Unit Info."
+        
+        #The unit we're watching.
+        self.watching = None
+    
+    def set_unit(self, entity):
+        self.watching = entity
+        
+    def update(self):
+        #Is there something selected?
+        if self.watching != None:
+            #Unit Type
+            unit_text = self.watching.name
+        else:
+            self.surface.blit(self.background, (0, 0))
+        
+        
+    

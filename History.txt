@@ -12,8 +12,9 @@ Key
 * In process
 - Not Started or on hold.
 
--  Allowing movement of the main game screen based on interaction with the
-   minimap.
+-  Enhance render code to use the spatial index.  This will speed things up considerably in
+   the lower zoom levels.
+-  Fix ants going in circles next to a leaf.
 -  Adjust leaf carrying position from back to the mouth.
 -  Add collision detection so that entities can not run over each other.
 -  Cleanup mini-map like World_Viewport (version .15)
@@ -21,19 +22,26 @@ Key
 -  Fix ant eating to be time based (like ant hunger.)
 -  experiment with full screen class
 -  Multi-Process, Sim and Render Thread
--  Add "class management code for viewport to support the following functionality:
-   - User input routing to the right surface. 
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .31  12/21/2013
+
+-  Saw that ants typically cluster in the middle.  Adjusted how often they change direction.
+   this helps a little bit.
+-  Observed that on rare occasions, some ants would go around in circles next to a leaf.  I
+   think this was due to me not allowing the ant to go below the speed of 5.  Adjusted lowest
+   speed to 1.  After testing this did not resolve the problem.  I saw this months ago.
+-  Started work on View_Unit_Info_Box in ui_elements.
+   
 Version .30  12/21/2013
 
-	-Fixed bug that prevented the hunger bar from being rendered when at was roaming.
+-  Fixed bug that prevented the hunger bar from being rendered when at was roaming.
 
 Version .29  10/21/2013
 
-	- The game_world is now spatially indexed and performance for the sim process is way up.
-	  Most processing power now goes to rendering.  spatial_engine holds the new code.
+-  The game_world is now spatially indexed and performance for the sim process is way up.
+   Most processing power now goes to rendering.  spatial_engine holds the new code.
 	  
 Version .28  10/19/2013
 
