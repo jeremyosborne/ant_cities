@@ -12,7 +12,7 @@ import viewport
 import game_world
 
 class GameEntity(object):
-    
+
     def __init__(self, world, name, image):
         
         #a way for an entity to get at attributes about the world.

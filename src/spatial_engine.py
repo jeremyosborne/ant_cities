@@ -37,6 +37,8 @@ class spatial_engine(object):
         
         #Create the dictionary.
         self.spatial_index = {}
+        # key == entity.id
+        self.entity_index = {}
         
         #Initialize the dictionary and create the empty lists.
         for i in range (0, world_size_x / 100+1):
@@ -73,13 +75,21 @@ class spatial_engine(object):
         
     def remove(self, entity):
         x, y = entity.location
-        x, y = self.which_cell(int(x), int(y))
-        self.spatial_index[x,y].remove(entity)
+        cell = self.which_cell(int(x), int(y))
+        try:
+            self.spatial_index[cell].remove(entity)
+        except ValueError:
+            # Can happen if the entity is not yet in the index during
+            # game start or addition of entity to game.
+            pass
     
     def update(self, entity):
-        #I don't think I need this one afterall and am doiong this work
-        #inside the game_world class whenever location is updated.
-        pass
+        # bandaid - make use of previous_location
+        new_location = entity._location
+        entity._location = entity.previous_location
+        self.remove(entity)
+        entity._location = new_location
+        self.insert(entity)
     
     def find_at_point(self, point, the_range=100.0):
         """Given a point, find entities.
