@@ -442,16 +442,19 @@ class View_Unit_Info_Box(viewport.Viewport):
         self.description = "Unit Info."
         
         #The unit we're watching.
-        self.watching = None
+        self.watching_entity = None
     
     def set_unit(self, entity):
-        self.watching = entity
+        self.watching_entity = entity
         
     def update(self):
         #Is there something selected?
-        if self.watching != None:
+        if self.watching_entity != None:
             #Unit Type
-            unit_text = self.watching.name
+            unit_text = self.font.render(self.watching.name, True, (255, 255, 255))
+            w, h = unit_text.get_size()
+            self.surface.blit(unit_text, ((self.width / 2) - w / 2, 15))
+            
         else:
             self.surface.blit(self.background, (0, 0))
         
