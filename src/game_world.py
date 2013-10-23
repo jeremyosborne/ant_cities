@@ -30,7 +30,6 @@ class World(object):
         self.viewable_height = h
         
         self.entities = {}    #Dictionary of all the entities
-        self.entity_id = 0
         #viewport is the screen entity that contains the view of the game world.
         self.viewport = ui_elements.World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport.description = "Game world viewport."
@@ -73,11 +72,8 @@ class World(object):
 #Done setting up initial entity elements.
 #------------------------------------------------------------------------
         
-    def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.
-        
-        self.entities[self.entity_id] = entity
-        entity.id = self.entity_id
-        self.entity_id += 1
+    def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
+        self.entities[entity.id] = entity
         self.spatial_index.insert(entity)
         
     def remove_entity(self, entity):
@@ -85,11 +81,7 @@ class World(object):
         del self.entities[entity.id]
                 
     def get(self, entity_id):
-        
-        if entity_id in self.entities:
-            return self.entities[entity_id]
-        else:
-            return None
+        return self.entities.get(entity_id)
         
     def process(self, time_passed):
                 

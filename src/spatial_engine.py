@@ -37,7 +37,7 @@ class spatial_engine(object):
         
         #Create the dictionary.
         self.spatial_index = {}
-        # key == entity.id
+        # key == entity.id, value = cell containing entity
         self.entity_index = {}
         
         #Initialize the dictionary and create the empty lists.
@@ -70,25 +70,20 @@ class spatial_engine(object):
               
     def insert(self, entity):
         x, y = entity.location
-        x, y = self.which_cell(int(x), int(y))
-        self.spatial_index[x,y].append(entity)
+        cell = self.which_cell(int(x), int(y))
+        self.spatial_index[cell].append(entity)
+        # add lookup by id
+        self.entity_index[entity.id] = cell
         
     def remove(self, entity):
-        x, y = entity.location
-        cell = self.which_cell(int(x), int(y))
-        try:
+        if entity.id in self.entity_index:
+            cell = self.entity_index[entity.id]
             self.spatial_index[cell].remove(entity)
-        except ValueError:
-            # Can happen if the entity is not yet in the index during
-            # game start or addition of entity to game.
-            pass
+            # delete lookup by id
+            del self.entity_index[entity.id]
     
     def update(self, entity):
-        # bandaid - make use of previous_location
-        new_location = entity._location
-        entity._location = entity.previous_location
         self.remove(entity)
-        entity._location = new_location
         self.insert(entity)
     
     def find_at_point(self, point, the_range=100.0):

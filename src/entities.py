@@ -10,6 +10,7 @@ import statemachines
 import global_data
 import viewport
 import game_world
+import appid
 
 class GameEntity(object):
 
@@ -20,12 +21,11 @@ class GameEntity(object):
         self.name = name
         self.image = image
         self.brain = statemachines.StateMachine()
-        self.id = 0
+        # Entity promises to have a unique id.
+        self.id = appid.gen()
         
         #Movement in the game world
         self._location = Vec2d(0., 0.)
-        #Used for updating spatial index.
-        self.previous_location = Vec2d(0., 0.)
         self.destination = Vec2d(0., 0.)
         self.current_heading = Vec2d(1., 0.)
         self.desired_heading = Vec2d(0., 0.)
@@ -46,7 +46,6 @@ class GameEntity(object):
     @location.setter
     def location(self, value):
         """  Set's layer value and sorts the viewports on this value.  """
-        self.previous_location = self._location
         self._location = Vec2d(value)
         self.world.spatial_index.update(self)
         
