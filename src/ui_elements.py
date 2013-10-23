@@ -8,6 +8,8 @@ from pygame.locals import *
 import viewport
 import global_data
 
+from pymunk.vec2d import Vec2d
+
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
 #So it doesn't belong in the main viewport class.
 class World_Viewport(viewport.Viewport):
@@ -107,7 +109,7 @@ class World_Viewport(viewport.Viewport):
 
     def prepare_new_frame(self):
         self.surface.blit(self.background, (0, 0))        
-        
+    
     def render_entity(self, image, x, y, entity):
         
         w, h = image.get_size()
@@ -223,10 +225,29 @@ class World_Viewport(viewport.Viewport):
     def print_debug(self):
         print "world viewable rectangle:", self.world_viewable_rect
         print "zoom area width and height: ", self.zoom_area_width, self.zoom_area_height
+
+    def screenpoint_to_gamepoint(self, screenx, screeny):
+        """Convert a screen coordinate to an equivalent game coordinate.
         
+        screenx {number} Device X pixel location.
+        screeny {number} Device Y pixel location.
+        
+        return {tuple} Converted (x, y) world location of the screen pixel.
+        """
+        # Determine scale factor.
+        scale_factor_width = self.zoom_area_width/self.width
+        scale_factor_height = self.zoom_area_height/self.height
+        
+        # Convert world coordinates to world viewable coordinates, then to viewport coordinates.
+        return (self.world_viewable_center_x - self.zoom_area_width/2 + screenx*scale_factor_width,
+                self.world_viewable_center_y - self.zoom_area_height/2 + screeny*scale_factor_height)
+
     def service_user_event(self, event, game_simulation):
-        pass
-        
+        if event.button == 1:
+            # left click, attempt to select entity.
+            game_world_point = self.screenpoint_to_gamepoint(*event.pos)
+            print "Equivalent game simulation coordinate at:", game_world_point
+            print "Entity found:", game_simulation.world.spatial_index.find_at_point(Vec2d(game_world_point))
 
 #-------------------------------------------------------------------------------
 #Mini_Map
@@ -403,7 +424,7 @@ class User_Panel(viewport.Viewport):
 
 class View_Unit_Info_Box(viewport.Viewport):
     """ Traditional area that displays information about a single unit a user has clicked on.
-        """
+    """
     def __init__(self, x_right=0, y_down=0, width=256, height=256):
         
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)

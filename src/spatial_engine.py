@@ -48,8 +48,8 @@ class spatial_engine(object):
         y = y / self.cell_size
         return (x, y)
     
-    def which_cells_to_search(self, entity, the_range):
-        x, y = entity.location
+    def which_cells_to_search(self, point, the_range):
+        x, y = point
         #Determine the area we should be looking at.
         x1 = int((x + the_range) / self.cell_size)
         x2 = int((x - the_range) / self.cell_size)
@@ -81,11 +81,25 @@ class spatial_engine(object):
         #inside the game_world class whenever location is updated.
         pass
     
-    def find_closest(self, entity, the_range, name = "Any"):
+    def find_at_point(self, point, the_range=100.0):
+        """Given a point, find entities.
 
-        cell_list = self.which_cells_to_search(entity, the_range)
+        point {Vec2d} Location to search from.
+        [tolerance=5.0] {float} Number of pixels radius to allow for a match.
+        
+        return an entity, or None if no match.
+        """
+        cell_list = self.which_cells_to_search(point, the_range)
+        for cell in cell_list:
+            for entity in self.spatial_index[cell]:
+                if the_range >= entity.location.get_distance(point):
+                    return entity
+
+
+    def find_closest(self, entity, the_range, name = "Any"):
+        cell_list = self.which_cells_to_search(entity.location, the_range)
         closest_entity = None
-        closest_distance = 200000000
+        closest_distance = float('inf') # yep, this is infinity in Python.
         
         #x, y = entity.location
         #x, y = self.which_cell(int(x), int(y))
