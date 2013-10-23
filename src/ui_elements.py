@@ -150,14 +150,6 @@ class World_Viewport(viewport.Viewport):
             x = x - (self.viewport_center_x - self.zoom_area_width/2)
             y = y - (self.viewport_center_y - self.zoom_area_height/2)
             self.zoom_frame_buffer.blit(image, (x-w/2, y-h/2)) 
-        
-    def update_viewport_center2(self, x, y):
-       
-        self.world_viewable_center_x = x
-        self.world_viewable_center_y = y
-        self.world_viewable_x_rect = x - self.zoom_area_width/2
-        self.world_viewable_y_rect = y - self.zoom_area_height/2
-        self.world_viewable_rect = pygame.Rect(self.world_viewable_x_rect, self.world_viewable_y_rect, self.zoom_area_width, self.zoom_area_height)
 
     def update_viewport_center(self, x, y):
         """This method is called whenever one moves the map, i.e. changing the center of the viewport.
@@ -248,7 +240,8 @@ class World_Viewport(viewport.Viewport):
             game_world_point = self.screenpoint_to_gamepoint(*event.pos)
             print "Equivalent game simulation coordinate at:", game_world_point
             print "Entity found:", game_simulation.world.spatial_index.find_at_point(Vec2d(game_world_point))
-
+            game_simulation.unit_information_display.set_unit(game_simulation.world.spatial_index.find_at_point(Vec2d(game_world_point)))
+            
 #-------------------------------------------------------------------------------
 #Mini_Map
 class Mini_Map(viewport.Viewport):
@@ -447,13 +440,20 @@ class View_Unit_Info_Box(viewport.Viewport):
     def set_unit(self, entity):
         self.watching_entity = entity
         
-    def update(self):
+    def update(self, world):
         #Is there something selected?
+        self.surface.blit(self.background, (0, 0))
         if self.watching_entity != None:
             #Unit Type
-            unit_text = self.font.render(self.watching.name, True, (255, 255, 255))
+            unit_text = self.font.render(self.watching_entity.name, True, (255, 255, 255))
             w, h = unit_text.get_size()
             self.surface.blit(unit_text, ((self.width / 2) - w / 2, 15))
+            x, y = self.watching_entity.location
+            world.viewport.update_viewport_center(x, y)
+            if self.watching_entity.name == "ant":
+                text = self.font.render("Current State: " + self.watching_entity.brain.active_state.name, True, (255, 255, 255))
+                w, h = unit_text.get_size()
+                self.surface.blit(text, (10, 30))
             
         else:
             self.surface.blit(self.background, (0, 0))

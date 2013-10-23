@@ -25,6 +25,10 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version .32  10/23/2013
+-  Added more functionality to the view unit info box.
+-  Jeremy cleaned up the spatial_engine code.
+
 Version .31  12/21/2013
 
 -  Saw that ants typically cluster in the middle.  Adjusted how often they change direction.

@@ -74,7 +74,7 @@ class Game_Simulation():
             self.mini_map.update(self.world)
         
         self.fps_display.draw_fps(self.clock)
-        self.unit_information_display.update()   
+        self.unit_information_display.update(self.world)   
             
         #Call the method that renders all the viewport layers in the proper sequence.
         viewport.Viewport.render_viewports(self.screen)
