@@ -25,6 +25,13 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version 65 10/24/2013
+
+-  Modified spatial_engine's spatial_index to have padding.  Units can go off the screen
+   when turning.
+-  Added tracking button on the view unit info box.  By default tracking is off.  It's
+   a crappy icon.
+
 Version 64 (.33)  10/24/2013
 
 -  Changed find_at_point to return the closest entity rather than the first entity

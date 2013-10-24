@@ -41,16 +41,23 @@ class spatial_engine(object):
         self.entity_index = {}
         
         #Initialize the dictionary and create the empty lists.
-        for i in range (0, world_size_x / 100+1):
-            for j in range (0, world_size_y / 100+1):
+        #It's possible for a unit to go over the edge of the world when turning, so there is
+        #padding cells, hence the -1 and +2 below.
+        for i in range (-1, world_size_x / 100+2):
+            for j in range (-1, world_size_y / 100+2):
                 self.spatial_index[i,j] = []
           
     def which_cell(self, x, y):
+        '''Identifies which cell a coordinate belongs to.
+        '''
         x = x / self.cell_size
         y = y / self.cell_size
         return (x, y)
     
     def which_cells_to_search(self, point, the_range):
+        '''Given a point and a search radius, return the list of
+        cells that should be considered.
+        '''
         x, y = point
         #Determine the area we should be looking at.
         x1 = int((x + the_range) / self.cell_size)
@@ -70,8 +77,6 @@ class spatial_engine(object):
               
     def insert(self, entity):
         x, y = entity.location
-        if x < 0 or y < 0:
-            print "x or y is less than 0:", x, y
         cell = self.which_cell(int(x), int(y))
         self.spatial_index[cell].append(entity)
         # add lookup by id
@@ -114,6 +119,10 @@ class spatial_engine(object):
 
 
     def find_closest(self, entity, the_range, name = "Any"):
+        """ Given an entity, find the closest entity within the supplied range
+            that isn't the entity passed to this method.
+        """
+        
         cell_list = self.which_cells_to_search(entity.location, the_range)
         closest_entity = None
         closest_distance = float('inf') # yep, this is infinity in Python.
