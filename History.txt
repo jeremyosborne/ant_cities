@@ -25,6 +25,12 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+Version 64 (.33)  10/24/2013
+
+-  Changed find_at_point to return the closest entity rather than the first entity
+   found inside the cell.
+-  Added more stuff to the view unit info box.
+
 Version .32  10/23/2013
 -  Added more functionality to the view unit info box.
 -  Jeremy cleaned up the spatial_engine code.

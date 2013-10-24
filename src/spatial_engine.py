@@ -70,6 +70,8 @@ class spatial_engine(object):
               
     def insert(self, entity):
         x, y = entity.location
+        if x < 0 or y < 0:
+            print "x or y is less than 0:", x, y
         cell = self.which_cell(int(x), int(y))
         self.spatial_index[cell].append(entity)
         # add lookup by id
@@ -87,18 +89,28 @@ class spatial_engine(object):
         self.insert(entity)
     
     def find_at_point(self, point, the_range=100.0):
-        """Given a point, find entities.
+        """Given a point, find the closest entity.
 
         point {Vec2d} Location to search from.
         [tolerance=5.0] {float} Number of pixels radius to allow for a match.
         
         return an entity, or None if no match.
         """
+        
+        closest_distance = the_range + 1
+        
         cell_list = self.which_cells_to_search(point, the_range)
         for cell in cell_list:
             for entity in self.spatial_index[cell]:
-                if the_range >= entity.location.get_distance(point):
-                    return entity
+                distance = entity.location.get_distance(point)
+                if distance < closest_distance:
+                    closest_distance = distance
+                    closest_entity = entity
+                
+        if closest_distance < the_range:
+            return (closest_entity)
+        else:
+            return None
 
 
     def find_closest(self, entity, the_range, name = "Any"):

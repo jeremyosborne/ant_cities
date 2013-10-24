@@ -422,6 +422,7 @@ class View_Unit_Info_Box(viewport.Viewport):
         
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)
         self.font = pygame.font.SysFont("arial", 16)
+        self.small_font = pygame.font.SysFont("arial", 13)
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
         
@@ -451,10 +452,24 @@ class View_Unit_Info_Box(viewport.Viewport):
             x, y = self.watching_entity.location
             world.viewport.update_viewport_center(x, y)
             if self.watching_entity.name == "ant":
-                text = self.font.render("Current State: " + self.watching_entity.brain.active_state.name, True, (255, 255, 255))
+                text = self.font.render("State: " + self.watching_entity.brain.active_state.name, True, (255, 255, 255))
                 w, h = unit_text.get_size()
                 self.surface.blit(text, (10, 30))
-            
+                text = self.font.render("Speed: " + str(self.watching_entity.speed), True, (255, 255, 255))
+                w, h = unit_text.get_size()
+                self.surface.blit(text, (138, 30))
+                
+                text = self.font.render("Destinaton: " + str(self.watching_entity.destination), True, (255, 255, 255))
+                w, h = unit_text.get_size()
+                self.surface.blit(text, (10, 45))
+                text = self.small_font.render("Location: " + str(self.watching_entity.location), True, (255, 255, 255))
+                w, h = unit_text.get_size()
+                self.surface.blit(text, (10, 60))
+                
+                text = self.font.render("Distance to Destinaton: " + str(self.watching_entity.location.get_distance(self.watching_entity.destination)), True, (255, 255, 255))
+                w, h = unit_text.get_size()
+                self.surface.blit(text, (10, 75))
+                
         else:
             self.surface.blit(self.background, (0, 0))
         
