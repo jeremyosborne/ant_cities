@@ -24,10 +24,13 @@ Key
     - Cleanup mini-map like World_Viewport (version .15)
     - Add mini map scrolling back into the game.
     - Make something like surface effects that any display port can use.
-- Fix ants going in circles next to a leaf.
-- Adjust leaf carrying position from back to the mouth.
-- Add collision detection so that entities can not run over each other.
-- Fix ant eating to be time based (like ant hunger.)
+- Ant Entity
+    - Maybe add an ant destroy method that will allow ants to clean up their things,
+      like spatial index or other references.
+    - Fix ants going in circles next to a leaf.
+    - Adjust leaf carrying position from back to the mouth.
+    - Add collision detection so that entities can not run over each other.
+    - Fix ant eating to be time based (like ant hunger.)
 - Multi-Process, Sim and Render Thread
 - Saving settings...
     - Option: JSON, csv, ini... lots of choices. I'd prefer JSON in general only
@@ -59,6 +62,12 @@ Key
 Version guesstimated with: git rev-list --count HEAD
 
 
+Version 71 10/25/2013
+
+- Started a bit of cleanup in the spatial_engine. Added an assert to watch
+  for accidental double insertions into the spatial index. Asserts are
+  removed when code is run in optimized mode so we don't have to delete them
+  manually or during an explicit build process.
 
 Version 70 10/25/2013
 

@@ -22,6 +22,9 @@ class spatial_engine(object):
     def __init__(self, world_size_x, world_size_y):
         '''
         Constructor
+        
+        world_size_x {int} number of pixels wide the world is.
+        world_size_y {int} number of pixels hight he world is.
         '''
         #Size for X and Y for a grid element (cell.)
         self.cell_size = 100
@@ -40,6 +43,8 @@ class spatial_engine(object):
           
     def which_cell(self, x, y):
         '''Identifies which cell a coordinate belongs to.
+        
+        return {tuple} (x,y) coordinates.
         '''
         x = x / self.cell_size
         y = y / self.cell_size
@@ -48,6 +53,12 @@ class spatial_engine(object):
     def which_cells_to_search(self, point, the_range):
         '''Given a point and a search radius, return the list of
         cells that should be considered.
+        
+        point {tuple} Unpackable 2d coordinate in the form of (x, y).
+        the_range {number} How many pixels radius in which to search.
+        
+        return {list} Cell identifiers in the form of 
+        [(cell1x,cell1y), (cell2x,cell2y), ....].
         '''
         x, y = point
         #Determine the area we should be looking at.
@@ -64,11 +75,20 @@ class spatial_engine(object):
                 if self.spatial_index.has_key((i,j)):
                     #Valid cell to search.
                     cell_list.append((i,j))
-        return(cell_list)    
+        return(cell_list)
               
     def insert(self, entity):
+        """ Add an entity to the spatial index.
+        
+        entity {entity} Must provide a .id and .location interface to the 2d location
+        of the entity.
+        """
         x, y = entity.location
         cell = self.which_cell(int(x), int(y))
+
+        # Watch and prevent...
+        assert not self.entity_index.get(entity.id), "No double insertions."
+        
         self.spatial_index[cell].append(entity)
         # add lookup by id
         self.entity_index[entity.id] = cell
@@ -152,8 +172,8 @@ class spatial_engine(object):
         ''' Returns list of all entities in range. '''
         pass
     
-    
-    
+
+
 if __name__ == "__main__":
     
     #Normal pygame window mode.

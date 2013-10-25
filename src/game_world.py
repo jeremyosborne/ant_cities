@@ -73,9 +73,11 @@ class World(object):
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
         self.entities[entity.id] = entity
-        self.spatial_index.insert(entity)
+        # Ant location should control where they are in the spatial index.
+        #self.spatial_index.insert(entity)
         
     def remove_entity(self, entity):
+        # Should this be triggered by the ant delete for now?
         self.spatial_index.remove(entity)
         del self.entities[entity.id]
                 
