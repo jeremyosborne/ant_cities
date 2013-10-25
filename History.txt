@@ -28,8 +28,12 @@ Key
 (Retrieve version with: git rev-list --count HEAD)
 
 
+Version 69 10/24/2013
 
-Version 68
+- Moved previous ui_elements.py contents to ui.* files to ease multiple coders
+  working on the same files.
+
+Version 68 10/24/2013
 
 - Moved entities to their own folder. For the sake of working around some Python
   import weirdness, assumed practice is to always:
@@ -70,7 +74,7 @@ Version .32  10/23/2013
 -  Added more functionality to the view unit info box.
 -  Jeremy cleaned up the spatial_engine code.
 
-Version .31  12/21/2013
+Version .31  10/21/2013
 
 -  Saw that ants typically cluster in the middle.  Adjusted how often they change direction.
    this helps a little bit.
@@ -79,7 +83,7 @@ Version .31  12/21/2013
    speed to 1.  After testing this did not resolve the problem.  I saw this months ago.
 -  Started work on View_Unit_Info_Box in ui_elements.
 
-Version .30  12/21/2013
+Version .30  10/21/2013
 
 -  Fixed bug that prevented the hunger bar from being rendered when at was roaming.
 

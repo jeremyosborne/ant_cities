@@ -1,6 +1,5 @@
 import math
 import pygame
-from pygame.locals import *
 
 from pymunk.vec2d import Vec2d
 

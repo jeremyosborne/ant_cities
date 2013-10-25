@@ -10,7 +10,7 @@ from pygame.locals import *
 from random import randint
 from pymunk.vec2d import Vec2d
 
-import ui_elements
+from ui.world_viewport import World_Viewport
 from entities.ant import Ant
 from entities.base import Base
 from entities.leaf import Leaf
@@ -30,7 +30,7 @@ class World(object):
         
         self.entities = {}    #Dictionary of all the entities
         #viewport is the screen entity that contains the view of the game world.
-        self.viewport = ui_elements.World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
+        self.viewport = World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport.description = "Game world viewport."
         
         self.spatial_index = spatial_engine.spatial_engine(self.width, self.height)

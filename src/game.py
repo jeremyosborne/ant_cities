@@ -10,7 +10,9 @@ from pygame.locals import *
 import game_world
 import global_data
 import viewport
-import ui_elements
+from ui.mini_map import Mini_Map
+from ui.view_unit_info_box import View_Unit_Info_Box
+from ui.fps_display import FPS_Display
 
 class Game_Simulation():
        
@@ -29,13 +31,13 @@ class Game_Simulation():
         
         #Setup UI elements.
         #Mini_Map Init
-        self.mini_map = ui_elements.Mini_Map(global_data.screen_size_x-256, global_data.screen_size_y-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+        self.mini_map = Mini_Map(global_data.screen_size_x-256, global_data.screen_size_y-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
 
         #Unit information display.
-        self.unit_information_display = ui_elements.View_Unit_Info_Box(global_data.screen_size_x-512, global_data.screen_size_y-170, 256, 170)
+        self.unit_information_display = View_Unit_Info_Box(global_data.screen_size_x-512, global_data.screen_size_y-170, 256, 170)
           
         #FPS Display
-        self.fps_display = ui_elements.FPS_Display()
+        self.fps_display = FPS_Display()
         self.clock = pygame.time.Clock()
         
         self.render_game_world = True
