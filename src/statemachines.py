@@ -71,9 +71,9 @@ class AntStateExploring(State):
     def do_actions(self):
         
 #-------------------------------------------------------------------------------------------------------
-#Experimental code for fun.        
+#Experimental code for fun.  This section of code can me removed at any time.
 
-        #If I see another ant, I change my heading to 180 degrees from it.
+        #If I see another ant, I change my heading.
         close_ant = self.ant.world.get_close_entity(self.ant, "ant", 200)
         if close_ant != None:
             x, y = close_ant.destination

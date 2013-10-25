@@ -61,6 +61,12 @@ Key
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 72 10/25/2013
+
+- Changed distance to leaf pickup from 5 to 7 in hopes of resolving the ant circling
+  leaf problem.  It didn't fix it and I believe the problem is in the steering
+  algorithm.
+- Added code to change ant movement behavior as an experiment.
 
 Version 71 10/25/2013
 
