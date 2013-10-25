@@ -7,13 +7,7 @@ Created on Mar 2, 2013
 import pygame
 from pygame.locals import *
 
-from random import randint, choice
-import pymunk
-from pymunk.vec2d import Vec2d
-
 import game_world
-import entities
-import statemachines
 import global_data
 import viewport
 import ui_elements

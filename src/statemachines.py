@@ -1,10 +1,7 @@
-import entities
-import pygame
 from pygame.locals import *
 
-from random import randint, choice
+from random import randint
 
-import pymunk
 from pymunk.vec2d import Vec2d
 
 import global_data

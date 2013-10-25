@@ -7,15 +7,14 @@ Created on Jun 19, 2013
 import pygame
 from pygame.locals import *
 
-from random import randint, choice
-import pymunk
+from random import randint
 from pymunk.vec2d import Vec2d
 
 import ui_elements
-import entities
-import statemachines
+from entities.ant import Ant
+from entities.base import Base
+from entities.leaf import Leaf
 import global_data
-import viewport
 import spatial_engine
 
 class World(object):
@@ -47,10 +46,10 @@ class World(object):
         self.base_image_2 = pygame.image.load("assets/hut1.png").convert_alpha()
         self.base_image_2 = pygame.transform.flip(self.base_image_2, 1, 0)
         #Let's make hut 1 for our little ants.
-        self.base_1 = entities.Base(self, self.base_image, 1, (255,255,0))
+        self.base_1 = Base(self, self.base_image, 1, (255,255,0))
         self.base_1.location = (global_data.NEST_POSITION)
         #Let's make hut 2 for our little ants.
-        self.base_2 = entities.Base(self, self.base_image_2, 2, (255,255,0))
+        self.base_2 = Base(self, self.base_image_2, 2, (255,255,0))
         self.base_2.location = (global_data.NEST_POSITION_2)
     
         self.add_entity(self.base_1)
@@ -58,12 +57,12 @@ class World(object):
         
         for ant_no in xrange(global_data.ANT_COUNT):
             #Team 1
-            ant = entities.Ant(self, self.ant_image, self.base_1, (255, 0, 0))
+            ant = Ant(self, self.ant_image, self.base_1, (255, 0, 0))
             ant.location = Vec2d(randint(0, self.width), randint(0, self.height))
             ant.brain.set_state("exploring")
             self.add_entity(ant)
             #Team 2
-            ant = entities.Ant(self, self.ant_image_2, self.base_2, (0, 0, 255))
+            ant = Ant(self, self.ant_image_2, self.base_2, (0, 0, 255))
             ant.location = Vec2d(randint(0, self.width), randint(0, self.height))
             ant.brain.set_state("exploring")
             self.add_entity(ant)
@@ -90,7 +89,7 @@ class World(object):
         #Here's our chance to throw in a new leaf
         
         if randint(1, 10) == 1:
-            leaf = entities.Leaf(self, self.leaf_image)
+            leaf = Leaf(self, self.leaf_image)
             leaf.location = Vec2d(randint(0, leaf.world.width), randint(0, leaf.world.height))
             self.add_entity(leaf)
                     

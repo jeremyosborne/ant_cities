@@ -4,21 +4,12 @@ Created on Oct 20, 2013
 @author: john
 '''
 
-import pymunk
 from pymunk.vec2d import Vec2d
 
 #For testing
-import pygame
 from pygame.locals import *
-import game_world
-import entities
-import statemachines
 import global_data
-import viewport
-import ui_elements
-import sys
-import os
-from random import randint, choice
+from random import randint
 
 
 
@@ -170,13 +161,15 @@ if __name__ == "__main__":
     #world = game_world.World(global_data.world_size_x, global_data.world_size_y, global_data.screen_size_x, global_data.screen_size_y)
         
     #leaf_image = pygame.image.load("assets/leaf.png").convert_alpha()
+
+    from entities.leaf import Leaf
     
     spatial_index = spatial_engine(global_data.world_size_x, global_data.world_size_y)
     world = "Nothing"
     leaf_image = "Nothing"
-    leaf = entities.Leaf(world, leaf_image)
+    leaf = Leaf(world, leaf_image)
     leaf.location = Vec2d(250, 350)
-    leaf2 = entities.Leaf(world, leaf_image)
+    leaf2 = Leaf(world, leaf_image)
     leaf2.location = Vec2d(351, 451)
     
     spatial_index.insert(leaf)
@@ -200,7 +193,7 @@ if __name__ == "__main__":
     print "Doing benchmark insert."
     for leaf_no in xrange(10000):
         #Team 1
-        leaf3 = entities.Leaf(world, leaf_image)
+        leaf3 = Leaf(world, leaf_image)
         leaf3.location = Vec2d(randint(0,global_data.world_size_x), randint(0, global_data.world_size_y))
         spatial_index.insert(leaf3)
             

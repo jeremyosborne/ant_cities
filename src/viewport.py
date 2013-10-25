@@ -3,7 +3,6 @@ An class for implementing a viewport.
 """
 
 import pygame
-from pygame.locals import *
 
 class Viewport(pygame.Surface):
     """Extends pygame's surface class for managing multiple surfaces.

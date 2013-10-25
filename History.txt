@@ -27,6 +27,28 @@ Key
 
 (Retrieve version with: git rev-list --count HEAD)
 
+
+
+Version 68
+
+- Moved entities to their own folder. For the sake of working around some Python
+  import weirdness, assumed practice is to always:
+
+      import entities.ant
+
+  or:
+
+      from entities.ant import Ant
+
+  Not recommended, the simple:
+
+      # both of these, while potentially valid, can cause module reload
+      # and caching problems.
+      import ant
+      from ant import Ant
+
+- Removed some extraneous module imports.
+
 Version 67 10/24/2013
 
 - Remove game3.py.
