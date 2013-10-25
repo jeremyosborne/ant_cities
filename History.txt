@@ -25,6 +25,12 @@ Key
 -  Make something like surface effects that any display port can use.
    -  Add mini map scrolling back into the game.
 
+(Retrieve version with: git rev-list --count HEAD)
+
+Version 67 10/24/2013
+
+- Remove game3.py.
+
 Version 65 10/24/2013
 
 -  Modified spatial_engine's spatial_index to have padding.  Units can go off the screen
@@ -50,7 +56,7 @@ Version .31  12/21/2013
    think this was due to me not allowing the ant to go below the speed of 5.  Adjusted lowest
    speed to 1.  After testing this did not resolve the problem.  I saw this months ago.
 -  Started work on View_Unit_Info_Box in ui_elements.
-   
+
 Version .30  12/21/2013
 
 -  Fixed bug that prevented the hunger bar from being rendered when at was roaming.
@@ -59,7 +65,7 @@ Version .29  10/21/2013
 
 -  The game_world is now spatially indexed and performance for the sim process is way up.
    Most processing power now goes to rendering.  spatial_engine holds the new code.
-	  
+
 Version .28  10/19/2013
 
 -  Added the following key commands:
@@ -88,24 +94,24 @@ Version .26  10/17/2013
 
 -  Added rudimentary routing of mouse click events based on viewports.  You can now click on
    a viewport and see the description in the console output.
-   
+
 Version .25  8/30/2013
 
 -  New zooming functionality finished.  Skipped implementing aspect ratio correction
    for the world view at the final zoomed out position.  Since it's mostly a problem
    for oblong worlds, not a priority now.  So:
-   
+
    1.  Zoom levels are calculated at run time based on the world size.
    2.  Images are scaled to zoom level 5, then turn into squares.
    3.  Since the surface is screen size and not world size, memory consumption
        is fine.
-       
+
 Version .244 8/29/2013
 
 -  Continuing rewrite.  New zooming method implemented.  Will be adding maintaining
    the aspect ratio and fixing a bug that seems to be cutting off the extreme left
    edge when zooming out.
-   
+
 Version .243 8/28/2013
 
 -  Rewriting entity rendering in world viewport.
@@ -114,7 +120,7 @@ Version .242 8/28/2013
 
 -  Added code to calculate the number and dimensions of zoom levels based on screen size
    and world size.
-   
+
 Version .241 8/27/2013
 
 -Working on zooming.
@@ -123,12 +129,12 @@ Version .24 8/26/2013
 
 -  Starting on new world viewport design to support new zoom methods and proper
    aspect ratios.
-   
+
 Version .23 8/26/2013
 
 -  Modified minimap to keep aspect ratio of the world.  Did this in preparation of
    doing the same for the game viewport.
-   
+
 Version .22 8/25/2013
 
 -  Done playing with hardware acceleration. It just doesn't work.  In the experiment
@@ -137,17 +143,17 @@ Version .22 8/25/2013
 -  This commit represents the last time zooming is based on a digital zoom and cut
    of a single surface.  Will begin developing zoom based on rendering to the screen
    surface scaled objects.
-   
+
 Version .21 7/9/2013
 -  Just playing around with hardware acceleration.  It appears that this program
    is not invoking hardware acceleration and that's the reason I thing the program
    is slow when rendering the whole world to the viewable screen.
-   
+
 Version .20 7/8/2013
 -  Added border around minimap to help with implementation of movement based on
    interaction with the minimap.  I didn't want the minimap to overlap with
    scrolling around the map.
-   
+
 Version .19 7/7.2013
 -  Added display box in the minimap.
 
@@ -161,7 +167,7 @@ Version .16 6/29/2013
 -  FPS display is now a viewport inside of ui-elements.  It's also the first
    time I used colorkey.  This allowed me to pick the text on the screen
    with a transparent background.
-   
+
 Version .15 6/28/2013
 -  Can now resize the game world view on the fly.  That's cool.  To make the
    change, just update the width or height.  New code added in ui_elements
@@ -171,18 +177,18 @@ Version .15 6/28/2013
 Version .14 6/27/2013
 - Fixed ant hunger to be time based (was based on time when rendered, meaning
   that ant consumed a set amount of food when the screen was rendered.
-  
+
 Version .13 6/25/2013
 - Gameworld now appears to be self contained inside the world object.  All world init
   items are now inside the init of the world class.
 - game module now cleaner.
-  
+
 Version .12 6/25/2013  Rewriting or re-organizing the code.
 - Removed all statemachine and entities references to spiders.
 - Started to move world init items into the world class.  I want the world
   to be completely self contained so I can play with python multiprocessing
   at a later date.
-  
+
 
 Version .11 6/20/2013
 
@@ -199,13 +205,13 @@ Version .09 6/18/2013
   Single functional call to render all viewports to single surface on the task
   list.)  Breaks the animated scrolling action of the minimap entrance and exit
   from the screen.
-  
-  
+
+
 Version .08 6/16/2013
 
  - Added list data structure for managing viewports.
  - new experiments directory.
- 
+
 Version .07 6/15/2013
 
 - Working on viewport class management code.
@@ -273,7 +279,7 @@ autoscale and or keep aspect ratio.
 #Food is converted into:
 #food for the ants
 #new ants
-#evolutionary advancements 
+#evolutionary advancements
 
 #Different Ant types
 #New food types
