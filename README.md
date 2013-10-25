@@ -1,32 +1,69 @@
-File contents:
-1.  Task List/New Features to add.
-2.  Version History and Notes.
+
+# Table of Contents
+1. Task/Idea List
+2. Changelog
 
 
-Questions for Jeremy.
-1.  How should we handle saving settings.
 
-Task List.
+## Task/Idea List
+
+Prioritized in descending order.
 
 Key
 * In process
 - Not Started or on hold.
 
--  Enhance render code to use the spatial index.  This will speed things up considerably in
-   the lower zoom levels.
--  Fix ants going in circles next to a leaf.
--  Adjust leaf carrying position from back to the mouth.
--  Add collision detection so that entities can not run over each other.
--  Cleanup mini-map like World_Viewport (version .15)
-*  Create control panel class
--  Fix ant eating to be time based (like ant hunger.)
--  experiment with full screen class
--  Multi-Process, Sim and Render Thread
--  Make something like surface effects that any display port can use.
-   -  Add mini map scrolling back into the game.
+- User Interface
+    * Create control panel class
+    - Add scrolling minimap on and off
+    - experiment with full screen class
+    - Enhance render code to use the spatial index.  This will speed things up
+      considerably in the lower zoom levels.
+    - If resolution changes are allowed, allow preservation of aspect ratio and/or
+      auto scaling.
+    - Cleanup mini-map like World_Viewport (version .15)
+    - Add mini map scrolling back into the game.
+    - Make something like surface effects that any display port can use.
+- Fix ants going in circles next to a leaf.
+- Adjust leaf carrying position from back to the mouth.
+- Add collision detection so that entities can not run over each other.
+- Fix ant eating to be time based (like ant hunger.)
+- Multi-Process, Sim and Render Thread
+- Saving settings...
+    - Option: JSON, csv, ini... lots of choices. I'd prefer JSON in general only
+      for the reason that JSON can preserve numbers and numbers distinct from
+      strings so our in game code won't need to convert numbers.
+- Ant-god controls:
+    - Hostility level
+    - Friendly index
+    - Helpful level
+    - Health minded ants or self sacrifice?
+    - Expansionn oriented or homebodies?
+    - Conversion or kill?
+- Food as economy:
+    - feed existing ants
+    - new ants
+    - evolutionary advancements
+    - New food types
+- Evolutionary advancements
+    - vision increase (see food and enemies better)
+    - conversion capability
+    - Different Ant types
+    - The Swarm
 
-(Retrieve version with: git rev-list --count HEAD)
 
+
+
+## Changelog
+
+Version guesstimated with: git rev-list --count HEAD
+
+
+
+Version 70 10/25/2013
+
+- Changed History.txt into README.md, since that's more of what it is. Changed
+  the text formatting a tiny bit to be [markdown](http://github.github.com/github-flavored-markdown/) friendly.
 
 Version 69 10/24/2013
 
@@ -38,18 +75,18 @@ Version 68 10/24/2013
 - Moved entities to their own folder. For the sake of working around some Python
   import weirdness, assumed practice is to always:
 
-      import entities.ant
+        import entities.ant
 
   or:
 
-      from entities.ant import Ant
+        from entities.ant import Ant
 
   Not recommended, the simple:
 
-      # both of these, while potentially valid, can cause module reload
-      # and caching problems.
-      import ant
-      from ant import Ant
+        # both of these, while potentially valid, can cause module reload
+        # and caching problems.
+        import ant
+        from ant import Ant
 
 - Removed some extraneous module imports.
 
@@ -282,35 +319,6 @@ Current Implemented Features.
 
 
 
-Dribble:
 
-If resolution changes are allowed, should their be a viewport option to
-autoscale and or keep aspect ratio.
-
-#To Do stuff:
-#Set up a version/notes section
-#Levers for the simulation:
-#Hostility level
-#Friendly index
-#Helpful level
-#Health minded ants or self sacrafice?
-#Expansionn oriented or homebodies?
-#Conversion or kill?
-#Add scrolling minimap on and off
-
-#evolutionary advancements
-#vision increase
-#conversion capability
-
-#Food is converted into:
-#food for the ants
-#new ants
-#evolutionary advancements
-
-#Different Ant types
-#New food types
-
-
-#The Swarm
 
 
