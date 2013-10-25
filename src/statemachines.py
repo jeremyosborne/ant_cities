@@ -70,6 +70,21 @@ class AntStateExploring(State):
  
     def do_actions(self):
         
+#-------------------------------------------------------------------------------------------------------
+#Experimental code for fun.        
+
+        #If I see another ant, I change my heading to 180 degrees from it.
+        close_ant = self.ant.world.get_close_entity(self.ant, "ant", 200)
+        if close_ant != None:
+            x, y = close_ant.destination
+            new_x = y
+            new_y = x
+            if new_x > self.ant.world.width: new_x = self.ant.world.width
+            if new_y > self.ant.world.height: new_y = self.ant.world.height
+            self.ant.destination = Vec2d(new_x, new_y)
+            
+#End experimental code for fun
+#-------------------------------------------------------------------------------------------------------            
         if randint(1, 200) == 1:
             self.random_destination()
             
@@ -108,7 +123,7 @@ class AntStateSeeking(State):
         if leaf is None:
             return "exploring"
         
-        if self.ant.location.get_distance(leaf.location) < 5.0:
+        if self.ant.location.get_distance(leaf.location) < 7.0:
         
             self.ant.carry(leaf.image)
             self.ant.world.remove_entity(leaf)  #Removing leaf from the world
