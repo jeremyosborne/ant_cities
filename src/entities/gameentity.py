@@ -32,7 +32,6 @@ class GameEntity(object):
         self.max_speed = 0.
         self.direction = 0.
         self.rotation_per_second = 0.
-        #self.world.spatial_index.insert(self)        
 
     @property
     def location(self):

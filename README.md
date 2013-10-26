@@ -61,6 +61,13 @@ Key
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 74 10/25/2013
+
+- Simplified the spatial engine down to two main public APIs.
+- Generalized the filtering of the spatial engine find methods. The find_*
+  methods take an optional validate callback function which can be used to
+  filter the entities out that we don't want returned.
+
 Version 72 10/25/2013
 
 - Changed distance to leaf pickup from 5 to 7 in hopes of resolving the ant circling

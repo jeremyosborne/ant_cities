@@ -216,21 +216,19 @@ class World_Viewport(viewport.Viewport):
         screenx {number} Device X pixel location.
         screeny {number} Device Y pixel location.
         
-        return {tuple} Converted (x, y) world location of the screen pixel.
+        return {Vec2d} Converted (x, y) world location of the screen pixel.
         """
         # Determine scale factor.
         scale_factor_width = self.zoom_area_width/self.width
         scale_factor_height = self.zoom_area_height/self.height
         
         # Convert world coordinates to world viewable coordinates, then to viewport coordinates.
-        return (self.world_viewable_center_x - self.zoom_area_width/2 + screenx*scale_factor_width,
+        return Vec2d(self.world_viewable_center_x - self.zoom_area_width/2 + screenx*scale_factor_width,
                 self.world_viewable_center_y - self.zoom_area_height/2 + screeny*scale_factor_height)
 
     def service_user_event(self, event, game_simulation):
         if event.button == 1:
             # left click, attempt to select entity.
             game_world_point = self.screenpoint_to_gamepoint(*event.pos)
-            print "Equivalent game simulation coordinate at:", game_world_point
-            print "Entity found:", game_simulation.world.spatial_index.find_at_point(Vec2d(game_world_point))
-            game_simulation.unit_information_display.set_unit(game_simulation.world.spatial_index.find_at_point(Vec2d(game_world_point)))
-     
+            entity = game_simulation.world.spatial_index.find_closest(game_world_point, 150)[0]
+            game_simulation.unit_information_display.set_unit(entity)

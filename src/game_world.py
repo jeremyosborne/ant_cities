@@ -33,7 +33,7 @@ class World(object):
         self.viewport = World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
         self.viewport.description = "Game world viewport."
         
-        self.spatial_index = spatial_engine.spatial_engine(self.width, self.height)
+        self.spatial_index = spatial_engine.SpatialEngine(self.width, self.height)
         
 #-----------------------------------------------------------------------
 #Setting up initial entity elements.
@@ -73,8 +73,6 @@ class World(object):
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
         self.entities[entity.id] = entity
-        # Ant location should control where they are in the spatial index.
-        #self.spatial_index.insert(entity)
         
     def remove_entity(self, entity):
         # Should this be triggered by the ant delete for now?
@@ -109,8 +107,10 @@ class World(object):
 
             
     def get_close_entity(self, entity, name, the_range=100.):
-        closest_entity, distance = self.spatial_index.find_closest(entity, the_range, name)
-        return (closest_entity)
+        closest_entity, distance = self.spatial_index.find_closest(entity.location, 
+                                                                   the_range, 
+                                                                   validate=lambda e: e.name == name and e != entity)
+        return closest_entity
 
     def count(self, name):
         entity_count = 0

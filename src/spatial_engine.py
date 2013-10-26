@@ -4,21 +4,13 @@ Created on Oct 20, 2013
 @author: john
 '''
 
-from pymunk.vec2d import Vec2d
-
-#For testing
-from pygame.locals import *
-import global_data
-from random import randint
+from collections import deque
 
 
 
-class spatial_engine(object):
+class SpatialEngine(object):
+    ''' Coarser spatial storage for entities using 2d points for location.
     '''
-    classdocs
-    '''
-
-
     def __init__(self, world_size_x, world_size_y):
         '''
         Constructor
@@ -40,28 +32,66 @@ class spatial_engine(object):
         for i in range (-1, world_size_x / 100+2):
             for j in range (-1, world_size_y / 100+2):
                 self.spatial_index[i,j] = []
-          
-    def which_cell(self, x, y):
-        '''Identifies which cell a coordinate belongs to.
+
+    def _insert(self, entity):
+        """ Add an entity to the spatial index.
+        Call update as the public API instead of _insert.
         
-        return {tuple} (x,y) coordinates.
+        entity {entity} Must provide a .id and .location interface to the 2d location
+        of the entity.
+        """
+        # Prevention during dev.
+        assert not self.entity_index.get(entity.id), "No double insertions."
+
+        cell = self.which_cell(entity.location)
+        self.spatial_index[cell].append(entity)
+        # add lookup by id
+        self.entity_index[entity.id] = cell
+        
+    def remove(self, entity):
+        """ Remove an entity from the spatial index.
+        
+        entity {entity} Must provide a .id attribute uniquely identifying the
+        entity.
+        """
+        if entity.id in self.entity_index:
+            cell = self.entity_index[entity.id]
+            self.spatial_index[cell].remove(entity)
+            # delete lookup by id
+            del self.entity_index[entity.id]
+    
+    def update(self, entity):
+        """ Update an entity's location within the spatial index.
+        
+        entity {entity} Must provide a .id and .location interface to the 2d location
+        of the entity.
+        """
+        self.remove(entity)
+        self._insert(entity)
+
+    def which_cell(self, point):
+        '''Identifies which cell a coordinate belongs to.
+
+        point {tuple} Unpackable 2d coordinate in the form of (x, y).
+        
+        return {tuple} Cell identifier.
         '''
-        x = x / self.cell_size
-        y = y / self.cell_size
+        x = int(point[0] / self.cell_size)
+        y = int(point[1] / self.cell_size)
         return (x, y)
     
-    def which_cells_to_search(self, point, the_range):
+    def which_cells_in_range(self, point, the_range):
         '''Given a point and a search radius, return the list of
         cells that should be considered.
         
         point {tuple} Unpackable 2d coordinate in the form of (x, y).
         the_range {number} How many pixels radius in which to search.
         
-        return {list} Cell identifiers in the form of 
-        [(cell1x,cell1y), (cell2x,cell2y), ....].
+        return {list} List of identifiers in the form of.
         '''
         x, y = point
         #Determine the area we should be looking at.
+        # TODO: If we pass too large a the_range in, limit to max size of grid.
         x1 = int((x + the_range) / self.cell_size)
         x2 = int((x - the_range) / self.cell_size)
         y1 = int((y + the_range) / self.cell_size)
@@ -70,142 +100,107 @@ class spatial_engine(object):
         cell_list = []
         
         #Build the list of cells that match the area.
-        for i in range (x2, x1):
-            for j in range (y2, y1):
+        for i in range(x2, x1):
+            for j in range(y2, y1):
                 if self.spatial_index.has_key((i,j)):
                     #Valid cell to search.
                     cell_list.append((i,j))
-        return(cell_list)
-              
-    def insert(self, entity):
-        """ Add an entity to the spatial index.
-        
-        entity {entity} Must provide a .id and .location interface to the 2d location
-        of the entity.
-        """
-        x, y = entity.location
-        cell = self.which_cell(int(x), int(y))
+        return cell_list
 
-        # Watch and prevent...
-        assert not self.entity_index.get(entity.id), "No double insertions."
-        
-        self.spatial_index[cell].append(entity)
-        # add lookup by id
-        self.entity_index[entity.id] = cell
-        
-    def remove(self, entity):
-        if entity.id in self.entity_index:
-            cell = self.entity_index[entity.id]
-            self.spatial_index[cell].remove(entity)
-            # delete lookup by id
-            del self.entity_index[entity.id]
-    
-    def update(self, entity):
-        self.remove(entity)
-        self.insert(entity)
-    
-    def find_at_point(self, point, the_range=100.0):
-        """Given a point, find the closest entity.
+    def find_all_in_range(self, point, the_range=1, validate=None):
+        ''' Returns list of all entities in range.
 
         point {Vec2d} Location to search from.
         [tolerance=5.0] {float} Number of pixels radius to allow for a match.
-        
-        return an entity, or None if no match.
-        """
-        
-        closest_distance = the_range + 1
-        
-        cell_list = self.which_cells_to_search(point, the_range)
+        [validate] {function} If included, filters out possible results.
+
+        return {deque} any entities in range, or an empty deque.
+        '''
+        cell_list = self.which_cells_in_range(point, the_range)
+        # should timeit this... I think deques are faster than lists for how we
+        # use them.
+        entities = deque()
         for cell in cell_list:
             for entity in self.spatial_index[cell]:
                 distance = entity.location.get_distance(point)
-                if distance < closest_distance:
-                    closest_distance = distance
-                    closest_entity = entity
-                
-        if closest_distance < the_range:
-            return (closest_entity)
-        else:
-            return None
+                if validate and not validate(entity):
+                    # skip this entity
+                    continue
+                else:
+                    entities.append((entity, distance))
+        return entities
 
-
-    def find_closest(self, entity, the_range, name = "Any"):
-        """ Given an entity, find the closest entity within the supplied range
-            that isn't the entity passed to this method.
+    def find_closest(self, point, the_range=1, validate=None):
+        """ Find the closest entity.
+        
+        point {Vec2d} Where to search from.
+        [the_range] {int} Number of pixels radius in which to search.
+        [validate] {function} If included, filters out possible results.
+        Behaves like the callback to the filter() builtin.
+        
+        return {tuple} containing (entity, distance) or (None, 0) if not found.
         """
         
-        cell_list = self.which_cells_to_search(entity.location, the_range)
         closest_entity = None
-        closest_distance = float('inf') # yep, this is infinity in Python.
+        closest_distance = the_range
         
-        #x, y = entity.location
-        #x, y = self.which_cell(int(x), int(y))
+        cell_list = self.which_cells_in_range(point, the_range)        
+        for cell in cell_list:
+            for entity in self.spatial_index[cell]: 
+                distance = entity.location.get_distance(point)
+                if distance <= closest_distance:
+                    if validate and not validate(entity):
+                        # skip this entity
+                        continue
+                    else:
+                        closest_distance = distance
+                        closest_entity = entity
         
-        #print "cell_list we're going to search.", cell_list
-        #print "looking for: ", name
-        if name == "Any":
-            for cell in cell_list:
-                for entity_in_cell in self.spatial_index[cell]: 
-                    if entity_in_cell != entity:
-                        distance = entity_in_cell.location.get_distance(entity.location)
-                        if distance < closest_distance:
-                            closest_distance = distance
-                            closest_entity = entity_in_cell
-        else:
-            for cell in cell_list:
-                for entity_in_cell in self.spatial_index[cell]: 
-                    if entity_in_cell != entity:
-                        distance = entity_in_cell.location.get_distance(entity.location)
-                        if distance < closest_distance and entity_in_cell.name == name:
-                            closest_distance = distance
-                            closest_entity = entity_in_cell      
+        if not closest_entity:
+            closest_distance = 0
 
-        #print "Closest distance:" , closest_distance        
-        if closest_distance <= the_range:
-            return (closest_entity, closest_distance)
-        else:
-            return None, 0                
+        return (closest_entity, closest_distance)
 
-    
-                
-    def whats_in_range(self, entity):
-        ''' Returns list of all entities in range. '''
-        pass
-    
 
 
 if __name__ == "__main__":
+    # Testing
+    import global_data
+    from random import randint
+    from pymunk import Vec2d
     
-    #Normal pygame window mode.
-    #screen = pygame.display.set_mode(global_data.screen_size, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
-    #world = game_world.World(global_data.world_size_x, global_data.world_size_y, global_data.screen_size_x, global_data.screen_size_y)
-        
-    #leaf_image = pygame.image.load("assets/leaf.png").convert_alpha()
-
-    from entities.leaf import Leaf
+    class MockLeaf(object):
+        id = 0
+        def __init__(self, location):
+            MockLeaf.id += 1
+            self.id = MockLeaf.id
+            self.location = location
     
-    spatial_index = spatial_engine(global_data.world_size_x, global_data.world_size_y)
-    world = "Nothing"
-    leaf_image = "Nothing"
-    leaf = Leaf(world, leaf_image)
-    leaf.location = Vec2d(250, 350)
-    leaf2 = Leaf(world, leaf_image)
-    leaf2.location = Vec2d(351, 451)
+    spatial_index = SpatialEngine(global_data.world_size_x, global_data.world_size_y)
+    leaf = MockLeaf(Vec2d(250, 350))
+    leaf2 = MockLeaf(Vec2d(351, 451))
     
-    spatial_index.insert(leaf)
-    spatial_index.insert(leaf2)
+    spatial_index.update(leaf)
+    spatial_index.update(leaf2)
     print "Contents of cell 2,3:"
     print (spatial_index.spatial_index[2, 3])
     
-    closest = spatial_index.find_closest(leaf, 100)
+    closest = spatial_index.find_closest(leaf.location, 100,
+                                         lambda e: e != leaf)
     print "Closest to leaf:", leaf, " is ", closest
-    
+    assert leaf != closest[0], "Entity searched from is not the one returned."
+
+    print "Test find all in range."
+    entities_in_range = spatial_index.find_all_in_range(leaf.location, 10000)
+    print entities_in_range
+    assert len(entities_in_range) == 2, "Correct number of entities in the field."
+
+    print "Test removal of item"
     spatial_index.remove(leaf)
     print "Contents of cell 2,3:"
     print (spatial_index.spatial_index[2, 3])
     
-    print spatial_index.which_cell(200, 300)
-
+    print spatial_index.which_cell((200, 300))
 
     print "Spatial Index Contents:"
     print spatial_index.spatial_index
@@ -213,13 +208,13 @@ if __name__ == "__main__":
     print "Doing benchmark insert."
     for leaf_no in xrange(10000):
         #Team 1
-        leaf3 = Leaf(world, leaf_image)
-        leaf3.location = Vec2d(randint(0,global_data.world_size_x), randint(0, global_data.world_size_y))
-        spatial_index.insert(leaf3)
+        leaf3 = MockLeaf(Vec2d(randint(0,global_data.world_size_x), randint(0, global_data.world_size_y)))
+        spatial_index.update(leaf3)
             
     print "Doing benchmark search"
     for i in xrange(10000):
-        closest, distance = spatial_index.find_closest(leaf, 100)
+        closest, distance = spatial_index.find_closest(leaf.location, 100,
+                                                       lambda e: e != leaf)
         
     print "Run complete."
     print closest, distance
