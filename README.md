@@ -61,6 +61,10 @@ Key
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 75 10/26/2013
+
+- Added a very simple pub/sub interface in events.py.
+
 Version 74 10/25/2013
 
 - Simplified the spatial engine down to two main public APIs.
