@@ -61,6 +61,13 @@ Key
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 76 10/29/2013
+
+- Changed game world view to no overlap with minimap and unit info display.
+- Changed zooming behavior to be correlated to mouse position when over the
+  the game world view.  Still needed:  change mouse position after zoom.
+- Removed old commented out code in the ant statemachine.
+ 
 Version 75 10/26/2013
 
 - Added a very simple pub/sub interface in events.py.
