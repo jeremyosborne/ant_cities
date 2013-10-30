@@ -61,6 +61,14 @@ Key
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 78 10/29/2013
+
+- Changed the game world to match the aspect ratio of window.  Now the zoom works as
+  expected.  Turns out that when rendering on the highest zoom level and the aspect
+  ratio of the gameworld does not equal the world viewport, then things aren't rendered
+  in the proper location.  So the fix is to correct for aspect ratio at the highest zoom.
+  The aspect ratio is maintained in all other zoom levels.
+
 Version 77 10/29/2013
 - Zoom behavior enhancements, mouse position stays with position of the zoom, except
   for final zoom out.  This is because I'm not keeping the aspect ratio of the final

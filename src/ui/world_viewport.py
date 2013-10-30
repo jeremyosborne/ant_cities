@@ -197,7 +197,7 @@ class World_Viewport(viewport.Viewport):
         if self.rect.collidepoint(mouse_x, mouse_y) == True:
             pygame.mouse.set_pos(self.gamepoint_to_screenpoint(game_world_x, game_world_y))
 
-        self.print_debug()
+        #self.print_debug()
         
     def change_zoom_level(self, direction):
     
