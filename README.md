@@ -61,6 +61,13 @@ Key
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 77 10/29/2013
+- Zoom behavior enhancements, mouse position stays with position of the zoom, except
+  for final zoom out.  This is because I'm not keeping the aspect ratio of the final
+  zoom out.  I will likely need to add that functionality to fix this issue or make the
+  gameworld fit the aspect ratio of the visible screen.  gamepoint_to_screenpoint written.
+- Did a little bit the view unit information box.
+
 Version 76 10/29/2013
 
 - Changed game world view to no overlap with minimap and unit info display.

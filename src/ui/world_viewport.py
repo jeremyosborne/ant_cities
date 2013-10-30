@@ -167,8 +167,7 @@ class World_Viewport(viewport.Viewport):
     #When the zoom level is changed, several variables must be changed with it.
     def update_zoom_level(self, level):
 
-
-        #Since I want the zoom to recenter based on mouse location in the gameworld, we need to calculate
+        #Since I want the zoom to re-center based on mouse location in the gameworld, we need to calculate
         #that before we change any values below.
         mouse_x, mouse_y = pygame.mouse.get_pos()
         #Check to see if the mouse is above the game world viewport any only make adjustments if so.
@@ -178,8 +177,7 @@ class World_Viewport(viewport.Viewport):
         else:
             game_world_x = self.world_viewable_center_x
             game_world_y = self.world_viewable_center_y
-            
-            
+                        
         x, y = level
     
         self.zoom_area_width = x
@@ -192,12 +190,12 @@ class World_Viewport(viewport.Viewport):
         self.world_viewable_center_max_y = self.world_height - self.zoom_area_height/2
 
         self.update_viewport_center(game_world_x, game_world_y)
-        #Change mouse position to match the zoomed in area location.
-        #pygame.mouse.set_pos(self.gamepoint_to_screenpoint(game_world_x, game_world_y))
-        #print "Screenpoint to gamepoint: ", self.gamepoint_to_screenpoint(game_world_x, game_world_y)
-            
+
         #Change the scroll_speed based on the zoom level.
         self.scroll_speed = int (self.scroll_speed_init * 1.5 * self.current_zoom_level)
+        
+        if self.rect.collidepoint(mouse_x, mouse_y) == True:
+            pygame.mouse.set_pos(self.gamepoint_to_screenpoint(game_world_x, game_world_y))
 
         self.print_debug()
         
@@ -239,14 +237,13 @@ class World_Viewport(viewport.Viewport):
         gamey {number} Device Y game world location.
         
         return {Vec2d} Converted (x, y) screen pixel corresponding to game world location.
-        """
-        # Determine scale factor.
-        scale_factor_width = self.zoom_area_width/self.width
-        scale_factor_height = self.zoom_area_height/self.height
         
-        # Convert world coordinates to world viewable coordinates, then to viewport coordinates.
-        #This is really hard, the following line is just a place holder.
-        return Vec2d(gamex, gamey)
+        """
+        
+        x = (gamex - self.world_viewable_x_rect) / self.zoom_area_width * self.width
+        y = (gamey - self.world_viewable_y_rect) / self.zoom_area_height * self.height
+        
+        return Vec2d(x, y)
         
     def service_user_event(self, event, game_simulation):
         if event.button == 1:
