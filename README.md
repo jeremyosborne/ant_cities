@@ -15,14 +15,12 @@ Key
 
 - User Interface
     * Create control panel class
+    - Correct aspect ratio when world completely zoomed out.
     - Add scrolling minimap on and off
     - experiment with full screen class
-    - Enhance render code to use the spatial index.  This will speed things up
-      considerably in the lower zoom levels.
     - If resolution changes are allowed, allow preservation of aspect ratio and/or
       auto scaling.
     - Cleanup mini-map like World_Viewport (version .15)
-    - Add mini map scrolling back into the game.
     - Make something like surface effects that any display port can use.
 - Ant Entity
     - Maybe add an ant destroy method that will allow ants to clean up their things,
@@ -61,6 +59,13 @@ Key
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 79 11/1/2013
+
+-  Rendering now uses the spatial index except when fully zoomed out.
+-  Spatial index cell size now 200x200, up from 100x100.
+-  Spatial index padding increased to 5. Verified the turning radius at full speed
+   was pushing outside of the index.
+   
 Version 78 10/29/2013
 
 - Changed the game world to match the aspect ratio of window.  Now the zoom works as

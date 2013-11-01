@@ -101,9 +101,22 @@ class World(object):
         #Prepares for this frame.  Clears the background, etc.
         self.viewport.prepare_new_frame()
         
-        #Render each entity onto the framebuffer.
-        for entity in self.entities.itervalues():
-            entity.render(self.viewport)
+        #Using the spatial index to determine what to render.  Let's not use the index if we're completely zoomed out. 
+        if self.viewport.zoom_area_width != self.width:
+            #Calculate the range.
+            if self.viewport.zoom_area_width > self.viewport.zoom_area_height:
+                the_range = self.viewport.zoom_area_width/2
+            else:
+                the_range = self.viewport.zoom_area_height/2
+                 
+            entity_list_in_range = self.spatial_index.find_all_in_range((self.viewport.world_viewable_center_x, self.viewport.world_viewable_center_y), the_range)
+    
+            #Render each entity onto the framebuffer.
+            for entity in entity_list_in_range:
+                entity[0].render(self.viewport)
+        else:
+            for entity in self.entities.itervalues():
+                entity.render(self.viewport)
 
             
     def get_close_entity(self, entity, name, the_range=100.):

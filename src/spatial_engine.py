@@ -19,7 +19,7 @@ class SpatialEngine(object):
         world_size_y {int} number of pixels hight he world is.
         '''
         #Size for X and Y for a grid element (cell.)
-        self.cell_size = 100
+        self.cell_size = 200
         
         #Create the dictionary.
         self.spatial_index = {}
@@ -28,9 +28,9 @@ class SpatialEngine(object):
         
         #Initialize the dictionary and create the empty lists.
         #It's possible for a unit to go over the edge of the world when turning, so there is
-        #padding cells, hence the -1 and +2 below.
-        for i in range (-1, world_size_x / 100+2):
-            for j in range (-1, world_size_y / 100+2):
+        #padding cells, hence the -4 and +5 below.
+        for i in range (-4, world_size_x / self.cell_size+5):
+            for j in range (-4, world_size_y / self.cell_size+5):
                 self.spatial_index[i,j] = []
 
     def _insert(self, entity):

@@ -42,6 +42,10 @@ class GameEntity(object):
     def location(self, value):
         """  Set's layer value and sorts the viewports on this value.  """
         self._location = Vec2d(value)
+        
+        #The following was for debugging the turn radius outside of the spatial index range.
+        #if value[0] > self.world.width + 20 or value[1] > self.world.height + 20:
+        #    print "id: ", self.id, " location: ", self._location, " speed: ", self.speed, " Destination: ", self.destination
         self.world.spatial_index.update(self)
         
     def apply_acceleration(self, time_passed, distance_to_destination):
