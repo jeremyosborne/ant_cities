@@ -18,8 +18,10 @@ class SpatialEngine(object):
         world_size_x {int} number of pixels wide the world is.
         world_size_y {int} number of pixels hight he world is.
         '''
-        #Size for X and Y for a grid element (cell.)
-        self.cell_size = 200
+        #Size for X and Y for a grid element (cell.)  Turns out the code is not generalized
+        #to suppport anything but 100x100 cell size.  So, if you want to change this, then
+        #you have to generalize the code associated with cells.
+        self.cell_size = 100
         
         #Create the dictionary.
         self.spatial_index = {}

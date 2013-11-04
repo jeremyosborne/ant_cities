@@ -59,12 +59,17 @@ Key
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 80 11/4/2013
+
+- Changed cell size back to 100x100.  I didn't write the code to support different cell
+  sizes.  Spatial indexing now works again.
+   
 Version 79 11/1/2013
 
--  Rendering now uses the spatial index except when fully zoomed out.
--  Spatial index cell size now 200x200, up from 100x100.
--  Spatial index padding increased to 5. Verified the turning radius at full speed
-   was pushing outside of the index.
+- Rendering now uses the spatial index except when fully zoomed out.
+- Spatial index cell size now 200x200, up from 100x100.
+- Spatial index padding increased to 5. Verified the turning radius at full speed
+  was pushing outside of the index.
    
 Version 78 10/29/2013
 
