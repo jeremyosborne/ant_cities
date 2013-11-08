@@ -63,7 +63,7 @@ class Game_Simulation():
             self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x, self.world.viewport.world_viewable_center_y + self.world.viewport.scroll_speed)
             
         #Time_passed is in miliseconds.
-        time_passed = self.clock.tick(30)
+        time_passed = self.clock.tick(60)
 
         self.world.process(time_passed)
         if self.render_game_world:

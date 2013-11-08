@@ -78,6 +78,17 @@ class View_Unit_Info_Box(viewport.Viewport):
                 w, h = text.get_size()
                 self.surface.blit(text, (10, 75))
                 
+                if self.watching_entity.brain.active_state.name == "seeking":
+                    if self.watching_entity.leaf_id != None:
+                        #change the leaf image.
+                        leaf = self.watching_entity.world.get(self.watching_entity.leaf_id)
+                        leaf.image = self.watching_entity.world.leaf_image2
+                    #Put more on the screen about this leaf.
+                        text = self.font.render("Location of leaf: " + str(self.watching_entity.location), True, (255, 255, 255))
+                        w, h = text.get_size()
+                        self.surface.blit(text, (10, 90))
+                        
+                
         else:
             self.surface.blit(self.background, (0, 0))
             self.track = False

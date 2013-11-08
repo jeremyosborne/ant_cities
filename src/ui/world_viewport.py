@@ -31,6 +31,10 @@ class World_Viewport(viewport.Viewport):
         #level changes.  Look in the update_zoom_level method.
         self.scroll_speed = self.scroll_speed_init * 1.5
         
+        #Used if we want to put text directly on this viewport.
+        self.font = pygame.font.SysFont("arial", 16)
+        self.small_font = pygame.font.SysFont("arial", 13)
+        
         
     #Setup    
     def setup_viewable_area(self):
@@ -129,7 +133,16 @@ class World_Viewport(viewport.Viewport):
                     image = pygame.transform.scale(image, (int(w/scale_factor_width), int(h/scale_factor_height)))
                     w, h = image.get_size()
                 self.surface.blit(image, (x-w/2, y-h/2))
+                
+            #print the mouse coordinates to the screen.  Being used for debugging purposes.
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if self.rect.collidepoint(mouse_x, mouse_y) == True:
+                game_world_x, game_world_y = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
+                text = self.font.render(str(game_world_x) + ", " + str(game_world_y), True, (0, 0, 0))
+                w, h = text.get_size()
+                self.surface.blit(text, (10, 90))
 
+            
     #This will be for special rendering, such as effects that no matter what zoom level you're at, you want to see.
     #The following code needs to be modified to work with the new zoom rendering style.                 
     def force_render_entity(self, image, x, y):
