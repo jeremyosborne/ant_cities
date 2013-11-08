@@ -1,7 +1,7 @@
-
 # Table of Contents
 1. Task/Idea List
-2. Changelog
+2. Dev Notes
+3. Changelog
 
 
 
@@ -13,6 +13,8 @@ Key
 * In process
 - Not Started or on hold.
 
+- Game System
+    * Publisher/Subscriber middleware (see src/events.py).
 - User Interface
     * Create control panel class
     - Correct aspect ratio when world completely zoomed out.
@@ -51,7 +53,18 @@ Key
     - conversion capability
     - Different Ant types
     - The Swarm
+- Game World
+    - Procedural world generation.
 
+
+
+## Dev Notes
+
+### Testing
+To run the tests with [nose](http://nose.readthedocs.org/en/latest/index.html),
+use the following command from the main directory.
+
+    nosetests test/*
 
 
 
@@ -63,14 +76,14 @@ Version 80 11/4/2013
 
 - Changed cell size back to 100x100.  I didn't write the code to support different cell
   sizes.  Spatial indexing now works again.
-   
+
 Version 79 11/1/2013
 
 - Rendering now uses the spatial index except when fully zoomed out.
 - Spatial index cell size now 200x200, up from 100x100.
 - Spatial index padding increased to 5. Verified the turning radius at full speed
   was pushing outside of the index.
-   
+
 Version 78 10/29/2013
 
 - Changed the game world to match the aspect ratio of window.  Now the zoom works as
@@ -92,7 +105,7 @@ Version 76 10/29/2013
 - Changed zooming behavior to be correlated to mouse position when over the
   the game world view.  Still needed:  change mouse position after zoom.
 - Removed old commented out code in the ant statemachine.
- 
+
 Version 75 10/26/2013
 
 - Added a very simple pub/sub interface in events.py.
