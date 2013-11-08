@@ -60,16 +60,3 @@ class EventEmitter(object):
 # Make a centralized events interface, in case all want uniformity.
 events = EventEmitter()
 
-
-
-if __name__ == "__main__":
-    def functional_listen(e):
-        assert e.data["hello"] == "world", "Expected data received."
-        print "If you're seeing this, the assert passed:", e.data["hello"] == "world"
-
-    # For testing, force asserts:
-    _debug = True
- 
-    # Test with the basic interface.
-    events.sub("hello", functional_listen)
-    events.pub("hello", {"hello": "world"})
