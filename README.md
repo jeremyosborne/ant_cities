@@ -72,6 +72,12 @@ use the following command from the main directory.
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 82 11/8/2013
+
+- Technically made src/ directory a python package with __init__.py to make it
+  easier to import without conflicts from test/ directory (and elsewhere should
+  we need to reuse file names).
+
 Version 80 11/4/2013
 
 - Changed cell size back to 100x100.  I didn't write the code to support different cell
