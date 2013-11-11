@@ -54,13 +54,16 @@ class GameEntity(object):
         if (self.location != self.destination) and (self.speed == 0):
             self.speed = 1.
         else:
-            #calculate the distance needed to stop.  If the travel distance is greater,
+            #calculate the distance needed to stop.  If the travel distance is greater than the stopping
+            #distance, then speed up or keep going, slow down when we get close.  
+        
             #then keep going, else start stopping.
-            if abs(self.speed / self.slow_down_acceleration) > (distance_to_destination/self.speed):
+            if abs(self.speed / self.slow_down_acceleration) >= (distance_to_destination/self.speed) or \
+            (distance_to_destination < 30 and self.current_heading != self.desired_heading):
                 #slow down
                 self.acceleration = self.slow_down_acceleration
                 self.speed += self.acceleration * time_passed
-                if self.speed < 0: self.speed = 1
+                if self.speed <= 0: self.speed = 5
             else:
                 #speed up
                 self.acceleration = self.speed_up_acceleration
@@ -75,7 +78,7 @@ class GameEntity(object):
 
         #Is the angle we must turn less than steer_time_clock?  If so, then
         #we're done, steer the last little bit.        
-        if (abs(angle_between_vectors)) < steer_time_tick:
+        if (abs(angle_between_vectors)) <= steer_time_tick:
             self.current_heading = self.desired_heading
 
         else:  # We must steer.

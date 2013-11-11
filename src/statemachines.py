@@ -121,7 +121,7 @@ class AntStateSeeking(State):
         if leaf is None:
             return "exploring"
         
-        if self.ant.location.get_distance(leaf.location) < 7.0:
+        if self.ant.location.get_distance(leaf.location) < 2.0:
         
             self.ant.carry(leaf.image)
             self.ant.world.remove_entity(leaf)  #Removing leaf from the world

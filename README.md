@@ -72,6 +72,15 @@ use the following command from the main directory.
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 86 11/10/2013
+
+- Fixed rendering bug.  Ants and leaves were not being rendered at the center of their location.
+  No wonder it's been so hard to figure out why an ant gets stuck running in a circle...
+- Fixed ant running around in a circle.  The problem is the ant comes in on a certain angle
+  and then didn't slow down enough to touch the leaf.  I added an additional condition for slowing down:
+    if (distance_to_destination < 30 and self.current_heading != self.desired_heading):
+  So, if we're close and still turning, then keep slowing down.  If we're not turning, then OK to accelerate. 
+
 Version 84 11/8/2013
 
 - Started a testing folder for simple python tests (runnable via nosetests)

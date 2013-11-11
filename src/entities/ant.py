@@ -56,7 +56,7 @@ class Ant(GameEntity):
         
         #Let's draw the ant first.
         image = pygame.transform.rotate(self.image, self.direction*-1.)
-        viewport.render_entity(image, x-w, y-h/2, self)
+        viewport.render_entity(image, x, y, self)
 
         #If it's in an appropriate zoom level, draw the leaf and the food bar.
         if viewport.current_zoom_level < 6:     
@@ -65,13 +65,13 @@ class Ant(GameEntity):
                 #w, h = self.carry_image.get_size()
                 image = pygame.transform.rotate(self.carry_image, self.direction*-1.)
                 w, h = self.image.get_size()
-                viewport.render_entity(image, x-w, y-h/2, self)
+                viewport.render_entity(image, x, y, self)
         
             #Hunger Bar.  Draw the inital bar.
             self.bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
             #Now draw how much food is left over the inital bar
             self.bar_surface.fill( (0, 255, 0), (0, 0, self.hunger/40, 4))
-            viewport.render_entity(self.bar_surface, x-30, y+10, self)
+            viewport.render_entity(self.bar_surface, x, y+20, self)
 
     def process(self, time_passed):
         
