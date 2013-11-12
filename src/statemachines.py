@@ -74,14 +74,14 @@ class AntStateExploring(State):
 #Experimental code for fun.  This section of code can me removed at any time.
 
         #If I see another ant, I change my heading.
-        close_ant = self.ant.world.get_close_entity(self.ant, "ant", 200)
-        if close_ant != None:
-            x, y = close_ant.destination
-            new_x = y
-            new_y = x
-            if new_x > self.ant.world.width: new_x = self.ant.world.width
-            if new_y > self.ant.world.height: new_y = self.ant.world.height
-            self.ant.destination = Vec2d(new_x, new_y)
+#        close_ant = self.ant.world.get_close_entity(self.ant, "ant", 200)
+#        if close_ant != None:
+#            x, y = close_ant.destination
+#            new_x = y
+#            new_y = x
+#            if new_x > self.ant.world.width: new_x = self.ant.world.width
+#            if new_y > self.ant.world.height: new_y = self.ant.world.height
+#            self.ant.destination = Vec2d(new_x, new_y)
             
 #End experimental code for fun
 #-------------------------------------------------------------------------------------------------------            
@@ -96,7 +96,7 @@ class AntStateExploring(State):
             return "seeking"        
         
         #Let's take care of the hungry state
-        if self.ant.hunger < 0:
+        if self.ant.hunger_current < .25 * self.ant.hunger_full:
             return "hungry"
         
         return None
@@ -188,9 +188,11 @@ class AntStateEating(State):
     def check_conditions(self):
         
         #Have we eaten our fill?        
-        if self.ant.hunger < 1000:
-            self.ant.hunger += 100
-            self.ant.base.food_units -= 0.01
+        if self.ant.hunger_current < self.ant.hunger_full:
+            #Only feed if there is food available.
+            if self.ant.base.food_units > 0:
+                self.ant.hunger_current += 100
+                self.ant.base.food_units -= 0.01
         else:
             return "exploring"            
         return None

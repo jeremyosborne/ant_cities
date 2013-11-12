@@ -13,6 +13,8 @@ import viewport
 from ui.mini_map import Mini_Map
 from ui.view_unit_info_box import View_Unit_Info_Box
 from ui.fps_display import FPS_Display
+from ui.base_panel import Base_Panel
+from ui.world_panel import World_Panel
 
 class Game_Simulation():
        
@@ -39,6 +41,14 @@ class Game_Simulation():
           
         #FPS Display
         self.fps_display = FPS_Display()
+        
+        #Base Display 1
+        self.base_display_1 = Base_Panel(self.world.base_2, 1, global_data.screen_size_y-170, 200, 170)
+        self.base_display_2 = Base_Panel(self.world.base_1, 201, global_data.screen_size_y-170, 200, 170)
+        
+        #World Info Display
+        self.world_info_display = World_Panel(self.world, 402, global_data.screen_size_y-170, 200, 170)
+        
         self.clock = pygame.time.Clock()
         
         self.render_game_world = True
@@ -74,7 +84,10 @@ class Game_Simulation():
             self.mini_map.update(self.world)
         
         self.fps_display.draw_fps(self.clock)
-        self.unit_information_display.update(self.world)   
+        self.unit_information_display.update(self.world)  
+        self.base_display_1.update()
+        self.base_display_2.update()
+        self.world_info_display.update() 
             
         #Call the method that renders all the viewport layers in the proper sequence.
         viewport.Viewport.render_viewports(self.screen)

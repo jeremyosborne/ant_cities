@@ -1,10 +1,12 @@
 import math
 import pygame
+import time
 
 from pymunk.vec2d import Vec2d
 
 import statemachines
 import appid
+
 
 
 
@@ -17,6 +19,7 @@ class GameEntity(object):
         self.name = name
         self.image = image
         self.brain = statemachines.StateMachine()
+        self.born_time = time.time()
         # Entity promises to have a unique id.
         self.id = appid.gen()
         
@@ -127,4 +130,10 @@ class GameEntity(object):
         
         if self.speed > 0. and self.location != self.destination:
             self.move(time_passed) 
-
+    
+    #Default delete called when removing an object from the world.  Some entities will have
+    #triggers based on this event and will have their own delete method to execute them.
+    #Right now I'm using it for keeping counters.
+    def delete(self):
+        pass
+    

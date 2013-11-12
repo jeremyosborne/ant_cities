@@ -72,6 +72,15 @@ use the following command from the main directory.
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 87 11/12/2013
+- Added status panels for each team.
+- Ants now die if current_hunger < -100.  Ants now head back to the nest when they have 25% left.
+  When an ant dies, it just disappears, no dead body yet.
+- Leaves disappear after 2 minutes of not being found.
+- Added status panel for the world.
+- Set ant heading back to orginal (just random destination.)
+
+
 Version 86 11/10/2013
 
 - Fixed rendering bug.  Ants and leaves were not being rendered at the center of their location.

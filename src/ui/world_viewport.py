@@ -134,13 +134,14 @@ class World_Viewport(viewport.Viewport):
                     w, h = image.get_size()
                 self.surface.blit(image, (x-w/2, y-h/2))
                 
-            #print the mouse coordinates to the screen.  Being used for debugging purposes.
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            if self.rect.collidepoint(mouse_x, mouse_y) == True:
-                game_world_x, game_world_y = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
-                text = self.font.render(str(game_world_x) + ", " + str(game_world_y), True, (0, 0, 0))
-                w, h = text.get_size()
-                self.surface.blit(text, (10, 90))
+            #print the mouse coordinates to the screen.  Being used for debugging purposes.  It's not the right place
+            #for it anyway.
+            #mouse_x, mouse_y = pygame.mouse.get_pos()
+            #if self.rect.collidepoint(mouse_x, mouse_y) == True:
+            #    game_world_x, game_world_y = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
+            #    text = self.font.render(str(game_world_x) + ", " + str(game_world_y), True, (0, 0, 0))
+            #    w, h = text.get_size()
+            #    self.surface.blit(text, (10, 90))
 
             
     #This will be for special rendering, such as effects that no matter what zoom level you're at, you want to see.

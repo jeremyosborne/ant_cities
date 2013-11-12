@@ -17,6 +17,8 @@ class Ant(GameEntity):
 
         self.color = color
         self.base = base
+        self.base.ant_count += 1
+        self.base.ant_born += 1
         self.base_location = base.location        
         self.brain.add_state(exploring_state)
         self.brain.add_state(seeking_state)
@@ -30,9 +32,11 @@ class Ant(GameEntity):
         self.max_speed = 120.
         self.rotation_per_second = 90.
         
-        self.hunger = 1000.
+        #Related to hunger
+        self.hunger_full = 1000.
+        self.hunger_current = self.hunger_full
         self.food_consumption_per_second = 10.
-        
+        self.hunger_death = -100.
         self.carry_image = None
         
         self.bar_surface = pygame.surface.Surface((25, 4)).convert()
@@ -47,7 +51,6 @@ class Ant(GameEntity):
             self.carry_image = None
             #We need to tell the base that an item has arrived.
             self.base.increment_leaf()
-            
         
     def render(self, viewport):
         
@@ -70,11 +73,21 @@ class Ant(GameEntity):
             #Hunger Bar.  Draw the inital bar.
             self.bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
             #Now draw how much food is left over the inital bar
-            self.bar_surface.fill( (0, 255, 0), (0, 0, self.hunger/40, 4))
+            self.bar_surface.fill( (0, 255, 0), (0, 0, self.hunger_current/40, 4))
             viewport.render_entity(self.bar_surface, x, y+20, self)
 
     def process(self, time_passed):
         
         #Process food consumption
-        self.hunger = self.hunger - ((time_passed) * self.food_consumption_per_second)
-        GameEntity.process(self, time_passed)
+        self.hunger_current = self.hunger_current - ((time_passed) * self.food_consumption_per_second)
+        #Should the ant die?
+        if self.hunger_current < self.hunger_death:
+            self.world.remove_entity(self)
+        else:
+            GameEntity.process(self, time_passed)
+    
+    def delete(self):
+        self.base.ant_count -= 1
+        self.base.ant_dead += 1
+        
+        

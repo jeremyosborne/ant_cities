@@ -4,6 +4,7 @@ Created on Jun 19, 2013
 @author: john
 '''
 
+import time
 import pygame
 from pygame.locals import *
 
@@ -34,6 +35,13 @@ class World(object):
         self.viewport.description = "Game world viewport."
         
         self.spatial_index = spatial_engine.SpatialEngine(self.width, self.height)
+
+        self.time_born = time.time()
+        #Initialize counters
+        self.base_count = 0
+        self.leaf_count = 0  #Total number of leaves created.
+        self.leaf_expired = 0 #Total number of leaves that died without being picked up.
+        
         
 #-----------------------------------------------------------------------
 #Setting up initial entity elements.
@@ -47,10 +55,10 @@ class World(object):
         self.base_image_2 = pygame.image.load("assets/hut1.png").convert_alpha()
         self.base_image_2 = pygame.transform.flip(self.base_image_2, 1, 0)
         #Let's make hut 1 for our little ants.
-        self.base_1 = Base(self, self.base_image, 1, (255,255,0))
+        self.base_1 = Base(self, self.base_image, 1, (255, 255, 0), "Red Ants")
         self.base_1.location = (global_data.NEST_POSITION)
         #Let's make hut 2 for our little ants.
-        self.base_2 = Base(self, self.base_image_2, 2, (255,255,0))
+        self.base_2 = Base(self, self.base_image_2, 2, (255, 255, 0), "Blue Ants")
         self.base_2.location = (global_data.NEST_POSITION_2)
     
         self.add_entity(self.base_1)
@@ -68,6 +76,8 @@ class World(object):
             ant.brain.set_state("exploring")
             self.add_entity(ant)
             
+
+            
 #------------------------------------------------------------------------
 #Done setting up initial entity elements.
 #------------------------------------------------------------------------
@@ -78,6 +88,8 @@ class World(object):
     def remove_entity(self, entity):
         # Should this be triggered by the ant delete for now?
         self.spatial_index.remove(entity)
+        #execute triggers for deleted item.
+        entity.delete()
         del self.entities[entity.id]
                 
     def get(self, entity_id):
