@@ -21,7 +21,7 @@ class World_Panel(viewport.Viewport):
         self.background.blit(self.font.render("Base Count: ", True, (255, 255, 255)), (10, 30))
         self.background.blit(self.font.render("Leaves Born: ", True, (255, 255, 255)), (10, 45))
         self.background.blit(self.font.render("Leaves Died: ", True, (255, 255, 255)), (10, 60))
-        self.background.blit(self.font.render("Nothing: ", True, (255, 255, 255)), (10, 75))
+        self.background.blit(self.font.render("Leaves in Wo: ", True, (255, 255, 255)), (10, 75))
         
         pygame.draw.line(self.background, (255, 255, 255), (self.width, 0), (self.width, self.height), 20)
         
@@ -34,9 +34,9 @@ class World_Panel(viewport.Viewport):
         self.surface.blit(self.background, (0, 0))
         self.surface.blit(self.font.render(str(int(time.time() - self.world.time_born)), True, (255, 255, 255)), (120, 15))
         self.surface.blit(self.font.render(str(self.world.base_count), True, (255, 255, 255)), (120, 30))
-        self.surface.blit(self.font.render(str(self.world.leaf_count), True, (255, 255, 255)), (120, 45))
+        self.surface.blit(self.font.render(str(self.world.leaf_born), True, (255, 255, 255)), (120, 45))
         self.surface.blit(self.font.render(str(self.world.leaf_expired), True, (255, 255, 255)), (120, 60))
-        self.surface.blit(self.font.render(str("None"), True, (255, 255, 255)), (120, 75))
+        self.surface.blit(self.font.render(str(self.world.leaf_world_count), True, (255, 255, 255)), (120, 75))
 
         
 

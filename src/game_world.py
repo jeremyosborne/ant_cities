@@ -39,8 +39,9 @@ class World(object):
         self.time_born = time.time()
         #Initialize counters
         self.base_count = 0
-        self.leaf_count = 0  #Total number of leaves created.
+        self.leaf_born = 0  #Total number of leaves created.
         self.leaf_expired = 0 #Total number of leaves that died without being picked up.
+        self.leaf_world_count = 0 #Total number of leaves in the world.
         
         
 #-----------------------------------------------------------------------
@@ -101,7 +102,7 @@ class World(object):
         
         #Here's our chance to throw in a new leaf
         
-        if randint(1, 10) == 1:
+        if randint(1, 20) == 1:
             leaf = Leaf(self, self.leaf_image)
             leaf.location = Vec2d(randint(0, leaf.world.width), randint(0, leaf.world.height))
             self.add_entity(leaf)

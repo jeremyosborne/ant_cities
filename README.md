@@ -72,7 +72,14 @@ use the following command from the main directory.
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 88 11/13/2013
+
+- Fixed a bug for one of the leaf counters for the world.
+- Changed the number of leaves that enter the world.  (reduced to 1/2)
+
+
 Version 87 11/12/2013
+
 - Added status panels for each team.
 - Ants now die if current_hunger < -100.  Ants now head back to the nest when they have 25% left.
   When an ant dies, it just disappears, no dead body yet.

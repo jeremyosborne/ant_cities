@@ -17,7 +17,7 @@ class View_Unit_Info_Box(viewport.Viewport):
         w, h = label.get_size()
         self.background.blit(label, ((self.width / 2) - w / 2, 0))
         
-        pygame.draw.line(self.background, (255, 255, 255), (0, 0), (0, self.height), 20)
+        pygame.draw.line(self.background, (255, 255, 255), (0, 0), (0, self.height), 10)
         
         self.surface.blit(self.background, (0, 0))
 
