@@ -53,9 +53,11 @@ class View_Unit_Info_Box(viewport.Viewport):
             else:
                 #Draw button to track.
                 self.surface.blit(self.Stop_Tracking_Button, (self.width -30, 0))
-            text = self.small_font.render("Location: " + str(self.watching_entity.location), True, (255, 255, 255))
-            w, h = text.get_size()
+                
+            text = self.font.render("Location: " + str("{:10.4f}".format(self.watching_entity.location[0])), True, (255, 255, 255))
             self.surface.blit(text, (10, 60))
+            text = self.font.render(str("{:10.4f}".format(self.watching_entity.location[1])), True, (255, 255, 255))
+            self.surface.blit(text, (150, 60))
             
             #Unit Type
             unit_text = self.font.render(self.watching_entity.name, True, (255, 255, 255))
@@ -63,21 +65,15 @@ class View_Unit_Info_Box(viewport.Viewport):
             self.surface.blit(unit_text, ((self.width / 2) - w / 2, 15))
             if self.watching_entity.name == "ant":
                 text = self.font.render("State: " + self.watching_entity.brain.active_state.name, True, (255, 255, 255))
-                w, h = text.get_size()
                 self.surface.blit(text, (10, 30))
+                
                 text = self.font.render("Speed: " + str(self.watching_entity.speed), True, (255, 255, 255))
-                w, h = text.get_size()
                 self.surface.blit(text, (138, 30))
-                
+            
                 text = self.font.render("Destinaton: " + str(self.watching_entity.destination), True, (255, 255, 255))
-                w, h = text.get_size()
                 self.surface.blit(text, (10, 45))
-                text = self.small_font.render("Location: " + str(self.watching_entity.location), True, (255, 255, 255))
-                w, h = unit_text.get_size()
-                self.surface.blit(text, (10, 60))
                 
-                text = self.font.render("Distance to Destinaton: " + str(self.watching_entity.location.get_distance(self.watching_entity.destination)), True, (255, 255, 255))
-                w, h = text.get_size()
+                text = self.font.render("Distance to Destinaton: " + str("{:10.4f}".format(self.watching_entity.location.get_distance(self.watching_entity.destination))), True, (255, 255, 255))
                 self.surface.blit(text, (10, 75))
                 
                 if self.watching_entity.brain.active_state.name == "seeking":

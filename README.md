@@ -72,6 +72,10 @@ use the following command from the main directory.
 
 Version guesstimated with: git rev-list --count HEAD
 
+Version 89 11/13/2013
+
+- Made the unit information panel easier to read.
+
 Version 88 11/13/2013
 
 - Fixed a bug for one of the leaf counters for the world.
