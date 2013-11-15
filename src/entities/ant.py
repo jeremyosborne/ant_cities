@@ -36,6 +36,8 @@ class Ant(GameEntity):
         self.energy_full = 1000.
         self.energy_current = self.energy_full
         self.energy_consumption_per_second = 10.
+        self.energy_recharge_per_second = 1000
+        self.energy_recharge_to_energy_conversion_ratio = .2
         self.energy_death = -100.
         
         #Related to health

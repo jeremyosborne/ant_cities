@@ -24,7 +24,6 @@ Key
 - Ant Entity
     - Adjust leaf carrying position from back to the mouth.
     - Add collision detection so that entities can not run over each other.
-    - Fix ant eating to be time based (like ant hunger.)
 - Multi-Process, Sim and Render Thread
 - Saving settings...
     - Option: JSON, csv, ini... lots of choices. I'd prefer JSON in general only
@@ -65,6 +64,10 @@ use the following command from the main directory.
 ## Changelog
 
 Version guesstimated with: git rev-list --count HEAD
+
+Version 91 11/15/2013
+
+- Ant powerup is now time based.
 
 Version 90 11/14/2013
 

@@ -11,7 +11,7 @@ class State(object):
     def __init__(self, name):        
         self.name = name
         
-    def do_actions(self):
+    def do_actions(self, time_passed):
         pass
         
     def check_conditions(self):        
@@ -36,12 +36,12 @@ class StateMachine(object):
         self.states[state.name] = state
         
         
-    def think(self):
+    def think(self, time_passed):
         
         if self.active_state is None:
             return
         
-        self.active_state.do_actions()        
+        self.active_state.do_actions(time_passed)        
 
         new_state_name = self.active_state.check_conditions()
         if new_state_name is not None:
@@ -68,7 +68,7 @@ class AntStateExploring(State):
         
         self.ant.destination = Vec2d(randint(0, self.ant.world.width), randint(0, self.ant.world.height))    
  
-    def do_actions(self):
+    def do_actions(self, time_passed):
         
 #-------------------------------------------------------------------------------------------------------
 #Experimental code for fun.  This section of code can me removed at any time.
@@ -184,16 +184,17 @@ class AntStatePowerUp(State):
         State.__init__(self, "powering up")
         self.ant = ant
         
-        
-    def check_conditions(self):
-        
-        #Have we fully powered up?        
+    def do_actions(self, time_passed):
         if self.ant.energy_current < self.ant.energy_full:
             #Only powerup if energy is available.
             if self.ant.base.energy_units > 0:
-                self.ant.energy_current += 100
-                self.ant.base.energy_units -= 0.01
-        else:
+                self.ant.energy_current += self.ant.energy_recharge_per_second*time_passed
+                self.ant.base.energy_units -= self.ant.energy_recharge_to_energy_conversion_ratio*time_passed
+           
+    def check_conditions(self):
+        
+        #Have we fully powered up?        
+        if self.ant.energy_current >= self.ant.energy_full:
             return "exploring"            
         return None
         
