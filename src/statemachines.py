@@ -95,9 +95,9 @@ class AntStateExploring(State):
             self.ant.leaf_id = leaf.id
             return "seeking"        
         
-        #Let's take care of the hungry state
-        if self.ant.hunger_current < .25 * self.ant.hunger_full:
-            return "hungry"
+        #Let's take care of the energy depleted state
+        if self.ant.energy_current < .25 * self.ant.energy_full:
+            return "energy depleted"
         
         return None
     
@@ -156,11 +156,11 @@ class AntStateDelivering(State):
                 
         self.ant.destination = Vec2d(*self.ant.base_location)     
        
-class AntStateHungry(State):
+class AntStateEnergyDepleted(State):
     
     def __init__(self, ant):
         
-        State.__init__(self, "hungry")
+        State.__init__(self, "energy depleted")
         self.ant = ant
         
         
@@ -169,7 +169,7 @@ class AntStateHungry(State):
         #Did we make it back to base to eat yet?        
         if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < global_data.NEST_SIZE:
             # Time to eat.
-            return "eating"            
+            return "powering up"            
         return None
         
         
@@ -177,22 +177,22 @@ class AntStateHungry(State):
              
         self.ant.destination = Vec2d(*self.ant.base_location)
 
-class AntStateEating(State):
+class AntStatePowerUp(State):
     
     def __init__(self, ant):
         
-        State.__init__(self, "eating")
+        State.__init__(self, "powering up")
         self.ant = ant
         
         
     def check_conditions(self):
         
-        #Have we eaten our fill?        
-        if self.ant.hunger_current < self.ant.hunger_full:
-            #Only feed if there is food available.
-            if self.ant.base.food_units > 0:
-                self.ant.hunger_current += 100
-                self.ant.base.food_units -= 0.01
+        #Have we fully powered up?        
+        if self.ant.energy_current < self.ant.energy_full:
+            #Only powerup if energy is available.
+            if self.ant.base.energy_units > 0:
+                self.ant.energy_current += 100
+                self.ant.base.energy_units -= 0.01
         else:
             return "exploring"            
         return None

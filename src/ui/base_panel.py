@@ -17,7 +17,7 @@ class Base_Panel(viewport.Viewport):
         self.background.blit(label, ((self.width / 2) - w / 2, 0))
         
         self.background.blit(self.font.render("Ant Count: ", True, (255, 255, 255)), (10, 15))
-        self.background.blit(self.font.render("Food: ", True, (255, 255, 255)), (10, 30))
+        self.background.blit(self.font.render("Energy: ", True, (255, 255, 255)), (10, 30))
         self.background.blit(self.font.render("Died: ", True, (255, 255, 255)), (10, 45))
         self.background.blit(self.font.render("Born: ", True, (255, 255, 255)), (10, 60))
         self.background.blit(self.font.render("Leaves Re: ", True, (255, 255, 255)), (10, 75))
@@ -32,7 +32,7 @@ class Base_Panel(viewport.Viewport):
 
         self.surface.blit(self.background, (0, 0))
         self.surface.blit(self.font.render(str(self.base.ant_count), True, (255, 255, 255)), (90, 15))
-        self.surface.blit(self.font.render(str(self.base.food_units), True, (255, 255, 255)), (90, 30))
+        self.surface.blit(self.font.render(str(self.base.energy_units), True, (255, 255, 255)), (90, 30))
         self.surface.blit(self.font.render(str(self.base.ant_dead), True, (255, 255, 255)), (90, 45))
         self.surface.blit(self.font.render(str(self.base.ant_born), True, (255, 255, 255)), (90, 60))
         self.surface.blit(self.font.render(str(self.base.leaves_returned), True, (255, 255, 255)), (90, 75))

@@ -16,18 +16,12 @@ Key
 - Game System
     * Publisher/Subscriber middleware (see src/events.py).
 - User Interface
-    * Create control panel class
     - Correct aspect ratio when world completely zoomed out.
     - Add scrolling minimap on and off
-    - experiment with full screen class
     - If resolution changes are allowed, allow preservation of aspect ratio and/or
       auto scaling.
-    - Cleanup mini-map like World_Viewport (version .15)
     - Make something like surface effects that any display port can use.
 - Ant Entity
-    - Maybe add an ant destroy method that will allow ants to clean up their things,
-      like spatial index or other references.
-    - Fix ants going in circles next to a leaf.
     - Adjust leaf carrying position from back to the mouth.
     - Add collision detection so that entities can not run over each other.
     - Fix ant eating to be time based (like ant hunger.)
@@ -71,6 +65,13 @@ use the following command from the main directory.
 ## Changelog
 
 Version guesstimated with: git rev-list --count HEAD
+
+Version 90 11/14/2013
+
+- Changed the idea of ants being hungry to needing energy.  Changed code to reflect it.
+- Added health attribute to ants.  Displayed as a health bar.  If ants run out of energy, health
+  is converted to energy.  Will add ability to heal in future version.
+- Gave window a title.
 
 Version 89 11/13/2013
 

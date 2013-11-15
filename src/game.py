@@ -22,7 +22,7 @@ class Game_Simulation():
                             
         #Normal pygame window mode.
         self.screen = pygame.display.set_mode(global_data.screen_size, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
-      
+        pygame.display.set_caption("Ant Cities")
         #Normal pygame full screen mode.
         #screen = pygame.display.set_mode(global_data.screen_size, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
         #Set up game world

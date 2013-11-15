@@ -10,7 +10,7 @@ class Base (GameEntity):
         self.leaves = 0
         self.leaves_returned = 0  #Total number of leaves returned since start.
         self.leaves_mulching = 0
-        self.food_units = 5
+        self.energy_units = 5
         self.color = color # Used on the minimap.
         self.ant_count = 0
         self.ant_born = 0
@@ -21,7 +21,7 @@ class Base (GameEntity):
     def process(self, time_passed):
         if self.leaves > 100:
             self.leaves -= 100
-            self.food_units += 10
+            self.energy_units += 10
             
     def increment_leaf(self):
         self.leaves += 1
