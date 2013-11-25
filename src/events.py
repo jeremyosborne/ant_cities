@@ -1,19 +1,46 @@
 """Event publisher/subscriber system.
 
-Provides an event interface as well as a centralized event broadcast relay.
+Provides an event interface as well as an event broadcast relay.
+
+General usage:
+
+    from events import EventPublisher
+    
+    pub = EventPublsher()
+    
+    # Event listeners are functions assigned to an arbitrary event name:
+    def my_listener(evobj):
+        # Event listeners should accept one and only 1 argument.
+        # The argument passed is an event object.
+        print "The name of the event is", evobj.name
+        # Event specific data is passed in the data dictionary.
+        if score in evobj.data:
+            print "The current game score is:", evobj.score
+    
+    # Subscribe the listener...
+    pub.sub("score-change", my_listener)
+    
+    # ...do other stuff in the code...
+    
+    # ...and sometime in the future:
+    pub.pub("score-change", score=100)
+    
+    # This will call the callback (and any others) subscribed to this event and
+    # will pass the data.
 
 """
 
 
 
 class EventObject(dict):
-    """ A bare object for returning event diagnostics.
+    """A bare object for passing event data to event listeners.
     
-    In general the following properties are to be expected:
+    The following properties are provided:
 
     name {str} The name of the event.
-    source {object} Generally the object that triggers the event.
-    data {dict} Any labeled argument passed as data to the event publishing.
+    source {object} The object that is marked as the cause of the event
+    being published.
+    data {dict} Event specific data to be passed to the listener.
     """
     def __init__(self, name="unnamed", source=None, data=None):
         self.name = name
@@ -22,22 +49,29 @@ class EventObject(dict):
 
 
 
-class EventEmitter(object):
+class EventPublisher(object):
     """Implements a simple pub/sub interface.
     
-    Suitable as a mixin or as a simple class.
+    Suitable as an instance (a simple publisher) or a class mixin.
     """
+    _listener_id = 0L
     def __init__(self):
         # Any listeners on the events. Is a hash of hashes.
-        self._eventListeners = {}
+        self._event_listeners = {}
     
     def __len__(self):
-        """ Total number of event subscribers.
+        """Total number of event subscribers.
         """
-        return sum(len(event_list) for event, event_list in self._eventListeners.items())
+        return sum(len(event_list) for event, event_list in self._event_listeners.items())
+
+    def _next_listener_id(self):
+        """Return the next key available with which to id a listener.
+        """
+        EventPublisher._listener_id += 1
+        return EventPublisher._listener_id
 
     def sub(self, event, callback):
-        """ Subscribe to a named event.
+        """Subscribe to a named event.
         
         event {str} Name of the event to listen to.
         callback {function} Callback function that will be passed one argument:
@@ -46,48 +80,51 @@ class EventEmitter(object):
         return {tuple} A key that can be used to unsubscribe this listener 
         from this event.
         """
-        if event not in self._eventListeners:
-            self._eventListeners[event] = []
-        self._eventListeners[event].append(callback)
+        listener_id = self._next_listener_id()
+        if event not in self._event_listeners:
+            self._event_listeners[event] = {}
+        self._event_listeners[event][listener_id] = callback
         
         # Should be considered opaque outside of the pub/sub world.
-        return event, callback
+        return event, listener_id
     
     def pub(self, event, **kwargs):
-        """ Publish an event.
+        """Publish an event by name to any listeners listening.
         
         event {str} Name of the event to publish.
         target {mixed} Reference to object that should act as the target of
         the event.
         data {dict} Dictionary of data to be passed on to the listener.
         """
-        if self._eventListeners.get(event):
-            for listener in self._eventListeners.get(event):
-                listener(EventObject(name=event, source=self, data=kwargs))
+        if event in self._event_listeners:
+            listeners = self._event_listeners[event]
+            for listener_id in listeners:
+                listeners[listener_id](EventObject(name=event, source=self, data=kwargs.copy()))
 
-    def remove(self, event_key):
-        """ Remove a specific event by key.
+    def clear_one(self, event_key):
+        """Remove a specific event listener by key.
         
         event_key {tuple} An opaque key for removing events.
         """
         try:
-            self._eventListeners.get(event_key[0]).remove(event_key[1])
+            del self._event_listeners.get(event_key[0])[event_key[1]]
         except Exception:
             # If there is no event to remove, don't explode.
             pass
 
-    def removeall(self, event=None):
-        """ Remove all events, or a particular group of events by name.
+    def clear_many(self, event=None):
+        """Remove all event listeners, or a particular group of event listeners
+        by name.
         
-        event {str} The name of the event group to remove. If not passed,
-        all events are removed.
+        event {str} The name of the group of event listeners to remove. 
+        If not passed all event listeners are removed.
         """
         if not event:
-            # nominate all for gc
-            self._eventListeners = {}
+            # nominate all listeners for garbage collection
+            self._event_listeners = {}
         else:
             try:
-                del self._eventListeners[event]
+                del self._event_listeners[event]
             except KeyError:
                 # allow silent fail for unsubscribed names.
                 pass
@@ -95,5 +132,5 @@ class EventEmitter(object):
 
 
 # Make a centralized events interface, in case all want uniformity.
-events = EventEmitter()
+events = EventPublisher()
 

@@ -63,7 +63,16 @@ use the following command from the main directory.
 
 ## Changelog
 
-Version guesstimated with: git rev-list --count HEAD
+Version guesstimated with:
+
+    git rev-list --count HEAD
+
+
+
+Version 93 11/25/2013
+
+- Cleaned up EventPublisher (nee EventEmitter). Wanted to make it more python
+  like and less web like.
 
 Version 92 11/24/2013
 
