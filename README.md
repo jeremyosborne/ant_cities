@@ -1,9 +1,39 @@
 # Table of Contents
-1. Task/Idea List
-2. Dev Notes
-3. Changelog
+1. Goals
+2. Task/Idea List
+3. Dev Notes
+4. Changelog
 
 
+
+## Goals
+* Meta Goals
+    * Basic UI widgets that can be reused.
+    * Separation of concerns.
+    * Multi-processing: simulation separate from UI.
+* Game Goals
+    * 2 teams on the field.
+        * 1 player
+        * 1 AI
+    * Each team has one base and N number of ants.
+    * "Energy" is the main resource.
+    * Every N leaves brought in gives you E energy.
+    * Every 1 ant carcass gives you aE energy.
+    * Energy can be used to create new ants.
+    * Energy can be used to create DNA.
+    * User has no direct control over the ants. User only directly controls
+      the queen.
+    * Queen ants, represented by the base, produce ants on a button click.
+    * The ant produced is determined by the current DNA makeup which is
+      also determined by the player.
+    * Producing an Ant costs N base amount + kD amount based on additional
+      DNA changes.
+    * Win condition: other teams have no energy and no ants.
+* Game Physics/Rules
+    * Ants can't climb over each other.
+        * Ants perform a short-sighted A* pathing because that's how ants behave in real life.
+    * Simple terrain generation: passable and impassible.
+    * Simple visual background procedurally generated.
 
 ## Task/Idea List
 
@@ -68,6 +98,9 @@ Version guesstimated with:
     git rev-list --count HEAD
 
 
+Version 94 11/25/2013
+
+- Game goals codified in this file.
 
 Version 93 11/25/2013
 
