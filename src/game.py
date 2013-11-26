@@ -110,25 +110,19 @@ def run():
                 return
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
+                    # Quit.
                     return
                 if event.key == K_TAB:
-                    if pygame.event.get_grab():
-                        pygame.event.set_grab(False)
-                    else:
-                        pygame.event.set_grab(True)
-                if event.key == K_q:
-                    if game_simulation.render_game_world:
-                        game_simulation.render_game_world = False
-                    else:
-                        game_simulation.render_game_world = True
-                if event.key == K_m:  #Turn mini-map on
-                    game_simulation.display_minimap = True
-                if event.key == K_n:  #Turn mini-map off
-                    game_simulation.display_minimap = False
-                if event.key == K_c:  #Crash the program
-                    game_simulation.mini_map.delete_me()
-                    del game_simulation.mini_map
-                if event.key == K_r:  #resize the game window.
+                    # Grab the mouse
+                    pygame.event.set_grab(not pygame.event.get_grab())
+                if event.key == K_q: 
+                    # Toggle rendering of the game world.
+                    game_simulation.render_game_world = not game_simulation.render_game_world
+                if event.key == K_m: 
+                    # Toggle rendering of the mini-map.
+                    game_simulation.display_minimap = not game_simulation.display_minimap
+                if event.key == K_r:  
+                    # Resize the game window.
                     game_simulation.world.viewport.height = 500
             #Handle the mouse wheel for zooming.
             if event.type == pygame.MOUSEBUTTONDOWN:

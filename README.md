@@ -97,6 +97,10 @@ Version guesstimated with:
 
     git rev-list --count HEAD
 
+Version 95 11/25/2013
+
+- 'm' toggles the minimap view.
+- Simplified a few toggles.
 
 Version 94 11/25/2013
 
