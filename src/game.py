@@ -126,14 +126,9 @@ def run():
                     game_simulation.world.viewport.height = 500
             #Handle the mouse wheel for zooming.
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:  #Mouse Scroll Wheel Up, so zoom in
-                    game_simulation.world.viewport.change_zoom_level("in")
-                elif event.button == 5:  #Mouse Scroll Wheel Down, so zoom out
-                    game_simulation.world.viewport.change_zoom_level("out")
-                else:
-                    #Let's send it over to the viewport class to determine which
-                    #viewport should process the input.
-                    viewport.Viewport.route_event(event, game_simulation)
+                #Let's send it over to the viewport class to determine which
+                #viewport should process the input.
+                viewport.Viewport.route_event(event, game_simulation)
             if event.type == pygame.MOUSEBUTTONUP:
                 #print "Mouse button up event."
                 pass

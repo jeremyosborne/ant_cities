@@ -5,7 +5,6 @@
 4. Changelog
 
 
-
 ## Goals
 * Meta Goals
     * Basic UI widgets that can be reused.
@@ -34,6 +33,8 @@
         * Ants perform a short-sighted A* pathing because that's how ants behave in real life.
     * Simple terrain generation: passable and impassible.
     * Simple visual background procedurally generated.
+
+
 
 ## Task/Idea List
 
@@ -96,6 +97,10 @@ use the following command from the main directory.
 Version guesstimated with:
 
     git rev-list --count HEAD
+
+Version 97 11/25/2013
+
+- Migrated the mousewheel (zoom) events to the viewport event router.
 
 Version 95 11/25/2013
 

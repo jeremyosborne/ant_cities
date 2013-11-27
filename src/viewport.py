@@ -79,11 +79,12 @@ class Viewport(pygame.Surface):
          
     @classmethod
     def route_event(cls, event, game_simulation, top_layer = -1):
-        """  Determines which layer should handle event.  If top_layer isn't
-             specified, we default to -1 indicating we should start with the
-             top most layer.  Top_layer is there so that one could override
-             the routing if needed. """
-        
+        """Determines which layer should handle event.  
+        If top_layer isn't specified, we default to -1 indicating we should 
+        start with the top most layer.  Top_layer is there so that one could 
+        override the routing if needed. 
+        """
+
         #If top_layer = -1 then set top_layer to the last in the list.
         top_layer = cls.viewports[-1]._layer
         
@@ -111,8 +112,6 @@ class Viewport(pygame.Surface):
                         return
                     #I should also do an exclusive check here too.  If exclusive, then stop
                     #walking through the viewports.
-            pass
-        pass
   
 #----------------------------------------------------------------------------#   
     def __init__(self, x_right=0, y_down=0, width=1024, height=768, scale=1, layer=0, is_visable=True):

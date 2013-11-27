@@ -258,10 +258,16 @@ class World_Viewport(viewport.Viewport):
         y = (gamey - self.world_viewable_y_rect) / self.zoom_area_height * self.height
         
         return Vec2d(x, y)
-        
+
     def service_user_event(self, event, game_simulation):
         if event.button == 1:
             # left click, attempt to select entity.
             game_world_point = self.screenpoint_to_gamepoint(*event.pos)
             entity = game_simulation.world.spatial_index.find_closest(game_world_point, 150)[0]
             game_simulation.unit_information_display.set_unit(entity)
+        elif event.button == 4:  
+            # Mouse Scroll Wheel Up, so zoom in
+            game_simulation.world.viewport.change_zoom_level("in")
+        elif event.button == 5:  
+            # Mouse Scroll Wheel Down, so zoom out
+            game_simulation.world.viewport.change_zoom_level("out")
