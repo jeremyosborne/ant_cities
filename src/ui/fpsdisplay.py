@@ -1,7 +1,7 @@
 import pygame
 import viewport
 
-class FPS_Display(viewport.Viewport):
+class FPSDisplay(viewport.Viewport):
     def __init__(self):
         viewport.Viewport.__init__(self, 5, 5, 125, 20, 1, 10, True)
         self.font = pygame.font.SysFont("arial", 16)
@@ -12,7 +12,7 @@ class FPS_Display(viewport.Viewport):
         self.surface.set_colorkey((255, 255, 255))
         self.description = "FPS display."
         
-    def draw_fps(self, clock):
+    def update(self, clock):
         fps = clock.get_fps()
 
         #Clear the surface.

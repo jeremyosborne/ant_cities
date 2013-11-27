@@ -1,12 +1,12 @@
 import pygame
 from pygame.locals import *
 
-import game_world
 import global_data
 import viewport
-from ui.mini_map import Mini_Map
+from world import World
+from ui.minimap import MiniMap
 from ui.view_unit_info_box import View_Unit_Info_Box
-from ui.fps_display import FPS_Display
+from ui.fpsdisplay import FPSDisplay
 from ui.base_panel import Base_Panel
 from ui.world_panel import World_Panel
 
@@ -17,7 +17,6 @@ class GameSimulation():
                             
         #Normal pygame window mode.
         self.screen = pygame.display.set_mode(global_data.screen_size, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
-        pygame.display.set_caption("Ant Cities")
         #Normal pygame full screen mode.
         #screen = pygame.display.set_mode(global_data.screen_size, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
         #Set up game world
@@ -25,17 +24,16 @@ class GameSimulation():
         print pygame.display.Info()
         
         #The minus 170 below is the y size of the UI elements.  
-        self.world = game_world.World(global_data.world_size_x, global_data.world_size_y, global_data.screen_size_x, global_data.screen_size_y-170)
+        self.world = World(global_data.world_size_x, global_data.world_size_y, global_data.screen_size_x, global_data.screen_size_y-170)
         
         #Setup UI elements.
-        #Mini_Map Init
-        self.mini_map = Mini_Map(global_data.screen_size_x-256, global_data.screen_size_y-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+        self.mini_map = MiniMap(global_data.screen_size_x-256, global_data.screen_size_y-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
 
         #Unit information display.
         self.unit_information_display = View_Unit_Info_Box(global_data.screen_size_x-512, global_data.screen_size_y-170, 256, 170)
           
         #FPS Display
-        self.fps_display = FPS_Display()
+        self.fps_display = FPSDisplay()
         
         #Base Display 1
         self.base_display_1 = Base_Panel(self.world.base_2, 1, global_data.screen_size_y-170, 200, 170)
@@ -45,11 +43,6 @@ class GameSimulation():
         self.world_info_display = World_Panel(self.world, 402, global_data.screen_size_y-170, 200, 170)
         
         self.clock = pygame.time.Clock()
-        
-        self.render_game_world = True
-    
-        self.display_minimap = True
-    
 
     def process_game_loop(self):
     
@@ -67,25 +60,21 @@ class GameSimulation():
         if mouse_y > (self.world.viewport.height-10+170):
             self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x, self.world.viewport.world_viewable_center_y + self.world.viewport.scroll_speed)
             
-        #Time_passed is in miliseconds.
+        # Time_passed is in milliseconds.
         time_passed = self.clock.tick(60)
 
         self.world.process(time_passed)
-        if self.render_game_world:
-            self.world.render()
-        
-        #Let's process the Mini_Map
-        if self.display_minimap == True:
-            self.mini_map.update(self.world)
-        
-        self.fps_display.draw_fps(self.clock)
+
+        self.mini_map.update(self.world, draw=global_data.render_minimap)
+        self.fps_display.update(self.clock)
         self.unit_information_display.update(self.world)  
         self.base_display_1.update()
         self.base_display_2.update()
         self.world_info_display.update() 
-            
-        #Call the method that renders all the viewport layers in the proper sequence.
+
+        self.world.render(draw=global_data.render_world)
+
+        # Call the method that renders all the viewport layers in the proper sequence.
         viewport.Viewport.render_viewports(self.screen)
         
-        #pygame.display.update()
         pygame.display.flip()

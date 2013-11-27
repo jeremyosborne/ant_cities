@@ -1,7 +1,7 @@
 import pygame
 import viewport
 
-class Mini_Map(viewport.Viewport):
+class MiniMap(viewport.Viewport):
     def __init__(self, x_right=0, y_down=0, width=256, height=256, world_width=1024, world_height=768):
         
         self.description = "Mini Map"
@@ -47,7 +47,7 @@ class Mini_Map(viewport.Viewport):
         self.y_scale_factor = float(self.world_height) / float(self.minimap_usable_height)
         
         #Scale factors for translating mouse clicks inside the minimap.
-       # self.mouse_x_scale_factor = float(self.)
+        #self.mouse_x_scale_factor = float(self.)
 
         #For debugging
         print "self.minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
@@ -61,8 +61,15 @@ class Mini_Map(viewport.Viewport):
         
 
         
-    def update(self, world):
+    def update(self, world, draw=True):
+        """Update the game world.
         
+        world {World} Gameworld reference.
+        [draw] {bool} Override to allow temporary non-drawing of minimap.
+        """
+        if not draw:
+            return
+
         #Clear the mini map.
         self.minimap_surface.blit(self.minimap_background, (0, 0))
         #Let's go through all the entities and put them on the mini_map

@@ -1,52 +1,20 @@
-#Setting defaults
+# Control settings.
+render_world = True
+render_minimap = True
 
-#SCREEN_SIZE = (1200, 768)
-#WORLD_SIZE = (2400, 512)
-#INTERFACE_SIZE = (1200, 256)
-#NEST_POSITION = (944, 256)
-#NEST_POSITION_2 = (256, 256)
+# Game settings.
 ANT_COUNT = 60
 NEST_SIZE = 5.
 
 #Screen Based
-
 screen_size = (1200,700)
 screen_size_x = 1200
 screen_size_y = 700
 
-#screen_size = (1280,800)
-#screen_size_x = 1280
-#screen_size_y = 800
-
-#screen_size = (1900,1130)
-#screen_size_x = 1900
-#screen_size_y = 768
-
 #World Based
-#world_size = (1200*5, 768*5)
 world_size_x = 1200*6
 world_size_y = 530*6
 
 NEST_POSITION = (world_size_x - 256, world_size_y / 2)
 NEST_POSITION_2 = (256, world_size_y / 2)
 
-
-#Interface Based
-#INTERFACE_SIZE = (1200, 256)
-
-
-
-
-
-#def change_screen_size (new_value):
-    
-#    global screen_size
-#    global screen_size_x
-#    global screen_size_y
-    
-#    x, y = new_value;
-#    screen_size = new_value
-#    screen_size_x = x
-#    screen_size_y = y
-    
-    

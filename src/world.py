@@ -110,7 +110,13 @@ class World(object):
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
             
-    def render(self):
+    def render(self, draw=True):
+        """Update the game world.
+        
+        [draw] {bool} Override to allow temporary non-drawing.
+        """
+        if not draw:
+            return
         
         #Prepares for this frame.  Clears the background, etc.
         self.viewport.prepare_new_frame()
