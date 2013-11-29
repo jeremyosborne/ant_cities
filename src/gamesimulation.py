@@ -3,6 +3,7 @@ from pygame.locals import *
 
 import global_data
 import viewport
+from events import events
 from world import World
 from ui.minimap import MiniMap
 from ui.view_unit_info_box import View_Unit_Info_Box
@@ -27,7 +28,10 @@ class GameSimulation():
         self.world = World(global_data.world_size_x, global_data.world_size_y, global_data.screen_size_x, global_data.screen_size_y-170)
         
         #Setup UI elements.
-        self.mini_map = MiniMap(global_data.screen_size_x-256, global_data.screen_size_y-170, 256, 170, global_data.world_size_x, global_data.world_size_y)
+        self.mini_map = MiniMap(global_data.screen_size_x-256, global_data.screen_size_y-170, 
+                                256, 170, 
+                                global_data.world_size_x, global_data.world_size_y, 
+                                events)
 
         #Unit information display.
         self.unit_information_display = View_Unit_Info_Box(global_data.screen_size_x-512, global_data.screen_size_y-170, 256, 170)

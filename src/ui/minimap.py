@@ -2,25 +2,26 @@ import pygame
 import viewport
 
 class MiniMap(viewport.Viewport):
-    def __init__(self, x_right=0, y_down=0, width=256, height=256, world_width=1024, world_height=768):
-        
-        self.description = "Mini Map"
-        
+    def __init__(self, x_right=0, y_down=0, width=256, height=256, 
+                 world_width=1024, world_height=768, event_pub=None):
+
         self.mouse_events = True
+        # Panning of the map is active.
+        self.panning_map = False
         
         self.border_size = 10  #Made it 10 to match the screen scrolling width.
         self.border_color = (165,42,42)  #Brown
         
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 0, True)
 
+        self.description = "Mini Map"
+
         self.world_width = world_width
         self.world_height = world_height
                             
         self.minimap_width = self.width - self.border_size * 2
         self.minimap_height = self.height - self.border_size * 2
-        
-        self.description = "Mini-Map display."
-        
+                
         #Adjust for minimap aspect ratio, world size vs minimap size.
         #Determine the aspect ratio of the minimap.
         self.minimap_aspect_ratio = float(self.minimap_width/self.minimap_height)
@@ -48,19 +49,27 @@ class MiniMap(viewport.Viewport):
         
         #Scale factors for translating mouse clicks inside the minimap.
         #self.mouse_x_scale_factor = float(self.)
-
-        #For debugging
-        print "self.minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
-        print "self.minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height
                
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill(self.border_color)
         self.minimap_surface = pygame.surface.Surface((self.minimap_usable_width, self.minimap_usable_height)).convert()
         self.minimap_background = pygame.surface.Surface((self.minimap_usable_width, self.minimap_usable_height)).convert()
         self.minimap_background.fill((0, 0, 0))
-        
 
-        
+        # For debugging
+        if __debug__:
+            print "MiniMap instance property values"
+            print "minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
+            print "minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height        
+
+        # Register event listeners.
+        if event_pub is not None:
+            event_pub.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+            event_pub.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
+            event_pub.sub("MOUSEMOTION", self.mousemotion_listener)
+        elif __debug__:
+            print "event_pub was not defined, no event listening will be happening"
+
     def update(self, world, draw=True):
         """Update the game world.
         
@@ -97,54 +106,43 @@ class MiniMap(viewport.Viewport):
         #Put minimap together with the border with any offsets calculated for aspect ratio.
         self.surface.blit(self.background, (0, 0))
         self.surface.blit(self.minimap_surface, ((self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height)))
-                            
-        
+
     def delete_me(self):
         self.delete()
         del self
         #self = None
 
-    def service_user_event(self, event, game_simulation):
-        
-        #Let's take care of the left mouse button.  A left mouse click in this window
-        #recenters the game world view.
-        
-        if event.button == 1:  #left click.
-            
-            #When we detect the mouse up event, we'll set the following to False and end
-            #the loop.  All user events except for mouse scrolling and zooming are being 
-            #directed to only this method.
-            mouse_button_is_down = True
-            
-            while mouse_button_is_down:
-                #Convert the global x and y coordinates of the mouse to the viewport.  Note
-                #that this is not adjusted to the minimap, just the viewport containing the
-                #actual map and map borders.
-                mouse_x, mouse_y = pygame.mouse.get_pos()            
-                viewport_mouse_x = mouse_x - self.x_right
-                viewport_mouse_y = mouse_y - self.y_down
-                
-                #Define a rect that matches the actual area on the viewport where the minimap is, i.e. don't count the borders.
-                minimap_rect = pygame.Rect(self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height, self.minimap_usable_width, self.minimap_usable_height )
+    def mousebuttondown_listener(self, e):
+        if e.data["ev"].button == 1:
+            self.panning_map = True
     
-                if minimap_rect.collidepoint(viewport_mouse_x, viewport_mouse_y) == True:
-                    #Adjust mouse coordinates to match the viewport map.
-                    viewport_mouse_x = viewport_mouse_x - self.minimap_offset_width - self.border_size
-                    viewport_mouse_y = viewport_mouse_y - self.minimap_offset_height - self.border_size
-                                    
-                    #Convert into gameworld coordinates.
-                    gameworld_x = int(viewport_mouse_x * self.x_scale_factor)
-                    gameworld_y = int(viewport_mouse_y * self.y_scale_factor)
-
-                    #Change centerpoint of the map
-                    game_simulation.world.viewport.update_viewport_center(gameworld_x, gameworld_y)
-
+    def mousemotion_listener(self, e):
+        if self.panning_map == True:
+            game_simulation = e.data["game_sim"]
             
-                #Process the game world.  We want things to keep going.
-                game_simulation.process_game_loop()
-                
-                #Let's check to see if the mouse_up_event has happened yet, if so, it's time to exit this loop.
-                #We only look at one at a time.
-                new_event = pygame.event.poll()
-                if new_event.type == pygame.MOUSEBUTTONUP and new_event.button == 1:
-                    mouse_button_is_down = False
+            # Convert the global x and y coordinates of the mouse to the viewport.  Note
+            # that this is not adjusted to the minimap, just the viewport containing the
+            # actual map and map borders.
+            mouse_x, mouse_y = pygame.mouse.get_pos()            
+            viewport_mouse_x = mouse_x - self.x_right
+            viewport_mouse_y = mouse_y - self.y_down
+            
+            # Define a rect that matches the actual area on the viewport where the minimap is, i.e. don't count the borders.
+            minimap_rect = pygame.Rect(self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height, self.minimap_usable_width, self.minimap_usable_height )
+
+            if minimap_rect.collidepoint(viewport_mouse_x, viewport_mouse_y) == True:
+                # Adjust mouse coordinates to match the viewport map.
+                viewport_mouse_x = viewport_mouse_x - self.minimap_offset_width - self.border_size
+                viewport_mouse_y = viewport_mouse_y - self.minimap_offset_height - self.border_size
+                                
+                # Convert into gameworld coordinates.
+                gameworld_x = int(viewport_mouse_x * self.x_scale_factor)
+                gameworld_y = int(viewport_mouse_y * self.y_scale_factor)
+
+                #Change centerpoint of the map
+                game_simulation.world.viewport.update_viewport_center(gameworld_x, gameworld_y)
+
+    def mousebuttonup_listener(self, e):
+        if e.data["ev"].button == 1:
+            self.panning_map = False
+

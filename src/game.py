@@ -12,6 +12,7 @@ from pygame.locals import *
 import viewport
 import global_data
 from gamesimulation import GameSimulation
+from events import events
 
 def run():
     """Call to start the game.
@@ -27,7 +28,7 @@ def run():
         for event in pygame.event.get():
             if event.type == QUIT:
                 return
-            if event.type == KEYDOWN:
+            elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     # Quit.
                     return
@@ -43,11 +44,18 @@ def run():
                 if event.key == K_r:  
                     # Resize the game window.
                     game_simulation.world.viewport.height = 500
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == MOUSEBUTTONDOWN:
+                events.pub("MOUSEBUTTONDOWN", ev=event, game_sim=game_simulation)
                 # Let's send it over to the viewport class to determine which
                 # viewport should process the input.
                 viewport.Viewport.route_event(event, game_simulation)
-            
+            elif event.type == MOUSEBUTTONUP:
+                events.pub("MOUSEBUTTONUP", ev=event, game_sim=game_simulation)
+                viewport.Viewport.route_event(event, game_simulation)
+            elif event.type == MOUSEMOTION:
+                events.pub("MOUSEMOTION", ev=event, game_sim=game_simulation)
+
+
         game_simulation.process_game_loop()
 
 
