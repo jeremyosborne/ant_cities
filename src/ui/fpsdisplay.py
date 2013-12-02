@@ -2,8 +2,8 @@ import pygame
 import viewport
 
 class FPSDisplay(viewport.Viewport):
-    def __init__(self):
-        viewport.Viewport.__init__(self, 5, 5, 125, 20, 1, 10, True)
+    def __init__(self, x_right=5, y_down=5):
+        viewport.Viewport.__init__(self, x_right, y_down, 125, 20, 1, 10, True)
         self.font = pygame.font.SysFont("arial", 16)
         self.background = pygame.surface.Surface((125, 20)).convert()
         self.background.fill((255, 255, 255))

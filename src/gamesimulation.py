@@ -3,13 +3,13 @@ from pygame.locals import *
 
 import global_data
 import viewport
+import time
 from events import events
 from world import World
 from ui.minimap import MiniMap
 from ui.view_unit_info_box import View_Unit_Info_Box
 from ui.fpsdisplay import FPSDisplay
-from ui.base_panel import Base_Panel
-from ui.world_panel import World_Panel
+from ui.datacolumndisplay import DataColumnDisplay
 
 
 class GameSimulation():
@@ -36,15 +36,42 @@ class GameSimulation():
         #Unit information display.
         self.unit_information_display = View_Unit_Info_Box(global_data.screen_size_x-512, global_data.screen_size_y-170, 256, 170)
           
-        #FPS Display
-        self.fps_display = FPSDisplay()
+        # FPS Display
+        self.fps_display = FPSDisplay(5, 5)
         
-        #Base Display 1
-        self.base_display_1 = Base_Panel(self.world.base_2, 1, global_data.screen_size_y-170, 200, 170)
-        self.base_display_2 = Base_Panel(self.world.base_1, 201, global_data.screen_size_y-170, 200, 170)
-        
-        #World Info Display
-        self.world_info_display = World_Panel(self.world, 402, global_data.screen_size_y-170, 200, 170)
+        # Base Information Displays
+        self.base_display_1 = DataColumnDisplay(1, global_data.screen_size_y-170, 
+                                                200, 170,
+                                                "Base "+self.world.base_1.description,
+                                                [
+                                                 ("# Ants:", lambda: str(self.world.base_1.ant_count)),
+                                                 ("Energy:", lambda: str(self.world.base_1.energy_units)),
+                                                 ("Born:", lambda: str(self.world.base_1.ant_born)),
+                                                 ("Died:", lambda: str(self.world.base_1.ant_dead)),
+                                                 ("Leaf Storage:", lambda: str(self.world.base_1.leaves_returned)),
+                                                ])
+        self.base_display_2 = DataColumnDisplay(201, global_data.screen_size_y-170, 
+                                                200, 170,
+                                                "Base "+self.world.base_2.description,
+                                                [
+                                                 ("# Ants:", lambda: str(self.world.base_2.ant_count)),
+                                                 ("Energy:", lambda: str(self.world.base_2.energy_units)),
+                                                 ("Born:", lambda: str(self.world.base_2.ant_born)),
+                                                 ("Died:", lambda: str(self.world.base_2.ant_dead)),
+                                                 ("Leaf Storage:", lambda: str(self.world.base_2.leaves_returned)),
+                                                ])
+        # World Info Display
+        self.world_info_display = DataColumnDisplay(402, global_data.screen_size_y-170, 
+                                              200, 170,
+                                              "World Info",
+                                              [
+                                                ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
+                                                ("Base Count:", lambda: str(self.world.base_count)),
+                                                ("Leaves Born:", lambda: str(self.world.leaf_born)),
+                                                ("Leaves Expired:", lambda: str(self.world.leaf_expired)),
+                                                ("Leaves Remaining:", lambda: str(self.world.leaf_world_count)),
+                                              ]
+                                              )
         
         self.clock = pygame.time.Clock()
 
