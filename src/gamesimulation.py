@@ -44,20 +44,20 @@ class GameSimulation():
                                                 200, 170,
                                                 "Base "+self.world.base_1.description,
                                                 [
-                                                 ("# Ants:", lambda: str(self.world.base_1.ant_count)),
+                                                 ("# Ants Born:", lambda: str(self.world.base_1.ant_born)),
+                                                 ("# Ants Died:", lambda: str(self.world.base_1.ant_dead)),
+                                                 ("# Ants Net:", lambda: str(self.world.base_1.ant_count)),
                                                  ("Energy:", lambda: str(self.world.base_1.energy_units)),
-                                                 ("Born:", lambda: str(self.world.base_1.ant_born)),
-                                                 ("Died:", lambda: str(self.world.base_1.ant_dead)),
                                                  ("Leaf Storage:", lambda: str(self.world.base_1.leaves_returned)),
                                                 ])
         self.base_display_2 = DataColumnDisplay(201, global_data.screen_size_y-170, 
                                                 200, 170,
                                                 "Base "+self.world.base_2.description,
                                                 [
-                                                 ("# Ants:", lambda: str(self.world.base_2.ant_count)),
+                                                 ("# Ants Born:", lambda: str(self.world.base_2.ant_born)),
+                                                 ("# Ants Died:", lambda: str(self.world.base_2.ant_dead)),
+                                                 ("# Ants Net:", lambda: str(self.world.base_2.ant_count)),
                                                  ("Energy:", lambda: str(self.world.base_2.energy_units)),
-                                                 ("Born:", lambda: str(self.world.base_2.ant_born)),
-                                                 ("Died:", lambda: str(self.world.base_2.ant_dead)),
                                                  ("Leaf Storage:", lambda: str(self.world.base_2.leaves_returned)),
                                                 ])
         # World Info Display
@@ -65,13 +65,12 @@ class GameSimulation():
                                               200, 170,
                                               "World Info",
                                               [
-                                                ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
-                                                ("Base Count:", lambda: str(self.world.base_count)),
                                                 ("Leaves Born:", lambda: str(self.world.leaf_born)),
                                                 ("Leaves Expired:", lambda: str(self.world.leaf_expired)),
-                                                ("Leaves Remaining:", lambda: str(self.world.leaf_world_count)),
-                                              ]
-                                              )
+                                                ("Leaves In World:", lambda: str(self.world.leaf_world_count)),
+                                                ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
+                                                ("Base Count:", lambda: str(self.world.base_count)),
+                                              ])
         
         self.clock = pygame.time.Clock()
 

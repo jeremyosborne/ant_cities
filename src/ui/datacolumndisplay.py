@@ -21,6 +21,7 @@ class DataColumnDisplay(viewport.Viewport):
         self.font = pygame.font.SysFont(self.font_family, self.font_size)
         self.fgcolor = (255, 255, 255)
         self.bgcolor = (0, 0, 0)
+        self.bordercolor = (255, 255, 255)
         # Whitespace between edge of box and content (pixels).
         self.padding = {
                         #"top": 0,
@@ -46,12 +47,15 @@ class DataColumnDisplay(viewport.Viewport):
     def draw_background(self):
         self.background.fill(self.bgcolor)
 
-        # Add static title.
+        # Border.
+        pygame.draw.rect(self.background, self.bordercolor, pygame.Rect(0, 0, self._width, self._height), 1)
+
+        # Title.
         title_surface = self.font.render(self.title, True, self.fgcolor)
         w, h = title_surface.get_size()
         self.background.blit(title_surface, (self.width/2 - w/2, 0))
         
-        # Add static info labels and determine width of label.
+        # Static info labels and determine width of label.
         for i, labeled_data in enumerate(self.data):
             data_label = self.font.render(labeled_data[0], True, self.fgcolor)
             # Save dynamic offset to align data against.
