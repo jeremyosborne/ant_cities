@@ -1,12 +1,10 @@
-"""Event publisher/subscriber system.
-
-Provides an event interface as well as an event broadcast relay.
+"""Publisher/subscriber system.
 
 General usage:
 
     from events import EventPublisher
     
-    pub = EventPublsher()
+    pub = EventPublisher()
     
     # Event listeners are functions assigned to an arbitrary event name:
     def my_listener(evobj):
@@ -55,11 +53,16 @@ class EventPublisher(object):
     Suitable as an instance (a simple publisher) or a class mixin.
     """
     _listener_id = 0L
-    def __init__(self):
-        # Any listeners on the events. Is a hash of hashes.
+    def __init__(self, *args, **kwargs):
+        """Initializer.
+        
+        Accepts all arguments only as a convenience to subclasses. All
+        arguments are ignored.
+        """
+        # Listeners get organized as a hash of hashes.
         self._event_listeners = {}
     
-    def __len__(self):
+    def countsubs(self):
         """Total number of event subscribers.
         """
         return sum(len(event_list) for event, event_list in self._event_listeners.items())
@@ -129,8 +132,79 @@ class EventPublisher(object):
                 # allow silent fail for unsubscribed names.
                 pass
 
+    def audit(self):
+        """Debug and diagnostic of events currently subscribed.
+        
+        returns {dict} with a "count" item listing current total listeners,
+        and a shallow copied "listeners" dictionary of all listeners
+        currently subscribed.
+        """
+        return {
+                "count": self.countsubs(),
+                "listeners": self._event_listeners.copy()
+                }
 
 
-# Make a centralized events interface, in case all want uniformity.
-events = EventPublisher()
+class EventSubscriberMixin(object):
+    """Convenience mixin that is mainly used to aid in the tracking and
+    removal of event listeners that this object has subscribed to.
+    
+    For use with objects that only intend to be listeners, not publishers.
+    
+    Can be used in conjunction with EventPublisher as it compliments the
+    publisher framework.
+    """
+    def __init__(self, *args, **kwargs):
+        """Initializer.
+
+        Accepts all arguments only as a convenience to subclasses. All
+        arguments are ignored.
+        """
+        # A hash of lists of event keys to specific event subscriptions.
+        self._event_subs = {}
+        
+    def subto(self, source, event, callback):
+        """Subscribe to a particular event and allow for easy removal of
+        the listener at a later date.
+        
+        source {EventPublisher} Instance that publishes events.
+        event {str} Name of the event to listen to.
+        callback {function} Callback function that will be passed one argument:
+        the EventObject.
+        
+        Raises TypeError if source does not subclass EventPublisher.
+        """
+        if isinstance(source, EventPublisher):
+            if event not in self._event_subs:
+                self._event_subs[event] = []
+            subscription_key = source.sub(event, callback)
+            self._event_subs[event].append({
+                                            "subscription_key": subscription_key,
+                                            "source": source
+                                            })
+        else:
+            raise TypeError("source must subclass EventPublisher")
+        
+    def unsubfrom(self, event=None):
+        """Unsubscribe from a list of events.
+        
+        event {str} The name of the group of event listeners to remove. 
+        If not passed all event listeners are removed that we have tracked.
+        """
+        # Allow for one type of iteration loop.
+        if event == None:
+            event_listeners = ((evname, subs) for evname, subs in self._event_subs.items())
+        elif event in self._event_subs:
+            event_listeners = ((event, self._event_subs[event]),)
+        else:
+            # No event, quit out.
+            return
+        for evname, subs in event_listeners:
+            while subs:
+                # Unsubscribe each event.
+                subscriber_dict = subs.pop()
+                subscriber_dict["source"].clear_one(subscriber_dict["subscription_key"])
+            # Get rid of the event list now that it is empty.
+            del self._event_subs[evname]
+
 

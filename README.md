@@ -45,9 +45,6 @@ Key
 - Not Started or on hold.
 
 - Game System
-    * Publisher/Subscriber middleware (see src/events.py).
-    - Add an audit to the pub/sub system that provides a hashed set of lists
-      for all subscribed events.
     - UI elements need to have the ability to convert a screen coordinate to a
       UI equivalent element, and also determine if the collision happened inside
       of them.
@@ -88,6 +85,13 @@ Key
 
 
 ## Dev Notes
+
+### Third party dependencies
+Dependencies are managed by [pip](http://www.pip-installer.org/en/latest/index.html)
+and are stored in the `requirements.txt` file. To install dependencies on a
+new system, do:
+
+    pip install -r requirements.txt
 
 ### Testing
 To run the tests with [nose](http://nose.readthedocs.org/en/latest/index.html),

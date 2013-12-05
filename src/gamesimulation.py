@@ -4,7 +4,7 @@ from pygame.locals import *
 import global_data
 import viewport
 import time
-from events import events
+from game import events
 from world import World
 from ui.minimap import MiniMap
 from ui.view_unit_info_box import View_Unit_Info_Box

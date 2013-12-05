@@ -9,14 +9,19 @@ Created on Mar 2, 2013
 import pygame
 from pygame.locals import *
 
+from events import EventPublisher
+# A central event publisher for broadcasting events (for now).
+events = EventPublisher()
+
 import viewport
 import global_data
 from gamesimulation import GameSimulation
-from events import events
 
 def run():
     """Call to start the game.
     """
+    global events
+    
     pygame.init()
     pygame.display.set_caption("Ant Cities")
 
