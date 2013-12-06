@@ -25,12 +25,91 @@ controller.
 """
 
 class PositionableMixin(object):
-    def positionToParent(self):
-        pass
+    """Helpers used to position view.
+    """
+    def position_relative_to_parent(self, x=None, y=None, buf=0):
+        """Position relative to parent, if parent is available.
+        
+        Aids positioning that would likely require reusable math.
+        
+        x {mixed} The following arguments are supported:
+            None = Do not position this property.
+            "right" = Position right hand side of this view relative to right
+            side of parent view.
+            "left" = Position left hand side of this view relative to left
+            side of parent view.
+            "center" = Position view centered horizontally.
+            0...n = Position left of view x number of pixels from the
+            left of parent view.
+            -1...-n = Position right of view x number of pixels from the
+            right of parent view.
+        y {mixed} The following arguments are supported:
+            None = Do not position this property.
+            "top" = Position top side of this view relative to top side of
+            parent view.
+            "bottom" = Position bottom side of this view relative to bottom side
+            of parent view.
+            "center" = Position view centered vertically.
+            0...n = Position top of view x number of pixels from the
+            top of parent view.
+            -1...-n = Position bottom of view x number of pixels from
+            the bottom of parent view.
+        buf {int} A buffer that will add extra padding relative to the sort
+        of positioning being performed. If a number, will apply to both x and
+        y. If a tuple, will [0] applies to x, [1] applies to y.
+        """
+        if not self.parent:
+            # No parent to position relative to.
+            return
+        
+        # Handle buffer.
+        if type(buf) == tuple:
+            bufx = buf[0]
+            bufy = buf[1]
+        else:
+            bufx = bufy = buf
+        
+        if x == "left":
+            pass
+        elif x == "right":
+            pass
+        elif x == "center":
+            pass
+        elif type(x) == int and x < 0:
+            pass
+        elif type(x) == int and x >= 0:
+            pass
+        
+        if y == "top":
+            pass
+        elif y == "bottom":
+            pass
+        elif y == "center":
+            pass
+        elif type(y) == int and y < 0:
+            pass
+        elif type(y) == int and y > 0:
+            pass
+
+
 
 class SizableMixin(object):
-    def sizeToParent(self):
-        pass
+    """Helpers used to size view.
+    """
+    def size_relative_to_parent(self, wperc=None, hperc=None):
+        """Set the size of the view relative to the parent size. Fractions
+        rounded down.
+        
+        wperc {int} Percentage size to set width (assume 0-100).
+        hperc {int} Percentage size to set height (assume 0-100).
+        """
+        if not self.parent:
+            # No parent to position relative to.
+            return
+        
+        # TODO: Implement.
+
+
 
 class View(object):
     def __init__(self, x=0, y=0, width=0, height=0, zindex=0, controller=None, **kwargs):
@@ -64,7 +143,7 @@ class View(object):
         # Child views within this view hierarchy.
         self.childviews = []
 
-        # Assumes mixins do not require arguments.
+        # Assumes mixins don't want arguments. This might be a bad assumption.
         super(View, self).__init__()
         self.subclass_init(**kwargs)
 
@@ -74,6 +153,7 @@ class View(object):
     
     @width.setter
     def width(self, value):
+        # TODO: Trigger a surface size change?
         self._width = value
     
     @property
@@ -82,6 +162,7 @@ class View(object):
     
     @height.setter
     def height(self, value):
+        # TODO: Trigger a surface size change?
         self._height = value
 
     @property
@@ -91,6 +172,12 @@ class View(object):
     @x.setter
     def x(self, value):
         self._x = value
+        
+    @property
+    def right(self):
+        """Shorthand for x+width.
+        """
+        return self.x+self.width
 
     @property
     def y(self):
@@ -99,6 +186,46 @@ class View(object):
     @y.setter
     def y(self, value):
         self._y = value
+
+    @property
+    def bottom(self):
+        """Shorthand for y+height.
+        """
+        return self.y+self.height
+        
+    @property
+    def center(self):
+        """{tuple} Center coordinate relative to this view.
+        """
+        return (self.width/2, self.height/2)
+    
+    @property
+    def center_screenxy(self):
+        """{tuple} Center coordinate relative to the screen. Views with no 
+        parent are assumed to be placed relative to the screen.
+        """
+        offset = self.offset_screenxy
+        return (offset[0]+self.width/2, offset[1]+self.height/2)
+
+    @property
+    def offset_screenxy(self):
+        """{tuple} The absolute offset from the universal device coordinate
+        system of the top and left corner of this view.
+        
+        Example:
+        This view has offset (10, 20).
+        This view has a parent view with offset (-5, 50), which in turn has
+        no parent.
+        This function returns (5, 70).
+        """
+        x, y = self.x, self.y
+        ancestor = self.parentView
+        while ancestor:
+            x += ancestor.x
+            y += ancestor.y
+            ancestor = ancestor.parentView
+
+        return (x, y)
 
     def subclass_init(self, **kwargs):
         """For subclasses to override, called by __init__. 
@@ -172,10 +299,10 @@ class View(object):
         
         returns {tuple} an indexable coordinate relative to this rect.
         """
-        offset = self.screenxy_offset()
+        offset = self.offset_screenxy
         return (coord[0]-offset[0], coord[1]-offset[1])
 
-    def screenxy_contained(self, coord):
+    def contained_screenxy(self, coord):
         """Determine if a device coordinate is contained within this view.
         
         Takes into account view lineage (parents).
@@ -189,24 +316,3 @@ class View(object):
         x, y = self.screenxy_to_relativexy(coord)
         # Need just a width and height check.
         return (0 <= x and x <= self.width and 0 <= y and y <= self.height)
-
-    def screenxy_offset(self):
-        """Determine the absolute offset from the universal device coordinate
-        system of the top and left corner of this view.
-        
-        Example:
-        This view has offset (10, 20).
-        This view has a parent view with offset (-5, 50), which in turn has
-        no parent.
-        This function returns (5, 70).
-        
-        returns {tuple} an indexable coordinate.
-        """
-        offset = [self.x, self.y]
-        ancestor = self.parentView
-        while ancestor:
-            offset[0] += ancestor.x
-            offset[1] += ancestor.y
-            ancestor = ancestor.parentView
-
-        return tuple(offset)

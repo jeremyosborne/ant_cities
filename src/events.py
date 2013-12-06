@@ -50,15 +50,20 @@ class EventObject(dict):
 class EventPublisher(object):
     """Implements a simple pub/sub interface.
     
-    Suitable as an instance (a simple publisher) or a class mixin.
+    Suitable as an instance (simple publisher) or a class mixin.
+
+    Requires call to __init__ from inheritor to initialize if used as a
+    mixin.
     """
     _listener_id = 0L
     def __init__(self, *args, **kwargs):
         """Initializer.
         
         Accepts all arguments only as a convenience to subclasses. All
-        arguments are ignored.
+        arguments are ignored.        
         """
+        # Make it mixin friendly.
+        super(EventPublisher, self).__init__(*args, **kwargs)
         # Listeners get organized as a hash of hashes.
         self._event_listeners = {}
     
@@ -151,8 +156,7 @@ class EventSubscriberMixin(object):
     
     For use with objects that only intend to be listeners, not publishers.
     
-    Can be used in conjunction with EventPublisher as it compliments the
-    publisher framework.
+    Requires call to __init__ from inheritor to initialize.
     """
     def __init__(self, *args, **kwargs):
         """Initializer.
@@ -160,6 +164,8 @@ class EventSubscriberMixin(object):
         Accepts all arguments only as a convenience to subclasses. All
         arguments are ignored.
         """
+        # Make it mixin friendly.
+        super(EventSubscriberMixin, self).__init__(*args, **kwargs)
         # A hash of lists of event keys to specific event subscriptions.
         self._event_subs = {}
         
