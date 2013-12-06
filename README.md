@@ -100,7 +100,7 @@ new system, do:
 To run the tests with [nose](http://nose.readthedocs.org/en/latest/index.html),
 use the following command from the main directory.
 
-    nosetests -v test/*.py
+    nosetests -c nose.ini
 
 
 

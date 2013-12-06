@@ -1,10 +1,10 @@
-"""Practice code for views++.
+"""UI scaffolding.
 
 As the UI of a game becomes more complex, we need a UI that is:
 * Powerful enough to handle complex, layered interactions.
 * Simple enough to work with and that uses concepts that can be grocked.
 
-View should:
+A View should:
 * Isolate the displaying of visual information in whatever medium we are
 displaying on.
 * Provide coordinate transforms between device coordinates and relative view
@@ -14,23 +14,26 @@ container.
 * Allow optional nesting of views.
 * Can determine if a coordinate is contained within a view container (for HMI 
 pointer interactions).
-* TODO: Allow all nested views the option of listening to an event publisher
-(perhaps assume a controller is optionally passed in for all views).
-* TODO: Allow optional modality, either explicitly or implicitly.
+* Views will listen to events through their associated controller.
+* TODO: Allow relative (to parent) positioning via mixin.
+* TODO: Allow relative (to parent) sizing via mixin.
 
-View should not:
+A View should not:
 * Perform any game logic.
-* Be overly complex (no rebuilding the HTML dom).
-
-Dependencies:
-* pygame
-
+* Perform modality. Modality and overall view state should be handled by the
+controller.
 """
 
-import pygame
+class PositionableMixin(object):
+    def positionToParent(self):
+        pass
+
+class SizableMixin(object):
+    def sizeToParent(self):
+        pass
 
 class View(object):
-    def __init__(self, x=0, y=0, width=0, height=0, **kwargs):
+    def __init__(self, x=0, y=0, width=0, height=0, zindex=0, controller=None, **kwargs):
         """Initialize an instance.
         
         Position of view should be relative to parent.
@@ -39,19 +42,63 @@ class View(object):
         y {Number} Number of pixels offset from top (towards bottom if possitive).
         width {Number} Number of wide.
         height {Number} Number of pixels tall.
+        zindex {int} Higher number, the later the UI is drawn.
+        controller {EventPublisher} An object that should implement a pubsub
+        interface, as well as any other methods for handling communication to
+        and from the UI.
         """
-        # Dimensions stored as a rectangle.
-        self.rect = pygame.Rect(x, y, width, height)
+        # All properties are shadowed.
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        # Higher zindex, closer to the user (drawing happens later).
+        self.zindex = zindex
+
+        # For each View a surface.
+        # RESERVED for setting within the subclass_init.
+        self.surface = None
 
         # If None than this view has no parent.
-        self.parent = None
+        self.parentView = None
         # Child views within this view hierarchy.
         self.childviews = []
-        
-        # Higher zindex, closer to the user (drawing happens later).
-        self.zindex = kwargs.get("zindex") or 0
-        
+
+        # Assumes mixins do not require arguments.
+        super(View, self).__init__()
         self.subclass_init(**kwargs)
+
+    @property
+    def width(self):
+        return self._width
+    
+    @width.setter
+    def width(self, value):
+        self._width = value
+    
+    @property
+    def height(self):
+        return self._height
+    
+    @height.setter
+    def height(self, value):
+        self._height = value
+
+    @property
+    def x(self):
+        return self._x
+    
+    @x.setter
+    def x(self, value):
+        self._x = value
+
+    @property
+    def y(self):
+        return self._y
+    
+    @y.setter
+    def y(self, value):
+        self._y = value
 
     def subclass_init(self, **kwargs):
         """For subclasses to override, called by __init__. 
@@ -67,7 +114,7 @@ class View(object):
         """
         self.childviews.append(view)
         self.sort_childviews()
-        view.parent = self
+        view.parentView = self
 
     def sort_childviews(self):
         """Sort the existing childviews.
@@ -85,34 +132,32 @@ class View(object):
         """
         self.childviews.remove(view)
         # No resorting, assumes removing does not change indexing.
-        view.parent = None
+        view.parentView = None
         
     def remove_self(self):
         """Remove a view from its parent, if it has a parent.
         
         Convenience method.
         """
-        if self.parent:
-            self.parent.remove_childview(self)
+        if self.parentView:
+            self.parentView.remove_childview(self)
 
     def render(self, surface):
         """Begin the rendering process for this view and all child views.
         
-        Should only be called on the lowest level (self.parent == None) view.
-        
         surface {Surface} on which to render this view and all child views.
         """
-        pass
+        self.draw_view(surface)
+        for v in self.childviews:
+            v.draw_view(surface)
     
-    def draw_view(self, surface, offset=(0,0)):
+    def draw_view(self, surface):
         """Draw this specific view to the provided surface.
         
         Subclasses should override this to handle their specific drawing
         routines.
         
         surface {Surface} on which to render this view and all child views.        
-        offset {tuple} Additional offset to apply to the top and left offset
-        of this view for setting the rect.
         """
         pass
 
@@ -125,9 +170,10 @@ class View(object):
         coordinate and [1] is the y coordinate equivalent. Coord is assumed to
         be an untranslated coordinate.
         
-        returns an indexable coordinate relative to this rect.
+        returns {tuple} an indexable coordinate relative to this rect.
         """
-        pass
+        offset = self.screenxy_offset()
+        return (coord[0]-offset[0], coord[1]-offset[1])
 
     def screenxy_contained(self, coord):
         """Determine if a device coordinate is contained within this view.
@@ -140,7 +186,9 @@ class View(object):
         
         returns {bool} True if point is contained, False if not.
         """
-        pass
+        x, y = self.screenxy_to_relativexy(coord)
+        # Need just a width and height check.
+        return (0 <= x and x <= self.width and 0 <= y and y <= self.height)
 
     def screenxy_offset(self):
         """Determine the absolute offset from the universal device coordinate
@@ -152,7 +200,13 @@ class View(object):
         no parent.
         This function returns (5, 70).
         
-        returns an indexable coordinate.
+        returns {tuple} an indexable coordinate.
         """
-        pass
+        offset = [self.x, self.y]
+        ancestor = self.parentView
+        while ancestor:
+            offset[0] += ancestor.x
+            offset[1] += ancestor.y
+            ancestor = ancestor.parentView
 
+        return tuple(offset)
