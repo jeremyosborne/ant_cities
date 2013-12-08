@@ -1,4 +1,4 @@
-from src.ui.view import View
+from src.ui.view import View, PositionableMixin
 
 def test_view_init():
     """View should be able to initialize correctly.
@@ -107,3 +107,57 @@ def test_view_zindex_sorting():
     
     v4.remove_self()
     assert len(vparent.childviews) == 2, "Childview correctly removed."
+
+
+
+def test_positionablemixin():
+    class MockView(View, PositionableMixin):
+        pass
+    
+    cv = MockView(x=10, y=15, width=20, height=30)
+    pv = MockView(x=5, y=5, width=100, height=200)
+    pv.add_childview(cv)
+    
+    cv.position_relative_to_parent(x="left", y="top")
+    assert cv.x == 0, "Correctly positioned."
+    assert cv.y == 0, "Correctly positioned."
+    
+    cv.position_relative_to_parent(x="right")
+    assert cv.x == 80, "Correctly positioned."    
+    cv.position_relative_to_parent(x="right", buf=10)
+    assert cv.x == 70, "Correctly positioned."
+    
+    cv.position_relative_to_parent(y="bottom")
+    assert cv.y == 170, "Correctly positioned."
+    cv.position_relative_to_parent(y="bottom", buf=10)
+    assert cv.y == 160, "Correctly positioned."
+    
+    cv.position_relative_to_parent(x="center", y="center")
+    assert cv.x == 40
+    assert cv.y == 85
+    cv.position_relative_to_parent(x="center", y="center", buf=3)
+    assert cv.x == 43
+    assert cv.y == 88
+    
+    cv.position_relative_to_parent(x=10, y=10, buf=10)
+    assert cv.x == 20
+    assert cv.y == 20
+    
+    cv.position_relative_to_parent(x=-5, y=-5, buf=5)
+    assert cv.x == 70
+    assert cv.y == 160
+    
+
+    # Error conditions.
+    try:
+        cv.position_relative_to_parent(x="top")
+    except ValueError as err:
+        pass
+    assert err, "Correctly got an error."
+    
+    try:
+        cv.position_relative_to_parent(y="left")
+    except ValueError as err:
+        pass
+    assert err, "Correctly got an error."
+    

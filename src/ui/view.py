@@ -57,10 +57,13 @@ class PositionableMixin(object):
         buf {int} A buffer that will add extra padding relative to the sort
         of positioning being performed. If a number, will apply to both x and
         y. If a tuple, will [0] applies to x, [1] applies to y.
+        
+        raises ValueError if an incorrect value is passed to any parameter.
         """
-        if not self.parent:
+        if not self.parentView:
             # No parent to position relative to.
             return
+        parent = self.parentView
         
         # Handle buffer.
         if type(buf) == tuple:
@@ -70,26 +73,34 @@ class PositionableMixin(object):
             bufx = bufy = buf
         
         if x == "left":
-            pass
+            self.x = 0 + buf
         elif x == "right":
-            pass
+            self.x = parent.width - self.width - buf
         elif x == "center":
-            pass
+            # Buffer, if applied, pushes in positive direction.
+            self.x = parent.center[0] - self.width/2 + buf
         elif type(x) == int and x < 0:
-            pass
+            # Because this number is negative, we need to reverse signage.
+            self.x = parent.width - self.width + x - buf
         elif type(x) == int and x >= 0:
-            pass
+            self.x = x + buf
+        elif x:
+            raise ValueError("Unexpected value for x: %s" % x)
         
         if y == "top":
-            pass
+            self.y = 0 + buf
         elif y == "bottom":
-            pass
+            self.y = parent.height - self.height - buf
         elif y == "center":
-            pass
+            # Buffer, if applied, pushes in positive direction.
+            self.y = parent.center[1] - self.height/2 + buf
         elif type(y) == int and y < 0:
-            pass
+            # Because this number is negative, we need to reverse signage.
+            self.y = parent.height - self.height + y - buf
         elif type(y) == int and y > 0:
-            pass
+            self.y = y + buf
+        elif y:
+            raise ValueError("Unexpected value for y: %s" % y)
 
 
 

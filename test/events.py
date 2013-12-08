@@ -1,5 +1,5 @@
 from nose import with_setup
-from src.events import EventPublisher, EventSubscriberMixin
+from src.events import EventPublisher, EventSubscriber
 
 
 #-----------------------------------------------------------------------------
@@ -115,19 +115,19 @@ def test_eventpublisher_clear_by_group():
 eventpub = None
 eventsub = None
 # Mock...
-def eventsubscribermixin_setup():
+def eventsubscriber_setup():
     global eventpub, eventsub
     eventpub = EventPublisher()
-    eventsub = EventSubscriberMixin()
-def eventsubscribermixin_teardown():
+    eventsub = EventSubscriber()
+def eventsubscriber_teardown():
     global eventpub, eventsub, asserted
     eventpub = None
     eventsub = None
     # Reuse from above.
     asserted = False
 
-@with_setup(eventsubscribermixin_setup, eventsubscribermixin_teardown)
-def test_eventsubscribermixin():
+@with_setup(eventsubscriber_setup, eventsubscriber_teardown)
+def test_eventsubscriber():
     """Should be able to subto event publishers.
     """
     global eventpub, eventsub

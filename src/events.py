@@ -150,11 +150,12 @@ class EventPublisher(object):
                 }
 
 
-class EventSubscriberMixin(object):
-    """Convenience mixin that is mainly used to aid in the tracking and
-    removal of event listeners that this object has subscribed to.
+class EventSubscriber(object):
+    """Convenience class that aids in the removal of event listeners that 
+    this object has subscribed to.
     
-    For use with objects that only intend to be listeners, not publishers.
+    For use with objects that only intend to be listeners, not publishers,
+    although will not conflict with EventPublisher.
     
     Requires call to __init__ from inheritor to initialize.
     """
@@ -165,7 +166,7 @@ class EventSubscriberMixin(object):
         arguments are ignored.
         """
         # Make it mixin friendly.
-        super(EventSubscriberMixin, self).__init__(*args, **kwargs)
+        super(EventSubscriber, self).__init__(*args, **kwargs)
         # A hash of lists of event keys to specific event subscriptions.
         self._event_subs = {}
         
