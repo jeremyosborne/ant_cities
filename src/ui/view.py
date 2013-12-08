@@ -15,8 +15,8 @@ container.
 * Can determine if a coordinate is contained within a view container (for HMI 
 pointer interactions).
 * Views will listen to events through their associated controller.
-* TODO: Allow relative (to parent) positioning via mixin.
-* TODO: Allow relative (to parent) sizing via mixin.
+* Allow relative (to parent) positioning via mixin.
+* Allow relative (to parent) scaling via mixin.
 
 A View should not:
 * Perform any game logic.
@@ -104,21 +104,32 @@ class PositionableMixin(object):
 
 
 
-class SizableMixin(object):
-    """Helpers used to size view.
+class ScalableMixin(object):
+    """Helpers used to scale the view.
     """
-    def size_relative_to_parent(self, wperc=None, hperc=None):
+    def scale_relative_to_parent(self, w=None, h=None):
         """Set the size of the view relative to the parent size. Fractions
         rounded down.
         
-        wperc {int} Percentage size to set width (assume 0-100).
-        hperc {int} Percentage size to set height (assume 0-100).
+        w {float} Scalar applied to element width relative to parent width.
+        h {float} Scalar applied to element height relative to parent height.
+
+        raises ValueError if an incorrect value is passed to any parameter.
         """
-        if not self.parent:
+        if not self.parentView:
             # No parent to position relative to.
             return
+        parent = self.parentView
         
-        # TODO: Implement.
+        if (type(w) == float or type(w) == int) and w >= 0:
+            self.width = parent.width * w
+        elif w:
+            raise ValueError("Unexpected value for w: %s" % w)
+
+        if (type(h) == float or type(h) == int) and h >= 0:
+            self.height = parent.height * h
+        elif h:
+            raise ValueError("Unexpected value for h: %s" % h)
 
 
 
@@ -164,7 +175,6 @@ class View(object):
     
     @width.setter
     def width(self, value):
-        # TODO: Trigger a surface size change?
         self._width = value
     
     @property
@@ -173,7 +183,6 @@ class View(object):
     
     @height.setter
     def height(self, value):
-        # TODO: Trigger a surface size change?
         self._height = value
 
     @property

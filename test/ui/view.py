@@ -1,4 +1,4 @@
-from src.ui.view import View, PositionableMixin
+from src.ui.view import View, PositionableMixin, ScalableMixin
 
 def test_view_init():
     """View should be able to initialize correctly.
@@ -12,6 +12,8 @@ def test_view_init():
     assert v.bottom == 300, "bottom is accessible."
     assert v.center == (50, 100), "center is correct, relative to self"
     assert v.center_screenxy == (100, 200), "center is correct relative to screen"
+
+
 
 def test_view_centering():
     """View should correctly identify its center, even when contained.
@@ -31,6 +33,7 @@ def test_view_centering():
     assert v2.center_screenxy == (0, 55), "Correct screen center after nesting."
 
 
+
 def test_view_screenxy_offset():
     """View and nested views should be able to determine their screenxy offset.
     """
@@ -45,6 +48,8 @@ def test_view_screenxy_offset():
     
     assert v.offset_screenxy == (5, 70), "Parental offset is included."
     assert v2.offset_screenxy == (-5, 50), "Children do not affect parent offset."
+
+
 
 def test_view_screenxy_to_relativexy():
     """View and nested views should be able to calculate points relative to
@@ -64,6 +69,8 @@ def test_view_screenxy_to_relativexy():
     assert v.screenxy_to_relativexy(point) == (5, -60), "Point relative to parent and self."
     assert v2.screenxy_to_relativexy(point) == (15, -40), "Point does not change with children."
 
+
+
 def test_view_contained_screenxy():
     """View can determine if a screen point is located within, even when nested.
     """
@@ -80,6 +87,7 @@ def test_view_contained_screenxy():
     assert v.contained_screenxy(point) == False, "Point not contained."
     assert v2.contained_screenxy(point) == False, "Point not contained."
     
+
 
 def test_view_zindex_sorting():
     """Views should be sorted by zindex when they are childviews.
@@ -157,6 +165,45 @@ def test_positionablemixin():
     
     try:
         cv.position_relative_to_parent(y="left")
+    except ValueError as err:
+        pass
+    assert err, "Correctly got an error."
+
+
+
+def test_scalablemixin():
+    class MockView(View, ScalableMixin):
+        pass
+    
+    cv = MockView(x=10, y=15, width=20, height=30)
+    pv = MockView(x=5, y=5, width=100, height=200)
+    pv.add_childview(cv)
+    
+    pv.scale_relative_to_parent(w=10, h=10)
+    assert pv.width == 100, "Unchanged."
+    assert pv.height == 200, "Unchanged."
+
+    cv.scale_relative_to_parent(0, 0)
+    assert cv.width == 0
+    assert cv.height == 0
+    
+    cv.scale_relative_to_parent(1, 1)
+    assert cv.width == 100
+    assert cv.height == 200
+    
+    cv.scale_relative_to_parent(0.5, 2)
+    assert cv.width == 50
+    assert cv.height == 400
+
+    # Error conditions.
+    try:
+        cv.scale_relative_to_parent(w=-1)
+    except ValueError as err:
+        pass
+    assert err, "Correctly got an error."
+    
+    try:
+        cv.scale_relative_to_parent(h=-1)
     except ValueError as err:
         pass
     assert err, "Correctly got an error."
