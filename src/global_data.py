@@ -1,3 +1,10 @@
+import os
+
+# File locations.
+# Base directory to the assets.
+ASSETS_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "assets"))
+
+
 # Control settings.
 render_world = True
 render_minimap = True

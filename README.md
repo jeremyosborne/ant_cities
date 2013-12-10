@@ -45,18 +45,15 @@ Key
 - Not Started or on hold.
 
 - User Interface
-    * Update views to allow nesting and setup a View/Controller relationship
-      between the UI and the game sim (separation of concerns).
-    * UI elements need to have the ability to convert a screen coordinate to a
-      UI equivalent element, and also determine if the collision happened inside
-      of them.
+    * Asset loader/cache.
+    * Update views use a View/Controller relationship between the UI and the
+      game sim (separation of concerns, future availability of multi-core
+      support).
     * UI elements need to receive pygame events, and respond back to a controller
       with messages/events when something significant was clicked.
     - If resolution changes are allowed, allow preservation of aspect ratio and/or
       auto scaling.
     - Correct aspect ratio when world completely zoomed out.
-    - Add scrolling minimap on and off.
-    - Make something like surface effects that any display port can use.
 - Ant Entity
     - Adjust leaf carrying position from back to the mouth.
     - Add collision detection so that entities can not run over each other.
