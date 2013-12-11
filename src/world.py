@@ -11,7 +11,7 @@ from pygame.locals import *
 from random import randint
 from pymunk.vec2d import Vec2d
 
-from game import events
+from game import events, imageassets
 
 from ui.worldviewport import WorldViewport
 from entities.ant import Ant
@@ -52,13 +52,12 @@ class World(object):
 #Setting up initial entity elements.
 #-----------------------------------------------------------------------
 
-        self.ant_image = pygame.image.load("assets/red-ant.png").convert_alpha()
-        self.ant_image_2 = pygame.image.load("assets/blue-ant.png").convert_alpha()
-        self.leaf_image = pygame.image.load("assets/leaf.png").convert_alpha()
-        self.leaf_image2 = pygame.image.load("assets/leaf2.png").convert_alpha()
-        self.base_image = pygame.image.load("assets/hut1.png").convert_alpha()
-        self.base_image_2 = pygame.image.load("assets/hut1.png").convert_alpha()
-        self.base_image_2 = pygame.transform.flip(self.base_image_2, 1, 0)
+        self.ant_image = imageassets.get("red-ant")
+        self.ant_image_2 = imageassets.get("blue-ant")
+        self.leaf_image = imageassets.get("leaf")
+        self.leaf_image2 = imageassets.get("leaf2")
+        self.base_image = imageassets.get("hut")
+        self.base_image_2 = pygame.transform.flip(self.base_image, 1, 0)
         #Let's make hut 1 for our little ants.
         self.base_1 = Base(self, self.base_image, 1, (255, 255, 0), "Red Ants")
         self.base_1.location = (globaldata.NEST_POSITION)

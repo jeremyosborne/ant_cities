@@ -1,6 +1,9 @@
 import pygame
 import viewport
 
+from game import imageassets
+
+
 class ViewUnitInfoBox(viewport.Viewport):
     """Traditional area that displays information about a single unit a user has clicked on.
     """
@@ -35,9 +38,9 @@ class ViewUnitInfoBox(viewport.Viewport):
         self.track = False
         
         #Load Button Icons
-        self.Start_Tracking_Button = pygame.image.load("assets/Track_Make_Active.png").convert_alpha()
-        self.Stop_Tracking_Button = pygame.image.load("assets/Track_Cancel.png").convert_alpha()
-
+        self.Start_Tracking_Button = imageassets.load("track-enable")
+        self.Stop_Tracking_Button = imageassets.load("track-disable")
+                
         # Register event listeners.
         if controller is not None:
             controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)

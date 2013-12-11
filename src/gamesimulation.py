@@ -22,8 +22,6 @@ class GameSimulation():
         #screen = pygame.display.set_mode(globaldata.screen_size, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
         #Set up game world
         
-        print pygame.display.Info()
-        
         #The minus 170 below is the y size of the UI elements.  
         self.world = World(globaldata.world_size_x, globaldata.world_size_y, globaldata.screen_size_x, globaldata.screen_size_y-170)
         

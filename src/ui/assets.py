@@ -1,6 +1,5 @@
 """Asset loaders and asset caches.
 """
-
 import os
 
 class AssetCache(object):

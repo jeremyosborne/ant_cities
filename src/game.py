@@ -8,12 +8,16 @@ Created on Mar 2, 2013
 
 import pygame
 from pygame.locals import *
+import globaldata
 
 from events import EventPublisher
-# A central event publisher for broadcasting events (for now).
+# Do before loading GameSimulation.
 events = EventPublisher()
 
-import globaldata
+from ui.imageassets import ImageAssets
+# Do before loading GameSimulation.
+imageassets = ImageAssets(globaldata.ASSETS_PATH)
+
 from gamesimulation import GameSimulation
 
 def run():
@@ -25,10 +29,11 @@ def run():
     pygame.display.set_caption(globaldata.GAME_TITLE)
 
     game_simulation = GameSimulation()
-        
+
+    print pygame.display.Info()
+
     #Main game loop    
     while True:
-        
         for event in pygame.event.get():
             if event.type == QUIT:
                 return
@@ -54,7 +59,6 @@ def run():
                 events.pub("MOUSEBUTTONUP", ev=event, game_sim=game_simulation)
             elif event.type == MOUSEMOTION:
                 events.pub("MOUSEMOTION", ev=event, game_sim=game_simulation)
-
 
         game_simulation.process_game_loop()
 

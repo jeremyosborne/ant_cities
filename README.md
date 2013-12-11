@@ -45,12 +45,9 @@ Key
 - Not Started or on hold.
 
 - User Interface
-    * Asset loader/cache.
-    * Update views use a View/Controller relationship between the UI and the
+    * Views should implement a View/Controller relationship between the UI and the
       game sim (separation of concerns, future availability of multi-core
       support).
-    * UI elements need to receive pygame events, and respond back to a controller
-      with messages/events when something significant was clicked.
     - If resolution changes are allowed, allow preservation of aspect ratio and/or
       auto scaling.
     - Correct aspect ratio when world completely zoomed out.
@@ -59,9 +56,6 @@ Key
     - Add collision detection so that entities can not run over each other.
 - Multi-Process, Sim and Render Thread
 - Saving settings...
-    - Option: JSON, csv, ini... lots of choices. I'd prefer JSON in general only
-      for the reason that JSON can preserve numbers and numbers distinct from
-      strings so our in game code won't need to convert numbers.
 - Ant-god controls:
     - Hostility level
     - Friendly index

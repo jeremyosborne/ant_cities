@@ -274,12 +274,21 @@ class WorldViewport(viewport.Viewport):
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
         game_simulation = e.data["game_sim"]
+        
         if event.button == 1:
             # left click, attempt to select entity.
-            game_world_point = self.screenpoint_to_gamepoint(*event.pos)
-            entity = game_simulation.world.spatial_index.find_closest(game_world_point, 150)[0]
-            game_simulation.unit_information_display.set_unit(entity)
-        elif event.button == 4:  
+            
+            # Determine if we clicked within the viewable UI.
+            ui_click_point = self.screenxy_to_relativexy(event.pos)
+            ui_container = pygame.Rect(0, 0, self.width, self.height)
+
+            # Clicks outside of the view won't cancel the tracking.
+            if ui_container.collidepoint(ui_click_point) == True:
+                game_world_point = self.screenpoint_to_gamepoint(*event.pos)
+                entity = game_simulation.world.spatial_index.find_closest(game_world_point, 150)[0]
+                game_simulation.unit_information_display.set_unit(entity)
+        
+        if event.button == 4:  
             # Mouse Scroll Wheel Up, so zoom in
             game_simulation.world.viewport.change_zoom_level("in")
         elif event.button == 5:  
