@@ -17,7 +17,7 @@ from ui.worldviewport import WorldViewport
 from entities.ant import Ant
 from entities.base import Base
 from entities.leaf import Leaf
-import global_data
+import globaldata
 import spatial_engine
 
 class World(object):
@@ -61,15 +61,15 @@ class World(object):
         self.base_image_2 = pygame.transform.flip(self.base_image_2, 1, 0)
         #Let's make hut 1 for our little ants.
         self.base_1 = Base(self, self.base_image, 1, (255, 255, 0), "Red Ants")
-        self.base_1.location = (global_data.NEST_POSITION)
+        self.base_1.location = (globaldata.NEST_POSITION)
         #Let's make hut 2 for our little ants.
         self.base_2 = Base(self, self.base_image_2, 2, (255, 255, 0), "Blue Ants")
-        self.base_2.location = (global_data.NEST_POSITION_2)
+        self.base_2.location = (globaldata.NEST_POSITION_2)
     
         self.add_entity(self.base_1)
         self.add_entity(self.base_2)
         
-        for ant_no in xrange(global_data.ANT_COUNT):
+        for ant_no in xrange(globaldata.ANT_COUNT):
             #Team 1
             ant = Ant(self, self.ant_image, self.base_1, (255, 0, 0))
             ant.location = Vec2d(randint(0, self.width), randint(0, self.height))

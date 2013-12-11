@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-import global_data
+import globaldata
 import viewport
 import time
 from game import events
@@ -17,24 +17,24 @@ class GameSimulation():
     def __init__(self):
                             
         #Normal pygame window mode.
-        self.screen = pygame.display.set_mode(global_data.screen_size, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
+        self.screen = pygame.display.set_mode(globaldata.screen_size, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
         #Normal pygame full screen mode.
-        #screen = pygame.display.set_mode(global_data.screen_size, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
+        #screen = pygame.display.set_mode(globaldata.screen_size, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
         #Set up game world
         
         print pygame.display.Info()
         
         #The minus 170 below is the y size of the UI elements.  
-        self.world = World(global_data.world_size_x, global_data.world_size_y, global_data.screen_size_x, global_data.screen_size_y-170)
+        self.world = World(globaldata.world_size_x, globaldata.world_size_y, globaldata.screen_size_x, globaldata.screen_size_y-170)
         
         #Setup UI elements.
-        self.mini_map = MiniMap(global_data.screen_size_x-256, global_data.screen_size_y-170, 
+        self.mini_map = MiniMap(globaldata.screen_size_x-256, globaldata.screen_size_y-170, 
                                 256, 170, 
-                                global_data.world_size_x, global_data.world_size_y, 
+                                globaldata.world_size_x, globaldata.world_size_y, 
                                 events)
 
         #Unit information display.
-        self.unit_information_display = ViewUnitInfoBox(global_data.screen_size_x-512, global_data.screen_size_y-170, 
+        self.unit_information_display = ViewUnitInfoBox(globaldata.screen_size_x-512, globaldata.screen_size_y-170, 
                                                         256, 170,
                                                         events)
           
@@ -42,7 +42,7 @@ class GameSimulation():
         self.fps_display = FPSDisplay(5, 5)
         
         # Base Information Displays
-        self.base_display_1 = DataColumnDisplay(1, global_data.screen_size_y-170, 
+        self.base_display_1 = DataColumnDisplay(1, globaldata.screen_size_y-170, 
                                                 200, 170,
                                                 "Base "+self.world.base_1.description,
                                                 [
@@ -52,7 +52,7 @@ class GameSimulation():
                                                  ("Energy:", lambda: str(self.world.base_1.energy_units)),
                                                  ("Leaf Storage:", lambda: str(self.world.base_1.leaves_returned)),
                                                 ])
-        self.base_display_2 = DataColumnDisplay(201, global_data.screen_size_y-170, 
+        self.base_display_2 = DataColumnDisplay(201, globaldata.screen_size_y-170, 
                                                 200, 170,
                                                 "Base "+self.world.base_2.description,
                                                 [
@@ -63,7 +63,7 @@ class GameSimulation():
                                                  ("Leaf Storage:", lambda: str(self.world.base_2.leaves_returned)),
                                                 ])
         # World Info Display
-        self.world_info_display = DataColumnDisplay(402, global_data.screen_size_y-170, 
+        self.world_info_display = DataColumnDisplay(402, globaldata.screen_size_y-170, 
                                               200, 170,
                                               "World Info",
                                               [
@@ -97,14 +97,14 @@ class GameSimulation():
 
         self.world.process(time_passed)
 
-        self.mini_map.update(self.world, draw=global_data.render_minimap)
+        self.mini_map.update(self.world, draw=globaldata.render_minimap)
         self.fps_display.update(self.clock)
         self.unit_information_display.update(self.world)  
         self.base_display_1.update()
         self.base_display_2.update()
         self.world_info_display.update() 
 
-        self.world.render(draw=global_data.render_world)
+        self.world.render(draw=globaldata.render_world)
 
         # Call the method that renders all the viewport layers in the proper sequence.
         viewport.Viewport.render_viewports(self.screen)

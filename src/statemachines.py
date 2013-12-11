@@ -4,7 +4,7 @@ from random import randint
 
 from pymunk.vec2d import Vec2d
 
-import global_data
+import globaldata
 
 class State(object):
     
@@ -145,7 +145,7 @@ class AntStateDelivering(State):
     #Question for Jeremy start position    
     def check_conditions(self):
                
-        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < global_data.NEST_SIZE:
+        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < globaldata.NEST_SIZE:
             self.ant.drop(self.ant.world)  # Removes leaf.
             return "exploring"
             
@@ -167,7 +167,7 @@ class AntStateEnergyDepleted(State):
     def check_conditions(self):
         
         #Did we make it back to base to eat yet?        
-        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < global_data.NEST_SIZE:
+        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < globaldata.NEST_SIZE:
             # Time to eat.
             return "powering up"            
         return None

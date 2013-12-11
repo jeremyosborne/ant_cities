@@ -167,9 +167,11 @@ class SpatialEngine(object):
 
 if __name__ == "__main__":
     # Testing
-    import global_data
     from random import randint
     from pymunk import Vec2d
+    
+    world_size_x = 1200*6
+    world_size_y = 530*6
     
     class MockLeaf(object):
         id = 0
@@ -178,7 +180,7 @@ if __name__ == "__main__":
             self.id = MockLeaf.id
             self.location = location
     
-    spatial_index = SpatialEngine(global_data.world_size_x, global_data.world_size_y)
+    spatial_index = SpatialEngine(world_size_x, world_size_y)
     leaf = MockLeaf(Vec2d(250, 350))
     leaf2 = MockLeaf(Vec2d(351, 451))
     
@@ -210,7 +212,7 @@ if __name__ == "__main__":
     print "Doing benchmark insert."
     for leaf_no in xrange(10000):
         #Team 1
-        leaf3 = MockLeaf(Vec2d(randint(0,global_data.world_size_x), randint(0, global_data.world_size_y)))
+        leaf3 = MockLeaf(Vec2d(randint(0, world_size_x), randint(0, world_size_y)))
         spatial_index.update(leaf3)
             
     print "Doing benchmark search"

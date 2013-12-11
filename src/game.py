@@ -13,8 +13,7 @@ from events import EventPublisher
 # A central event publisher for broadcasting events (for now).
 events = EventPublisher()
 
-import viewport
-import global_data
+import globaldata
 from gamesimulation import GameSimulation
 
 def run():
@@ -23,7 +22,7 @@ def run():
     global events
     
     pygame.init()
-    pygame.display.set_caption(global_data.GAME_TITLE)
+    pygame.display.set_caption(globaldata.GAME_TITLE)
 
     game_simulation = GameSimulation()
         
@@ -42,10 +41,10 @@ def run():
                     pygame.event.set_grab(not pygame.event.get_grab())
                 if event.key == K_q: 
                     # Toggle rendering of the game world.
-                    global_data.render_world = not global_data.render_world
+                    globaldata.render_world = not globaldata.render_world
                 if event.key == K_m: 
                     # Toggle rendering of the mini-map.
-                    global_data.render_minimap = not global_data.render_minimap
+                    globaldata.render_minimap = not globaldata.render_minimap
                 if event.key == K_r:  
                     # Resize the game window.
                     game_simulation.world.viewport.height = 500

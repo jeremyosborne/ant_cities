@@ -1,6 +1,7 @@
 """NOT IMPLEMENTED.
 """
 
+import globaldata
 from entities.gameentity import GameEntity
 
 class Spider(GameEntity):
@@ -37,7 +38,7 @@ class Spider(GameEntity):
     def process(self, time_passed):
         
         x, y = self.location
-        if x > global_data.WORLD_SIZE[0] + 2:
+        if x > globaldata.WORLD_SIZE[0] + 2:
             self.world.remove_entity(self)
             return
         
