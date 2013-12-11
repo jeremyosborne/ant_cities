@@ -1,17 +1,23 @@
 import pygame
 import viewport
 
-class View_Unit_Info_Box(viewport.Viewport):
-    """ Traditional area that displays information about a single unit a user has clicked on.
+class ViewUnitInfoBox(viewport.Viewport):
+    """Traditional area that displays information about a single unit a user has clicked on.
     """
-    def __init__(self, x_right=0, y_down=0, width=256, height=256):
+    def __init__(self, x_right=0, y_down=0, width=256, height=256, controller=None):
+        """Arguments not inherited from viewport.
         
+        controller {EventPublisher} Provides a pipeline to events in the outside
+        world.
+        """
+
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)
+
         self.font = pygame.font.SysFont("arial", 16)
         self.small_font = pygame.font.SysFont("arial", 13)
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
-        
+
         #Add title to the background image.
         label = self.font.render("Unit Information Display", True, (255, 255, 255))
         w, h = label.get_size()
@@ -31,7 +37,12 @@ class View_Unit_Info_Box(viewport.Viewport):
         #Load Button Icons
         self.Start_Tracking_Button = pygame.image.load("assets/Track_Make_Active.png").convert_alpha()
         self.Stop_Tracking_Button = pygame.image.load("assets/Track_Cancel.png").convert_alpha()
-        
+
+        # Register event listeners.
+        if controller is not None:
+            controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+        elif __debug__:
+            print "WARNING: controller was not defined, no event listening will be happening in", self
 
     
     def set_unit(self, entity):
@@ -92,20 +103,18 @@ class View_Unit_Info_Box(viewport.Viewport):
             self.surface.blit(self.background, (0, 0))
             self.track = False
         
-    def service_user_event(self, event, game_simulation):
-        
-        #Taking care of the tracking button toggle.
-        if event.button == 1:  #left click.   
-            mouse_x, mouse_y = pygame.mouse.get_pos()            
-            viewport_mouse_x = mouse_x - self.x_right
-            viewport_mouse_y = mouse_y - self.y_down
+    def mousebuttondown_listener(self, e):
+        event = e.data["ev"]
+        # Taking care of the tracking button toggle.
+        if event.button == 1:  
+            # left click
+            game_world_point = self.screenxy_to_relativexy(event.pos)
             
             #Define a rect that matches the actual area in the info display where the track toggle icon is.
             track_rect = pygame.Rect(self.width - 30, 0, 30, 30)
             
-            if track_rect.collidepoint(viewport_mouse_x, viewport_mouse_y) == True:
+            if track_rect.collidepoint(game_world_point) == True:
                 if self.track == True:
                     self.track = False
                 else:
                     self.track = True
-                

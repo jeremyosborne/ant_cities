@@ -76,43 +76,6 @@ class Viewport(pygame.Surface):
         except:
             return -1
 
-         
-    @classmethod
-    def route_event(cls, event, game_simulation, top_layer = -1):
-        """Determines which layer should handle event.  
-        If top_layer isn't specified, we default to -1 indicating we should 
-        start with the top most layer.  Top_layer is there so that one could 
-        override the routing if needed. 
-        """
-
-        #If top_layer = -1 then set top_layer to the last in the list.
-        top_layer = cls.viewports[-1]._layer
-        
-        for i in reversed(cls.viewports):
-            #Do various tests to determine if input goes to this viewport.
-            #important attributes to check in sequence:
-            #  1.  Is it =< than the top_layer value
-            #  2.  is_viewable  -  Is it an active window?
-            #  3.  is_exclusive -  Can input only go to this window regardless (modal window)
-            #      mouse position?
-            #  4.  is the mouse over this viewport
-            #  5.
-            
-            # Stepping through the layers.
-            if i._layer <= top_layer:
-                # Testing if it's currently visable.
-                if i.is_visable:
-                    # Was the mouse click inside this viewport?
-                    if i.rect.collidepoint(pygame.mouse.get_pos()) == True:
-                        #print "Clicked on viewport.  Viewport description: %s" % i.description 
-                        # For now, we're done, input has been serviced.  In the furture, we could
-                        # let the method call determine if it wants the input and if not, then
-                        # return false and the walk through the viewports continue.
-                        i.service_user_event(event, game_simulation)
-                        return
-                    #I should also do an exclusive check here too.  If exclusive, then stop
-                    #walking through the viewports.
-  
 #----------------------------------------------------------------------------#   
     def __init__(self, x_right=0, y_down=0, width=1024, height=768, scale=1, layer=0, is_visable=True):
         """Arguments assumed to be integers."""
@@ -188,11 +151,6 @@ class Viewport(pygame.Surface):
     def render(self, main_surface):
         main_surface.blit(self.surface, ((self.x_right, self.y_down)))
         
-    def service_user_event(self, event, game_simulation):
-        """ Dummy method for handling event input. Programmer should
-            create own method in classes that require event handling"""
-        pass
-
     #We should fix this so that the normal del can be used.  Or maybe change 
     #the name to remove, just like a list.
     def delete(self):

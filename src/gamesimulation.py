@@ -7,7 +7,7 @@ import time
 from game import events
 from world import World
 from ui.minimap import MiniMap
-from ui.view_unit_info_box import View_Unit_Info_Box
+from ui.viewunitinfobox import ViewUnitInfoBox
 from ui.fpsdisplay import FPSDisplay
 from ui.datacolumndisplay import DataColumnDisplay
 
@@ -34,7 +34,9 @@ class GameSimulation():
                                 events)
 
         #Unit information display.
-        self.unit_information_display = View_Unit_Info_Box(global_data.screen_size_x-512, global_data.screen_size_y-170, 256, 170)
+        self.unit_information_display = ViewUnitInfoBox(global_data.screen_size_x-512, global_data.screen_size_y-170, 
+                                                        256, 170,
+                                                        events)
           
         # FPS Display
         self.fps_display = FPSDisplay(5, 5)

@@ -23,7 +23,7 @@ def run():
     global events
     
     pygame.init()
-    pygame.display.set_caption("Ant Cities")
+    pygame.display.set_caption(global_data.GAME_TITLE)
 
     game_simulation = GameSimulation()
         
@@ -51,12 +51,8 @@ def run():
                     game_simulation.world.viewport.height = 500
             elif event.type == MOUSEBUTTONDOWN:
                 events.pub("MOUSEBUTTONDOWN", ev=event, game_sim=game_simulation)
-                # Let's send it over to the viewport class to determine which
-                # viewport should process the input.
-                viewport.Viewport.route_event(event, game_simulation)
             elif event.type == MOUSEBUTTONUP:
                 events.pub("MOUSEBUTTONUP", ev=event, game_sim=game_simulation)
-                viewport.Viewport.route_event(event, game_simulation)
             elif event.type == MOUSEMOTION:
                 events.pub("MOUSEMOTION", ev=event, game_sim=game_simulation)
 

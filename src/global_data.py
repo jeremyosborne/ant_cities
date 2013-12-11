@@ -4,6 +4,8 @@ import os
 # Base directory to the assets.
 ASSETS_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "assets"))
 
+# Strings
+GAME_TITLE = "Ant Cities"
 
 # Control settings.
 render_world = True
