@@ -100,10 +100,8 @@ class View_Unit_Info_Box(viewport.Viewport):
             viewport_mouse_x = mouse_x - self.x_right
             viewport_mouse_y = mouse_y - self.y_down
             
-            print viewport_mouse_x, viewport_mouse_y
             #Define a rect that matches the actual area in the info display where the track toggle icon is.
             track_rect = pygame.Rect(self.width - 30, 0, 30, 30)
-            print track_rect
             
             if track_rect.collidepoint(viewport_mouse_x, viewport_mouse_y) == True:
                 if self.track == True:

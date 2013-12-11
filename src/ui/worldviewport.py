@@ -4,11 +4,18 @@ import viewport
 
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
 #So it doesn't belong in the main viewport class.
-class World_Viewport(viewport.Viewport):
-    def __init__(self, world_width, world_height, viewable_width, viewable_height):
+class WorldViewport(viewport.Viewport):
+    def __init__(self, world_width, world_height, viewable_width, 
+                 viewable_height, controller=None):
+        """Arguments not inherited from viewport.
+        
+        controller {EventPublisher} Provides a pipeline to events in the outside
+        world.
+        """
+        
         viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
         
-        self.description = "World Viewport"
+        self.description = "Game World Viewport"
         
         self.world_height = world_height
         self.world_width = world_width
@@ -34,8 +41,13 @@ class World_Viewport(viewport.Viewport):
         #Used if we want to put text directly on this viewport.
         self.font = pygame.font.SysFont("arial", 16)
         self.small_font = pygame.font.SysFont("arial", 13)
-        
-        
+
+        # Register event listeners.
+        if controller is not None:
+            controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+        elif __debug__:
+            print "WARNING: controller was not defined, no event listening will be happening in", self
+
     #Setup    
     def setup_viewable_area(self):
         
@@ -259,7 +271,9 @@ class World_Viewport(viewport.Viewport):
         
         return Vec2d(x, y)
 
-    def service_user_event(self, event, game_simulation):
+    def mousebuttondown_listener(self, e):
+        event = e.data["ev"]
+        game_simulation = e.data["game_sim"]
         if event.button == 1:
             # left click, attempt to select entity.
             game_world_point = self.screenpoint_to_gamepoint(*event.pos)

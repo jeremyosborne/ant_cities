@@ -20,6 +20,3 @@ class FPSDisplay(viewport.Viewport):
 
         label = self.font.render(str(fps), True, (0, 0, 0))
         self.surface.blit(label, (0, 0))
-        
-    def service_user_event(self, event, game_simulation):
-        pass

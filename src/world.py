@@ -11,7 +11,9 @@ from pygame.locals import *
 from random import randint
 from pymunk.vec2d import Vec2d
 
-from ui.world_viewport import World_Viewport
+from game import events
+
+from ui.worldviewport import WorldViewport
 from entities.ant import Ant
 from entities.base import Base
 from entities.leaf import Leaf
@@ -29,11 +31,13 @@ class World(object):
         self.viewable_width = w
         self.viewable_height = h
         
-        self.entities = {}    #Dictionary of all the entities
-        #viewport is the screen entity that contains the view of the game world.
-        self.viewport = World_Viewport(self.width, self.height, self.viewable_width, self.viewable_height)
-        self.viewport.description = "Game world viewport."
-        
+        # Dictionary of all the entities
+        self.entities = {}    
+        # viewport is the screen entity that contains the view of the game world.
+        self.viewport = WorldViewport(self.width, self.height, 
+                                      self.viewable_width, self.viewable_height,
+                                      events)
+
         self.spatial_index = spatial_engine.SpatialEngine(self.width, self.height)
 
         self.time_born = time.time()

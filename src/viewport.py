@@ -98,16 +98,16 @@ class Viewport(pygame.Surface):
             #  4.  is the mouse over this viewport
             #  5.
             
-            #Stepping through the layers.
+            # Stepping through the layers.
             if i._layer <= top_layer:
-                #Testing if it's currently visable.
+                # Testing if it's currently visable.
                 if i.is_visable:
-                    #Was the mouse click inside this viewport?
+                    # Was the mouse click inside this viewport?
                     if i.rect.collidepoint(pygame.mouse.get_pos()) == True:
-                        print "Clicked on viewport.  Viewport description: %s" % i.description 
-                        #For now, we're done, input has been serviced.  In the furture, we could
-                        #let the method call determine if it wants the input and if not, then
-                        #return false and the walk through the viewports continue.
+                        #print "Clicked on viewport.  Viewport description: %s" % i.description 
+                        # For now, we're done, input has been serviced.  In the furture, we could
+                        # let the method call determine if it wants the input and if not, then
+                        # return false and the walk through the viewports continue.
                         i.service_user_event(event, game_simulation)
                         return
                     #I should also do an exclusive check here too.  If exclusive, then stop
@@ -140,9 +140,6 @@ class Viewport(pygame.Surface):
         # Rectangle area matching the actual screen area this viewport maps to.
         self.rect = pygame.Rect(self.x_right, self.y_down, self._width, self._height)
         
-        #User Input attributes
-        self.mouse_events = False
-        self.keyboard_events = False
         #Proposed attribute to restrict the area to monitor for input.
         self.event_area = None
         #When visiable, no input should be passed below this layer.
@@ -159,35 +156,7 @@ class Viewport(pygame.Surface):
         """  Set's layer value and sorts the viewports on this value.  """
         self._layer = value
         Viewport.sort_viewports()
-        
-#    @property
-#    def top(self):
-#        """{int} The relative top coordinate offset."""
-#        return self.anchor[1]
-    
-#    @top.setter
-#    def top(self, value):
-#        self.anchor[1] = value
-    
-#   @property
-#   def left(self):
-#       """{int} The relative left coordinate offset."""
-#       return self.anchor[0]
-    
-#    @left.setter
-#    def left(self, value):
-#        self.anchor[0] = value
-    
-#    @property
-#    def right(self):
-#        """{int} The relative right coordinate (offset + width)."""
-#        return self.anchor[0] + self.size[0]
 
-#    @property
-#    def bottom(self):
-#        """{int} The relative bottom coordinate (offset + height)."""
-#        return self.anchor[1] + self.size[1]
-    
     @property
     def width(self):
         return self._width
@@ -231,7 +200,21 @@ class Viewport(pygame.Surface):
         del self
         #self = None
 
+    def screenxy_to_relativexy(self, coord):
+        """Convert a universal device coordinate to a relative xy coordinate.
 
+        !!!!!!!!!!!!
+        NOTE: Not the same as the view.py screenxy_to_relativexy, but should
+        not require changing when code is switched over.
+        !!!!!!!!!!!!
+        
+        coord {Indexable} An integer indexable item where [0] is the x 
+        coordinate and [1] is the y coordinate equivalent. Coord is assumed to
+        be an untranslated coordinate.
+        
+        returns {tuple} an indexable coordinate relative to this rect.
+        """
+        return (coord[0]-self.x_right, coord[1]-self.y_down)
 
 
 

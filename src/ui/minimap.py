@@ -3,16 +3,17 @@ import viewport
 
 class MiniMap(viewport.Viewport):
     def __init__(self, x_right=0, y_down=0, width=256, height=256, 
-                 world_width=1024, world_height=768, event_pub=None):
-
-        self.mouse_events = True
-        # Panning of the map is active.
-        self.panning_map = False
+                 world_width=1024, world_height=768, controller=None):
+        """Arguments not inherited from viewport.
         
-        self.border_size = 10  #Made it 10 to match the screen scrolling width.
-        self.border_color = (165,42,42)  #Brown
+        controller {EventPublisher} Provides a pipeline to events in the outside
+        world.
+        """
         
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 0, True)
+
+        self.border_size = 10  #Made it 10 to match the screen scrolling width.
+        self.border_color = (165,42,42)  #Brown
 
         self.description = "Mini Map"
 
@@ -55,20 +56,23 @@ class MiniMap(viewport.Viewport):
         self.minimap_surface = pygame.surface.Surface((self.minimap_usable_width, self.minimap_usable_height)).convert()
         self.minimap_background = pygame.surface.Surface((self.minimap_usable_width, self.minimap_usable_height)).convert()
         self.minimap_background.fill((0, 0, 0))
+        
+        # Panning of the map is active.
+        self.panning_map = False
+
+        # Register event listeners.
+        if controller is not None:
+            controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+            controller.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
+            controller.sub("MOUSEMOTION", self.mousemotion_listener)
+        elif __debug__:
+            print "WARNING: controller was not defined, no event listening will be happening in", self
 
         # For debugging
         if __debug__:
             print "MiniMap instance property values"
             print "minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
             print "minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height        
-
-        # Register event listeners.
-        if event_pub is not None:
-            event_pub.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
-            event_pub.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
-            event_pub.sub("MOUSEMOTION", self.mousemotion_listener)
-        elif __debug__:
-            print "event_pub was not defined, no event listening will be happening"
 
     def update(self, world, draw=True):
         """Update the game world.
@@ -120,15 +124,11 @@ class MiniMap(viewport.Viewport):
         if self.panning_map == True:
             game_simulation = e.data["game_sim"]
             
-            # Convert the global x and y coordinates of the mouse to the viewport.  Note
-            # that this is not adjusted to the minimap, just the viewport containing the
-            # actual map and map borders.
-            mouse_x, mouse_y = pygame.mouse.get_pos()            
-            viewport_mouse_x = mouse_x - self.x_right
-            viewport_mouse_y = mouse_y - self.y_down
+            viewport_mouse_x, viewport_mouse_y = self.screenxy_to_relativexy(e.data["ev"].pos)
             
-            # Define a rect that matches the actual area on the viewport where the minimap is, i.e. don't count the borders.
-            minimap_rect = pygame.Rect(self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height, self.minimap_usable_width, self.minimap_usable_height )
+            # Define a rect that matches the actual area on the viewport 
+            # where the minimap is, i.e. don't count the borders.
+            minimap_rect = pygame.Rect(self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height, self.minimap_usable_width, self.minimap_usable_height)
 
             if minimap_rect.collidepoint(viewport_mouse_x, viewport_mouse_y) == True:
                 # Adjust mouse coordinates to match the viewport map.
