@@ -18,7 +18,7 @@ from entities.ant import Ant
 from entities.base import Base
 from entities.leaf import Leaf
 import globaldata
-import spatial_engine
+import spatialengine
 
 class World(object):
         
@@ -38,7 +38,7 @@ class World(object):
                                       self.viewable_width, self.viewable_height,
                                       events)
 
-        self.spatial_index = spatial_engine.SpatialEngine(self.width, self.height)
+        self.spatial_index = spatialengine.SpatialEngine(self.width, self.height)
 
         self.time_born = time.time()
         #Initialize counters
