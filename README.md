@@ -45,6 +45,10 @@ Key
 - Not Started or on hold.
 
 - User Interface
+    * Surgical separation of UI from simulation. Next step on path to multiprocess
+      capable game (UI in one thread/process, game in another).
+        * Try to do so with little to no performance impact (relative to current
+          performance.)
     * Views should implement a View/Controller relationship between the UI and the
       game sim (separation of concerns, future availability of multi-core
       support).

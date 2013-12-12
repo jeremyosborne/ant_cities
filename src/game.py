@@ -14,7 +14,7 @@ from events import EventPublisher
 # Do before loading GameSimulation.
 events = EventPublisher()
 
-from ui.imageassets import ImageAssets
+from ui.assets.imageassets import ImageAssets
 # Do before loading GameSimulation.
 imageassets = ImageAssets(globaldata.ASSETS_PATH)
 

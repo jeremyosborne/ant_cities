@@ -1,7 +1,7 @@
 import os
 import pygame
 
-from ui.assets import AssetCache
+from ui.assets.assets import AssetCache
 
 class ImageAssets(AssetCache):
     """Implement asset cache for images used by Ant Cities.
