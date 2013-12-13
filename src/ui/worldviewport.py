@@ -271,6 +271,21 @@ class WorldViewport(viewport.Viewport):
         
         return Vec2d(x, y)
 
+    def update(self):
+        #Let's take care of the mouse pointer location in terms of scrolling the map at screen border.
+        #Since the game world's viewport dimensions are likely to be different than the screen size, we should change the dependent variables below, for example
+        #rather than using world.viewport.height, use the screen height - that is, if you want the scrolling action to really take place at the edge of the screen
+        #rather than the edge of the world viewport.  Made manual adjustment below with +170 until I've thought is through.            
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if mouse_x < 10:
+            self.update_viewport_center(self.world_viewable_center_x - self.scroll_speed, self.world_viewable_center_y)    
+        if mouse_x > (self.width-10):
+            self.update_viewport_center(self.world_viewable_center_x + self.scroll_speed, self.world_viewable_center_y)    
+        if mouse_y < 10:
+            self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y - self.scroll_speed)    
+        if mouse_y > (self.height-10+170):
+            self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y + self.scroll_speed)
+
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
         game_simulation = e.data["game_sim"]

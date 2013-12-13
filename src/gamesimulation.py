@@ -75,26 +75,13 @@ class GameSimulation():
         self.clock = pygame.time.Clock()
 
     def process_game_loop(self):
-    
-        #Let's take care of the mouse pointer location in terms of scrolling the map at screen border.
-        #Since the game world's viewport dimensions are likely to be different than the screen size, we should change the dependent variables below, for example
-        #rather than using world.viewport.height, use the screen height - that is, if you want the scrolling action to really take place at the edge of the screen
-        #rather than the edge of the world viewport.  Made manual adjustment below with +170 until I've thought is through.            
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if mouse_x < 10:
-            self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x - self.world.viewport.scroll_speed, self.world.viewport.world_viewable_center_y)    
-        if mouse_x > (self.world.viewport.width-10):
-            self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x + self.world.viewport.scroll_speed, self.world.viewport.world_viewable_center_y)    
-        if mouse_y < 10:
-            self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x, self.world.viewport.world_viewable_center_y - self.world.viewport.scroll_speed)    
-        if mouse_y > (self.world.viewport.height-10+170):
-            self.world.viewport.update_viewport_center(self.world.viewport.world_viewable_center_x, self.world.viewport.world_viewable_center_y + self.world.viewport.scroll_speed)
-            
+
         # Time_passed is in milliseconds.
         time_passed = self.clock.tick(60)
 
         self.world.process(time_passed)
 
+        self.world.viewport.update()
         self.mini_map.update(self.world, draw=globaldata.render_minimap)
         self.fps_display.update(self.clock)
         self.unit_information_display.update(self.world)  
