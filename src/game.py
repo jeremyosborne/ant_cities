@@ -11,25 +11,32 @@ from pygame.locals import *
 import globaldata
 
 from events import EventPublisher
-# Do before loading GameSimulation.
-events = EventPublisher()
-
 from ui.assets.imageassets import ImageAssets
-# Do before loading GameSimulation.
-imageassets = ImageAssets(globaldata.ASSETS_PATH)
-
 from gamesimulation import GameSimulation
+
+
+
+# Globals, to be initialized during run time.
+events = None
+imageassets = None
+game_simulation = None
+
+
 
 def run():
     """Call to start the game.
     """
-    global events
+    global events, game_simulation, imageassets
     
     pygame.init()
     pygame.display.set_caption(globaldata.GAME_TITLE)
 
-    game_simulation = GameSimulation()
-
+    events = EventPublisher()
+    imageassets = ImageAssets(globaldata.ASSETS_PATH)
+    
+    # Needs to be initialized after everything.
+    game_simulation = GameSimulation(events, imageassets)
+    
     print pygame.display.Info()
 
     #Main game loop    
@@ -50,9 +57,6 @@ def run():
                 if event.key == K_m: 
                     # Toggle rendering of the mini-map.
                     globaldata.render_minimap = not globaldata.render_minimap
-                if event.key == K_r:  
-                    # Resize the game window.
-                    game_simulation.world.viewport.height = 500
             elif event.type == MOUSEBUTTONDOWN:
                 events.pub("MOUSEBUTTONDOWN", ev=event, game_sim=game_simulation)
             elif event.type == MOUSEBUTTONUP:

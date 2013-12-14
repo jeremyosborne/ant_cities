@@ -271,7 +271,19 @@ class WorldViewport(viewport.Viewport):
         
         return Vec2d(x, y)
 
-    def update(self):
+    def update(self, world, draw=True):
+        """Update the view of the game world.
+        
+        world {World} Gameworld reference.
+        [draw] {bool} Override to allow temporary non-drawing of minimap.
+        """
+
+        if not draw:
+            return
+
+        #Prepares for this frame.  Clears the background, etc.
+        self.prepare_new_frame()
+
         #Let's take care of the mouse pointer location in terms of scrolling the map at screen border.
         #Since the game world's viewport dimensions are likely to be different than the screen size, we should change the dependent variables below, for example
         #rather than using world.viewport.height, use the screen height - that is, if you want the scrolling action to really take place at the edge of the screen
@@ -285,6 +297,23 @@ class WorldViewport(viewport.Viewport):
             self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y - self.scroll_speed)    
         if mouse_y > (self.height-10+170):
             self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y + self.scroll_speed)
+
+        #Using the spatial index to determine what to render.  Let's not use the index if we're completely zoomed out. 
+        if self.zoom_area_width != world.width:
+            #Calculate the range.
+            if self.zoom_area_width > self.zoom_area_height:
+                the_range = self.zoom_area_width/2
+            else:
+                the_range = self.zoom_area_height/2
+            
+            entity_list_in_range = world.spatial_index.find_all_in_range((self.world_viewable_center_x, self.world_viewable_center_y), the_range)
+    
+            #Render each entity onto the framebuffer.
+            for entity in entity_list_in_range:
+                entity[0].render(self)
+        else:
+            for entity in world.entities.itervalues():
+                entity.render(self)
 
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
@@ -305,7 +334,7 @@ class WorldViewport(viewport.Viewport):
         
         if event.button == 4:  
             # Mouse Scroll Wheel Up, so zoom in
-            game_simulation.world.viewport.change_zoom_level("in")
+            self.change_zoom_level("in")
         elif event.button == 5:  
             # Mouse Scroll Wheel Down, so zoom out
-            game_simulation.world.viewport.change_zoom_level("out")
+            self.change_zoom_level("out")

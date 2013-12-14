@@ -1,17 +1,16 @@
 import pygame
 import viewport
 
-from game import imageassets
-
-
 class ViewUnitInfoBox(viewport.Viewport):
     """Traditional area that displays information about a single unit a user has clicked on.
     """
-    def __init__(self, x_right=0, y_down=0, width=256, height=256, controller=None):
+    def __init__(self, x_right=0, y_down=0, width=256, height=256, 
+                 controller=None, imageassets=None):
         """Arguments not inherited from viewport.
         
         controller {EventPublisher} Provides a pipeline to events in the outside
         world.
+        imageassets {AssetCache} Image cache.
         """
 
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)
@@ -34,6 +33,8 @@ class ViewUnitInfoBox(viewport.Viewport):
         
         #The unit we're watching.
         self.watching_entity = None
+        # Image to show which leaf is being watched.
+        self.watched_leaf_image = imageassets.get("leaf2")
         #Toggle for tracking the entity on screen.
         self.track = False
         
@@ -51,7 +52,7 @@ class ViewUnitInfoBox(viewport.Viewport):
     def set_unit(self, entity):
         self.watching_entity = entity
         
-    def update(self, world):
+    def update(self, world_viewport):
         #Is there something selected?
         self.surface.blit(self.background, (0, 0))
         if self.watching_entity != None:
@@ -60,7 +61,7 @@ class ViewUnitInfoBox(viewport.Viewport):
             if self.track == True:
                 #Track the unit.
                 x, y = self.watching_entity.location
-                world.viewport.update_viewport_center(x, y)
+                world_viewport.update_viewport_center(x, y)
                 #Draw button to untrack.
                 self.surface.blit(self.Start_Tracking_Button, (self.width - 30, 0))            
                 
@@ -95,10 +96,10 @@ class ViewUnitInfoBox(viewport.Viewport):
                         #change the leaf image.
                         leaf = self.watching_entity.world.get(self.watching_entity.leaf_id)
                         if leaf != None:
-                            leaf.image = self.watching_entity.world.leaf_image2
+                            leaf.image = self.watched_leaf_image
                             #Put more on the screen about this leaf.
                             text = self.font.render("Location of leaf: " + str(leaf.location), True, (255, 255, 255))
-                            w, h = text.get_size()
+                            #w, h = text.get_size()
                             self.surface.blit(text, (10, 90))
                         
                 

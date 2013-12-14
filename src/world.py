@@ -11,9 +11,6 @@ from pygame.locals import *
 from random import randint
 from pymunk.vec2d import Vec2d
 
-from game import events, imageassets
-
-from ui.worldviewport import WorldViewport
 from entities.ant import Ant
 from entities.base import Base
 from entities.leaf import Leaf
@@ -22,7 +19,11 @@ import spatialengine
 
 class World(object):
         
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, imageassets):
+        """Notes:
+        
+        imageassets {AssetCache} Image cache.
+        """
         
         #The size of the world for x and y
         self.width = x
@@ -32,11 +33,7 @@ class World(object):
         self.viewable_height = h
         
         # Dictionary of all the entities
-        self.entities = {}    
-        # viewport is the screen entity that contains the view of the game world.
-        self.viewport = WorldViewport(self.width, self.height, 
-                                      self.viewable_width, self.viewable_height,
-                                      events)
+        self.entities = {}
 
         self.spatial_index = spatialengine.SpatialEngine(self.width, self.height)
 
@@ -52,17 +49,12 @@ class World(object):
 #Setting up initial entity elements.
 #-----------------------------------------------------------------------
 
-        self.ant_image = imageassets.get("red-ant")
-        self.ant_image_2 = imageassets.get("blue-ant")
         self.leaf_image = imageassets.get("leaf")
-        self.leaf_image2 = imageassets.get("leaf2")
-        self.base_image = imageassets.get("hut")
-        self.base_image_2 = pygame.transform.flip(self.base_image, 1, 0)
         #Let's make hut 1 for our little ants.
-        self.base_1 = Base(self, self.base_image, 1, (255, 255, 0), "Red Ants")
+        self.base_1 = Base(self, imageassets.get("hut"), 1, (255, 255, 0), "Red Ants")
         self.base_1.location = (globaldata.NEST_POSITION)
         #Let's make hut 2 for our little ants.
-        self.base_2 = Base(self, self.base_image_2, 2, (255, 255, 0), "Blue Ants")
+        self.base_2 = Base(self, pygame.transform.flip(imageassets.get("hut"), 1, 0), 2, (255, 255, 0), "Blue Ants")
         self.base_2.location = (globaldata.NEST_POSITION_2)
     
         self.add_entity(self.base_1)
@@ -70,12 +62,12 @@ class World(object):
         
         for ant_no in xrange(globaldata.ANT_COUNT):
             #Team 1
-            ant = Ant(self, self.ant_image, self.base_1, (255, 0, 0))
+            ant = Ant(self, imageassets.get("red-ant"), self.base_1, (255, 0, 0))
             ant.location = Vec2d(randint(0, self.width), randint(0, self.height))
             ant.brain.set_state("exploring")
             self.add_entity(ant)
             #Team 2
-            ant = Ant(self, self.ant_image_2, self.base_2, (0, 0, 255))
+            ant = Ant(self, imageassets.get("blue-ant"), self.base_2, (0, 0, 255))
             ant.location = Vec2d(randint(0, self.width), randint(0, self.height))
             ant.brain.set_state("exploring")
             self.add_entity(ant)
@@ -112,35 +104,6 @@ class World(object):
                     
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
-            
-    def render(self, draw=True):
-        """Update the game world.
-        
-        [draw] {bool} Override to allow temporary non-drawing.
-        """
-        if not draw:
-            return
-        
-        #Prepares for this frame.  Clears the background, etc.
-        self.viewport.prepare_new_frame()
-        
-        #Using the spatial index to determine what to render.  Let's not use the index if we're completely zoomed out. 
-        if self.viewport.zoom_area_width != self.width:
-            #Calculate the range.
-            if self.viewport.zoom_area_width > self.viewport.zoom_area_height:
-                the_range = self.viewport.zoom_area_width/2
-            else:
-                the_range = self.viewport.zoom_area_height/2
-                 
-            entity_list_in_range = self.spatial_index.find_all_in_range((self.viewport.world_viewable_center_x, self.viewport.world_viewable_center_y), the_range)
-    
-            #Render each entity onto the framebuffer.
-            for entity in entity_list_in_range:
-                entity[0].render(self.viewport)
-        else:
-            for entity in self.entities.itervalues():
-                entity.render(self.viewport)
-
             
     def get_close_entity(self, entity, name, the_range=100.):
         closest_entity, distance = self.spatial_index.find_closest(entity.location, 

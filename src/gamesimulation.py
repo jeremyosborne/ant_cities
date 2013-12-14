@@ -4,26 +4,40 @@ from pygame.locals import *
 import globaldata
 import viewport
 import time
-from game import events
 from world import World
 from ui.minimap import MiniMap
 from ui.viewunitinfobox import ViewUnitInfoBox
 from ui.fpsdisplay import FPSDisplay
 from ui.datacolumndisplay import DataColumnDisplay
-
+from ui.worldviewport import WorldViewport
 
 class GameSimulation():
        
-    def __init__(self):
-                            
+    def __init__(self, events, imageassets):
+        """Initialize game simulation.
+        
+        events {EventPublisher} Central event publisher.
+        imageassets {AssetCache} Image cache.
+        """
+
+        self.clock = pygame.time.Clock()
+
+        # Display needs to be set before any graphics calls.
         #Normal pygame window mode.
         self.screen = pygame.display.set_mode(globaldata.screen_size, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
         #Normal pygame full screen mode.
         #screen = pygame.display.set_mode(globaldata.screen_size, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
         #Set up game world
-        
+
         #The minus 170 below is the y size of the UI elements.  
-        self.world = World(globaldata.world_size_x, globaldata.world_size_y, globaldata.screen_size_x, globaldata.screen_size_y-170)
+        self.world = World(globaldata.world_size_x, globaldata.world_size_y, 
+                           globaldata.screen_size_x, globaldata.screen_size_y-170,
+                           imageassets)
+
+        # viewport is the screen entity that contains the view of the game world.
+        self.world_viewport = WorldViewport(globaldata.world_size_x, globaldata.world_size_y, 
+                                      globaldata.screen_size_x, globaldata.screen_size_y-170,
+                                      events)
         
         #Setup UI elements.
         self.mini_map = MiniMap(globaldata.screen_size_x-256, globaldata.screen_size_y-170, 
@@ -34,7 +48,7 @@ class GameSimulation():
         #Unit information display.
         self.unit_information_display = ViewUnitInfoBox(globaldata.screen_size_x-512, globaldata.screen_size_y-170, 
                                                         256, 170,
-                                                        events)
+                                                        events, imageassets)
           
         # FPS Display
         self.fps_display = FPSDisplay(5, 5)
@@ -71,8 +85,6 @@ class GameSimulation():
                                                 ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
                                                 ("Base Count:", lambda: str(self.world.base_count)),
                                               ])
-        
-        self.clock = pygame.time.Clock()
 
     def process_game_loop(self):
 
@@ -81,15 +93,13 @@ class GameSimulation():
 
         self.world.process(time_passed)
 
-        self.world.viewport.update()
-        self.mini_map.update(self.world, draw=globaldata.render_minimap)
+        self.world_viewport.update(self.world, draw=globaldata.render_world)
+        self.mini_map.update(self.world, self.world_viewport, draw=globaldata.render_minimap)
         self.fps_display.update(self.clock)
-        self.unit_information_display.update(self.world)  
+        self.unit_information_display.update(self.world_viewport)  
         self.base_display_1.update()
         self.base_display_2.update()
         self.world_info_display.update() 
-
-        self.world.render(draw=globaldata.render_world)
 
         # Call the method that renders all the viewport layers in the proper sequence.
         viewport.Viewport.render_viewports(self.screen)
