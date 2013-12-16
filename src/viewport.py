@@ -150,13 +150,6 @@ class Viewport(pygame.Surface):
     #Render this Screen Entity into whatever surface is passed in.    
     def render(self, main_surface):
         main_surface.blit(self.surface, ((self.x_right, self.y_down)))
-        
-    #We should fix this so that the normal del can be used.  Or maybe change 
-    #the name to remove, just like a list.
-    def delete(self):
-        self.remove_viewport(self)
-        del self
-        #self = None
 
     def screenxy_to_relativexy(self, coord):
         """Convert a universal device coordinate to a relative xy coordinate.

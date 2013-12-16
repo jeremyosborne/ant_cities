@@ -82,6 +82,7 @@ class Ant(GameEntity):
             GameEntity.process(self, time_passed)
     
     def delete(self):
+        # Update team stats.
         self.base.ant_count -= 1
         self.base.ant_dead += 1
         

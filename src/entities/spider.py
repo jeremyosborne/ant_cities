@@ -23,18 +23,7 @@ class Spider(GameEntity):
             self.speed = 0.
             self.image = self.dead_image
         self.speed = 140.
-        
-    def render(self, surface):
-        
-        GameEntity.render(self, surface)
-                
-        x, y = self.location
-        w, h = self.image.get_size()
-        bar_x = x - 12
-        bar_y = y + h/2
-        surface.fill( (255, 0, 0), (bar_x, bar_y, 25, 4))
-        surface.fill( (0, 255, 0), (bar_x, bar_y, self.health, 4))
-        
+
     def process(self, time_passed):
         
         x, y = self.location

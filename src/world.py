@@ -53,22 +53,32 @@ class World(object):
         #Let's make hut 1 for our little ants.
         self.base_1 = Base(self, imageassets.get("hut"), 1, (255, 255, 0), "Red Ants")
         self.base_1.location = (globaldata.NEST_POSITION)
+        self.base_count += 1
+        self.add_entity(self.base_1)
+        
         #Let's make hut 2 for our little ants.
         self.base_2 = Base(self, pygame.transform.flip(imageassets.get("hut"), 1, 0), 2, (255, 255, 0), "Blue Ants")
         self.base_2.location = (globaldata.NEST_POSITION_2)
-    
-        self.add_entity(self.base_1)
+        self.base_count += 1
         self.add_entity(self.base_2)
         
-        for ant_no in xrange(globaldata.ANT_COUNT):
-            #Team 1
+        # Grid distance from base.
+        max_starting_delta = 100
+        for _ in xrange(globaldata.ANT_COUNT):
+            # How far from base?
+            delta_x, delta_y = randint(0, max_starting_delta), randint(0, max_starting_delta)
+            delta_x *= -1 if randint(0, 10) > 5 else 1
+            delta_y *= -1 if randint(0, 10) > 5 else 1
+            # Red team (Team 1)
             ant = Ant(self, imageassets.get("red-ant"), self.base_1, (255, 0, 0))
-            ant.location = Vec2d(randint(0, self.width), randint(0, self.height))
+            base_x, base_y = globaldata.NEST_POSITION
+            ant.location = (base_x+delta_x, base_y+delta_y)
             ant.brain.set_state("exploring")
             self.add_entity(ant)
-            #Team 2
+            # Blue team (Team 2)
             ant = Ant(self, imageassets.get("blue-ant"), self.base_2, (0, 0, 255))
-            ant.location = Vec2d(randint(0, self.width), randint(0, self.height))
+            base_x, base_y = globaldata.NEST_POSITION_2
+            ant.location = (base_x+delta_x, base_y+delta_y)
             ant.brain.set_state("exploring")
             self.add_entity(ant)
             
@@ -86,6 +96,14 @@ class World(object):
         self.spatial_index.remove(entity)
         #execute triggers for deleted item.
         entity.delete()
+        
+        if entity.name == "leaf":
+            self.leaf_world_count -= 1
+            self.leaf_expired += 1
+
+        if entity.name == "base":
+            self.base_count -= 1
+
         del self.entities[entity.id]
                 
     def get(self, entity_id):
@@ -96,10 +114,11 @@ class World(object):
         time_passed_seconds = time_passed / 1000.0
         
         #Here's our chance to throw in a new leaf
-        
         if randint(1, 20) == 1:
             leaf = Leaf(self, self.leaf_image)
             leaf.location = Vec2d(randint(0, leaf.world.width), randint(0, leaf.world.height))
+            self.leaf_born += 1
+            self.leaf_world_count += 1
             self.add_entity(leaf)
                     
         for entity in self.entities.values():

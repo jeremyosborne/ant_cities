@@ -15,7 +15,6 @@ class Base (GameEntity):
         self.ant_count = 0
         self.ant_born = 0
         self.ant_dead = 0
-        self.world.base_count += 1
         self.description = description
          
     def process(self, time_passed):
@@ -26,6 +25,4 @@ class Base (GameEntity):
     def increment_leaf(self):
         self.leaves += 1
         self.leaves_returned += 1
-                    
-    def delete(self):
-        self.world.base_count -= 1
+

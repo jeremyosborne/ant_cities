@@ -24,7 +24,6 @@ class WorldViewport(viewport.Viewport):
         #zoom_level_ranges[1][0] = zoom level 1 width
         #zoom_level_ranges[1][1] = zoom level 1 height
         # ... to last zoom level
-        #zoom_level_ranges['number of zoom levels'] = total number of zoom levels.  (integer)
         self.zoom_level_ranges = {}
         
         #Default zoom level - everything actual size.
@@ -53,8 +52,9 @@ class WorldViewport(viewport.Viewport):
         
         #Calculate the zoom levels.
         self.calculate_zoom_level_ranges()
-        print "Printing zoom level ranges"
-        print self.zoom_level_ranges
+        if __debug__:
+            print "Zoom level ranges (%s total zoom levels)" % len(self.zoom_level_ranges)
+            print self.zoom_level_ranges
         
         #Setup variables for calculating the rectangle of the world that will be respresented in the viewport.
         self.zoom_area_width = self.zoom_level_ranges[self.current_zoom_level][0]
@@ -84,9 +84,9 @@ class WorldViewport(viewport.Viewport):
         self.zoom_level_ranges[2] =  (self.width, self.height)
         
         #Calculate the remaining levels.
-        finished_processing = True
+        processing = True
         index = 2
-        while finished_processing:
+        while processing:
             index += 1
             #Test width and height of the next zoom level, is the next range still smaller than the world?
             if ((self.zoom_level_ranges[index - 1][0] * 1.5) <= self.world_width) and ((self.zoom_level_ranges[index -1][1] * 1.5) <= self.world_height):
@@ -94,15 +94,9 @@ class WorldViewport(viewport.Viewport):
                 print "Creating next zoom level ", index
                 self.zoom_level_ranges[index] = (self.zoom_level_ranges[index - 1][0] * 1.5, self.zoom_level_ranges[index - 1][1] * 1.5)
             else:
-            #We're at the end of the line, so clean it up and end it.
-                finished_processing = False
-                #Check to see if we are already at the end of the line.  
-                if self.zoom_level_ranges[index - 1][0] == self.width and self.zoom_level_ranges[index - 1][1] == self.world_height:
-                    #We are at the end of the line and the last calculated zoom level is the highest.
-                    self.zoom_level_ranges['number_of_zoom_levels'] = index - 1
-                else:
+                processing = False
+                if not (self.zoom_level_ranges[index - 1][0] == self.width and self.zoom_level_ranges[index - 1][1] == self.world_height):
                     self.zoom_level_ranges[index] = (self.world_width, self.world_height)
-                    self.zoom_level_ranges['number_of_zoom_levels'] = index
                         
             
     @viewport.Viewport.width.setter
@@ -178,7 +172,8 @@ class WorldViewport(viewport.Viewport):
                 self.current_zoom_level -= 1
                 self.update_zoom_level(self.zoom_level_ranges[self.current_zoom_level])
         if direction == "out":
-            if self.current_zoom_level < self.zoom_level_ranges['number_of_zoom_levels']:
+            #if self.current_zoom_level < self.zoom_level_ranges['number_of_zoom_levels']:
+            if self.current_zoom_level < len(self.zoom_level_ranges):
                 self.current_zoom_level += 1
                 self.update_zoom_level(self.zoom_level_ranges[self.current_zoom_level])
 

@@ -112,11 +112,6 @@ class MiniMap(viewport.Viewport):
         self.surface.blit(self.background, (0, 0))
         self.surface.blit(self.minimap_surface, ((self.border_size + self.minimap_offset_width, self.border_size + self.minimap_offset_height)))
 
-    def delete_me(self):
-        self.delete()
-        del self
-        #self = None
-
     def mousebuttondown_listener(self, e):
         if e.data["ev"].button == 1:
             self.panning_map = True

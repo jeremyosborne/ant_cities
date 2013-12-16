@@ -38,12 +38,10 @@ class GameEntity(object):
 
     @property
     def location(self):
-        """{int}  0 = lowest layer, no upper bound."""
         return self._location
     
     @location.setter
     def location(self, value):
-        """  Set's layer value and sorts the viewports on this value.  """
         self._location = Vec2d(value)
         
         #The following was for debugging the turn radius outside of the spatial index range.
@@ -116,24 +114,15 @@ class GameEntity(object):
         #print "location: ", self.location
         #print "speed:", self.speed
 
-        
-    def render(self, viewport):
-        
-        x, y = self.location
-        #Let's call the viewport entity render.  It will determine if it's on screen.
-        image = pygame.transform.rotate(self.image, self.direction*-1.)
-        viewport.render_entity(image, x, y, self)  
-        
     def process(self, time_passed):
         
         self.brain.think(time_passed)
         
         if self.speed > 0. and self.location != self.destination:
-            self.move(time_passed) 
+            self.move(time_passed)
     
-    #Default delete called when removing an object from the world.  Some entities will have
-    #triggers based on this event and will have their own delete method to execute them.
-    #Right now I'm using it for keeping counters.
     def delete(self):
+        """Called during the end of life removal of an entity from the world.
+        """
+        # default no op.
         pass
-    
