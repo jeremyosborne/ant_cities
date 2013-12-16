@@ -66,33 +66,6 @@ class Ant(GameEntity):
             #We need to tell the base that an item has arrived.
             self.base.increment_leaf()
         
-    def render(self, viewport):
-        
-        x, y = self.location
-        w, h = self.image.get_size()
-        
-        #Let's draw the ant first.
-        image = pygame.transform.rotate(self.image, self.direction*-1.)
-        viewport.render_entity(image, x, y, self)
-
-        #If it's in an appropriate zoom level, draw the leaf and the energy bar.
-        if viewport.current_zoom_level < 6:     
-            #If it's carrying a leaf, let's draw that too.
-            if self.carry_image:
-                #w, h = self.carry_image.get_size()
-                image = pygame.transform.rotate(self.carry_image, self.direction*-1.)
-                w, h = self.image.get_size()
-                viewport.render_entity(image, x, y, self)
-        
-            #Energy and Health Bar.  Draw the inital bar.
-            self.energy_bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
-            self.health_bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
-            #Now draw how much energy is left over the inital bar and health
-            self.energy_bar_surface.fill( (0, 255, 0), (0, 0, self.energy_current/40, 4))
-            viewport.render_entity(self.energy_bar_surface, x, y+20, self)
-            self.health_bar_surface.fill( (0, 255, 0), (0, 0, self.health_current/4, 4))
-            viewport.render_entity(self.health_bar_surface, x, y+25, self)
-
     def process(self, time_passed):
         
         #Process energy consumption

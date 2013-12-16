@@ -114,38 +114,7 @@ class WorldViewport(viewport.Viewport):
     def height(self, value):
         self._height = value
         self.setup_viewable_area()
-
-    def prepare_new_frame(self):
-        self.surface.blit(self.background, (0, 0))        
     
-    def render_entity(self, image, x, y, entity):
-        
-        w, h = image.get_size()
-        
-        #Are we in view?
-        if self.world_viewable_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
-            
-            #Determine scale factor.  Used in calculating position in the viewport.
-            scale_factor_width = self.zoom_area_width/self.width
-            scale_factor_height = self.zoom_area_height/self.height
-            
-            #Convert object's coordinates to the viewport we're drawing on.
-            #Convert world coordinates to world viewable coordinates, then to viewport coordinates.
-            x = (x - (self.world_viewable_center_x - self.zoom_area_width/2)) / scale_factor_width 
-            y = (y - (self.world_viewable_center_y - self.zoom_area_height/2)) / scale_factor_height
-            
-            #Render as scaled image or filled square? 
-            if self.current_zoom_level > 5:
-                #Render as square
-                self.surface.fill(entity.color, (x-5, y-5, 10, 10))           
-            else:
-                #Render as scaled object
-                if self.current_zoom_level != 2:  #Meaning scaling is required:
-                    #scale the image
-                    image = pygame.transform.scale(image, (int(w/scale_factor_width), int(h/scale_factor_height)))
-                    w, h = image.get_size()
-                self.surface.blit(image, (x-w/2, y-h/2))
-
     def update_viewport_center(self, x, y):
         """This method is called whenever one moves the map, i.e. changing the center of the viewport.
             It does all the necessary checks and corrects bad values passed in."""
@@ -258,13 +227,11 @@ class WorldViewport(viewport.Viewport):
         if not draw:
             return
 
-        #Prepares for this frame.  Clears the background, etc.
-        self.prepare_new_frame()
+        # Clear.
+        self.surface.blit(self.background, (0, 0))
 
-        #Let's take care of the mouse pointer location in terms of scrolling the map at screen border.
-        #Since the game world's viewport dimensions are likely to be different than the screen size, we should change the dependent variables below, for example
-        #rather than using world.viewport.height, use the screen height - that is, if you want the scrolling action to really take place at the edge of the screen
-        #rather than the edge of the world viewport.  Made manual adjustment below with +170 until I've thought is through.            
+        # Adjust view based on mouse location (pan if mouse remains near borders
+        # of game).
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if mouse_x < 10:
             self.update_viewport_center(self.world_viewable_center_x - self.scroll_speed, self.world_viewable_center_y)    
@@ -272,10 +239,11 @@ class WorldViewport(viewport.Viewport):
             self.update_viewport_center(self.world_viewable_center_x + self.scroll_speed, self.world_viewable_center_y)    
         if mouse_y < 10:
             self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y - self.scroll_speed)    
-        if mouse_y > (self.height-10+170):
+        if mouse_y > (self.height-10):
             self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y + self.scroll_speed)
 
-        #Using the spatial index to determine what to render.  Let's not use the index if we're completely zoomed out. 
+        # Using the spatial index to determine what to render.  
+        # Let's not use the index if we're completely zoomed out. 
         if self.zoom_area_width != world.width:
             #Calculate the range.
             if self.zoom_area_width > self.zoom_area_height:
@@ -287,10 +255,63 @@ class WorldViewport(viewport.Viewport):
     
             #Render each entity onto the framebuffer.
             for entity in entity_list_in_range:
-                entity[0].render(self)
+                self.render_entity(entity[0])
         else:
             for entity in world.entities.itervalues():
-                entity.render(self)
+                self.render_entity(entity)
+
+    def render_entity(self, entity):
+
+        image = entity.image
+        x, y = entity.location
+        w, h = image.get_size()
+        
+        #Are we in view?
+        if self.world_viewable_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
+            
+            # Determine scale factor.  Used in calculating position in the viewport.
+            scale_factor_width = self.zoom_area_width/self.width
+            scale_factor_height = self.zoom_area_height/self.height
+            
+            # Convert object's coordinates to the viewport we're drawing on.
+            # Convert world coordinates to world viewable coordinates, then to viewport coordinates.
+            x = (x - (self.world_viewable_center_x - self.zoom_area_width/2)) / scale_factor_width 
+            y = (y - (self.world_viewable_center_y - self.zoom_area_height/2)) / scale_factor_height
+            
+            #Render as scaled image or filled square? 
+            if self.current_zoom_level > 5:
+                #Render as square
+                self.surface.fill(entity.color, (x-5, y-5, 10, 10))           
+            else:
+                # Deal with ants. (Blech, this is gross right now, but trying
+                # to isolate view code, view specific logic, and will then
+                # normalize so that we simply do things to objects and need
+                # no or fiew entity speicfic code paths).
+                if entity.name == "ant":
+                    image = pygame.transform.rotate(entity.image, entity.direction*-1.)
+                    # Inventory display.
+                    if self.current_zoom_level < 6:
+                        # If it's carrying a leaf, let's draw that too.
+                        if entity.carry_image:
+                            image = pygame.transform.rotate(entity.carry_image, entity.direction*-1.)
+                            w, h = entity.image.get_size()
+                    
+                    # Energy/health bar display.
+                    if self.current_zoom_level < 6:
+                        #Energy and Health Bar.  Draw the inital bar.
+                        entity.energy_bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
+                        entity.health_bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
+                        #Now draw how much energy is left over the inital bar and health
+                        entity.energy_bar_surface.fill( (0, 255, 0), (0, 0, entity.energy_current/40, 4))
+                        image.blit(entity.energy_bar_surface, (0, 0))
+                        entity.health_bar_surface.fill( (0, 255, 0), (0, 0, entity.health_current/4, 4))
+                        image.blit(entity.health_bar_surface, (0, 5))
+
+                # Scaling according to zoom level.
+                if self.current_zoom_level != 2:
+                    image = pygame.transform.scale(image, (int(w/scale_factor_width), int(h/scale_factor_height)))
+                    w, h = image.get_size()
+                self.surface.blit(image, (x-w/2, y-h/2))
 
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
