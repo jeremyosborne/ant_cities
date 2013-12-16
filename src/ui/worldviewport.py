@@ -145,29 +145,6 @@ class WorldViewport(viewport.Viewport):
                     image = pygame.transform.scale(image, (int(w/scale_factor_width), int(h/scale_factor_height)))
                     w, h = image.get_size()
                 self.surface.blit(image, (x-w/2, y-h/2))
-                
-            #print the mouse coordinates to the screen.  Being used for debugging purposes.  It's not the right place
-            #for it anyway.
-            #mouse_x, mouse_y = pygame.mouse.get_pos()
-            #if self.rect.collidepoint(mouse_x, mouse_y) == True:
-            #    game_world_x, game_world_y = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
-            #    text = self.font.render(str(game_world_x) + ", " + str(game_world_y), True, (0, 0, 0))
-            #    w, h = text.get_size()
-            #    self.surface.blit(text, (10, 90))
-
-            
-    #This will be for special rendering, such as effects that no matter what zoom level you're at, you want to see.
-    #The following code needs to be modified to work with the new zoom rendering style.                 
-    def force_render_entity(self, image, x, y):
-        
-        w, h = image.get_size()
-        
-        if self.viewport_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
-            #We're in view.
-            #Convert object's coordinates to the surface we're drawing on.
-            x = x - (self.viewport_center_x - self.zoom_area_width/2)
-            y = y - (self.viewport_center_y - self.zoom_area_height/2)
-            self.zoom_frame_buffer.blit(image, (x-w/2, y-h/2)) 
 
     def update_viewport_center(self, x, y):
         """This method is called whenever one moves the map, i.e. changing the center of the viewport.

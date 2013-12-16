@@ -10,6 +10,7 @@ from ui.viewunitinfobox import ViewUnitInfoBox
 from ui.fpsdisplay import FPSDisplay
 from ui.datacolumndisplay import DataColumnDisplay
 from ui.worldviewport import WorldViewport
+from ui.mousedisplay import MouseDisplay
 
 class GameSimulation():
        
@@ -53,6 +54,8 @@ class GameSimulation():
         # FPS Display
         self.fps_display = FPSDisplay(5, 5)
         
+        self.mouse_display = MouseDisplay(5, 25)
+        
         # Base Information Displays
         self.base_display_1 = DataColumnDisplay(1, globaldata.screen_size_y-170, 
                                                 200, 170,
@@ -95,11 +98,13 @@ class GameSimulation():
 
         self.world_viewport.update(self.world, draw=globaldata.render_world)
         self.mini_map.update(self.world, self.world_viewport, draw=globaldata.render_minimap)
-        self.fps_display.update(self.clock)
         self.unit_information_display.update(self.world_viewport)  
         self.base_display_1.update()
         self.base_display_2.update()
-        self.world_info_display.update() 
+        self.world_info_display.update()
+        # Dev/debug.
+        self.fps_display.update(self.clock)
+        self.mouse_display.update(self.world_viewport)
 
         # Call the method that renders all the viewport layers in the proper sequence.
         viewport.Viewport.render_viewports(self.screen)
