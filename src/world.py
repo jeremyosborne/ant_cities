@@ -45,9 +45,9 @@ class World(object):
         self.leaf_world_count = 0 #Total number of leaves in the world.
         
         
-#-----------------------------------------------------------------------
-#Setting up initial entity elements.
-#-----------------------------------------------------------------------
+        #-----------------------------------------------------------------------
+        #Setting up initial entity elements.
+        #-----------------------------------------------------------------------
 
         self.leaf_image = imageassets.get("leaf")
         #Let's make hut 1 for our little ants.
@@ -83,10 +83,10 @@ class World(object):
             self.add_entity(ant)
             
 
-            
-#------------------------------------------------------------------------
-#Done setting up initial entity elements.
-#------------------------------------------------------------------------
+
+    #------------------------------------------------------------------------
+    #Done setting up initial entity elements.
+    #------------------------------------------------------------------------
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
         self.entities[entity.id] = entity

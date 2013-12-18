@@ -76,7 +76,7 @@ class Viewport(pygame.Surface):
         except:
             return -1
 
-#----------------------------------------------------------------------------#   
+    #----------------------------------------------------------------------------#   
     def __init__(self, x_right=0, y_down=0, width=1024, height=768, scale=1, layer=0, is_visable=True):
         """Arguments assumed to be integers."""
         # The upper left anchor point of our viewport

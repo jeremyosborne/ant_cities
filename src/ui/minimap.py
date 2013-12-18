@@ -135,7 +135,7 @@ class MiniMap(viewport.Viewport):
                 gameworld_x = int(viewport_mouse_x * self.x_scale_factor)
                 gameworld_y = int(viewport_mouse_y * self.y_scale_factor)
 
-                #Change centerpoint of the map
+                # Change centerpoint of the map.
                 game_simulation.world_viewport.update_viewport_center(gameworld_x, gameworld_y)
 
     def mousebuttonup_listener(self, e):

@@ -17,106 +17,123 @@ class WorldViewport(viewport.Viewport):
         
         self.description = "Game World Viewport"
         
+        # Size of the game world.
         self.world_height = world_height
         self.world_width = world_width
+
+        self.background = pygame.surface.Surface((self.width, self.height)).convert()
+        self.background.fill((255, 255, 255))
+
+        # zoom-in/out factor per zoom level.
+        self.zoom_factor = 1.5
         
-        #A dictionary the holds information about our zoom level ranges.
-        #zoom_level_ranges[1][0] = zoom level 1 width
-        #zoom_level_ranges[1][1] = zoom level 1 height
-        # ... to last zoom level
-        self.zoom_level_ranges = {}
+        # Number of pixel buffer from the edges of our view within we scroll.
+        self.scroll_buffer = 20
+        # How many visual pixels do we move per frame when scrolling?
+        self.scroll_speed_multiplier = 20
+
+        # List of zoom level dimensions.
+        # Index == the zoom level (lower == more zoomed in)
+        # Dimensions are a tuple (width, height) of pixels viewable.
+        self.zoom_level_ranges = []
+
+        # Calculate the zoom levels.
+        self.calculate_zoom_level_ranges()
+
+        # Default zoom level (needs to be done after zoom level calculation).
+        self.current_zoom_level = len(self.zoom_level_ranges)-1
+        # Where do we switch to strategic view?
+        self.strategic_zoom_level = len(self.zoom_level_ranges)-3
         
-        #Default zoom level - everything actual size.
-        self.current_zoom_level = 2
-    
         self.setup_viewable_area()
         
-        #Scroll speed in pixels when moving in the lowest zoom level.
-        self.scroll_speed_init = 10 / 1.5
-        #Default number of pixels scrolled at a time. This value will be manipulated when the zoom
-        #level changes.  Look in the update_zoom_level method.
-        self.scroll_speed = self.scroll_speed_init * 1.5
-        
-        #Used if we want to put text directly on this viewport.
-        self.font = pygame.font.SysFont("arial", 16)
-        self.small_font = pygame.font.SysFont("arial", 13)
-
         # Register event listeners.
         if controller is not None:
             controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
         elif __debug__:
             print "WARNING: controller was not defined, no event listening will be happening in", self
 
-    #Setup    
-    def setup_viewable_area(self):
-        
-        #Calculate the zoom levels.
-        self.calculate_zoom_level_ranges()
-        if __debug__:
-            print "Zoom level ranges (%s total zoom levels)" % len(self.zoom_level_ranges)
-            print self.zoom_level_ranges
-        
-        #Setup variables for calculating the rectangle of the world that will be respresented in the viewport.
-        self.zoom_area_width = self.zoom_level_ranges[self.current_zoom_level][0]
-        self.zoom_area_height = self.zoom_level_ranges[self.current_zoom_level][1]
+    @property
+    def zoom_area_width(self):
+        """Width in pixels at the current zoom level.
+        """
+        return self.zoom_level_ranges[self.current_zoom_level][0]
 
-        #Define the area being represented in the viewport.  We start in the center of the world.
-        self.world_viewable_center_x = self.world_width / 2
+    @property
+    def zoom_area_height(self):
+        """Height in pixels at the current zoom level.
+        """
+        return self.zoom_level_ranges[self.current_zoom_level][1]
+    
+    @property
+    def scroll_speed(self):
+        """Scroll speed of view (in pixels).
+        """
+        return (self.current_zoom_level+1)*self.zoom_factor*self.scroll_speed_multiplier
+    
+    def setup_viewable_area(self):
+
+        # Define the area being represented in the viewport.  We start in the 
+        # center of the world.
+        self.world_viewable_center_x = self.world_width/2
         self.world_viewable_center_min_x = self.zoom_area_width/2
         self.world_viewable_center_max_x = self.world_width - self.zoom_area_width/2
-        self.world_viewable_center_y = self.world_height / 2
+        self.world_viewable_center_y = self.world_height/2
         self.world_viewable_center_min_y = self.zoom_area_height/2
         self.world_viewable_center_max_y = self.world_height - self.zoom_area_height/2
-             
+        print "self.world_viewable_center_max_*", (self.world_viewable_center_max_x, self.world_viewable_center_max_y)
+        print "self.world_viewable_center_min_*", (self.world_viewable_center_min_x, self.world_viewable_center_min_y)
+        
         self.world_viewable_x_rect = self.world_viewable_center_x - self.zoom_area_width/2
         self.world_viewable_y_rect = self.world_viewable_center_y - self.zoom_area_height/2
         self.world_viewable_rect = pygame.Rect(self.world_viewable_x_rect, self.world_viewable_y_rect, self.zoom_area_width, self.zoom_area_height)
-      
-        self.background = pygame.surface.Surface((self.width, self.height)).convert()
-        print "background: ", self.width, self.height
-        self.background.fill((255, 255, 255))
+
+        if __debug__:
+            print "Zoom level ranges (%s total zoom levels)" % len(self.zoom_level_ranges)
+            print self.zoom_level_ranges
+            print "background: ", self.width, self.height
                              
     def calculate_zoom_level_ranges(self):
-        #Zoom levels get bigger by a factor of 1.5.
-        #Most zoomed in level available.  We're starting at index 1.
-        self.zoom_level_ranges[1] =  (self.width / 1.5, self.height / 1.5)
-        #Default zoom level no scaling.
-        self.zoom_level_ranges[2] =  (self.width, self.height)
+        """Initialization function, only call once.
         
-        #Calculate the remaining levels.
-        processing = True
-        index = 2
-        while processing:
-            index += 1
-            #Test width and height of the next zoom level, is the next range still smaller than the world?
-            if ((self.zoom_level_ranges[index - 1][0] * 1.5) <= self.world_width) and ((self.zoom_level_ranges[index -1][1] * 1.5) <= self.world_height):
-                #Create the next zoom level entry.
-                print "Creating next zoom level ", index
-                self.zoom_level_ranges[index] = (self.zoom_level_ranges[index - 1][0] * 1.5, self.zoom_level_ranges[index - 1][1] * 1.5)
+        Populates the zoom_level_ranges list.
+        """
+        # Remove if and when we want this to be called more than once.
+        assert len(self.zoom_level_ranges) == 0, "Function should be called only once."
+        
+        # Allow one level of up-scaling at the most zoomed in.
+        self.zoom_level_ranges.append((self.width/self.zoom_factor, self.height/self.zoom_factor))
+        # Default zoom level no scaling.
+        self.zoom_level_ranges.append((self.width, self.height))
+        
+        # Calculate the remaining levels.
+        while True:
+            # Keep building zoom levels until the max zoom level encompasses the
+            # entire game world.
+            current_zoom_level = self.zoom_level_ranges[-1]
+            next_zoom_level = (current_zoom_level[0]*self.zoom_factor, 
+                               current_zoom_level[1]*self.zoom_factor)
+            if ((next_zoom_level[0] <= self.world_width) and (next_zoom_level[1] <= self.world_height)):
+                self.zoom_level_ranges.append(next_zoom_level)
             else:
-                processing = False
-                if not (self.zoom_level_ranges[index - 1][0] == self.width and self.zoom_level_ranges[index - 1][1] == self.world_height):
-                    self.zoom_level_ranges[index] = (self.world_width, self.world_height)
-                        
-            
-    @viewport.Viewport.width.setter
-    def width(self, value):
-        self.width = value
-        self.setup_viewable_area()
-        
-    @viewport.Viewport.height.setter
-    def height(self, value):
-        self._height = value
-        self.setup_viewable_area()
+                # Final zoom level. Make it match the size of the game world
+                # even if it's not full factor zoom.
+                self.zoom_level_ranges.append((self.world_width, self.world_height))
+                break
     
     def update_viewport_center(self, x, y):
-        """This method is called whenever one moves the map, i.e. changing the center of the viewport.
-            It does all the necessary checks and corrects bad values passed in."""
+        """This method is called whenever one moves the map, i.e. changing the 
+        center of the viewport.
+        
+        It does all the necessary checks and corrects bad values passed in.
+        """
         
         self.world_viewable_center_x = x
         self.world_viewable_center_y = y
 
-        #Test to see if viewport center is out of range after the the zoom, if so, fix'um up.  This can happen if you're at the edge of the screen and then zoom out - the center will be close to the edge.        
+        # Test to see if viewport center is out of range after the the zoom, 
+        # if so, fix'um up.  This can happen if you're at the edge of the 
+        # screen and then zoom out - the center will be close to the edge.        
         if self.world_viewable_center_x > self.world_viewable_center_max_x:
             self.world_viewable_center_x = self.world_viewable_center_max_x
         elif self.world_viewable_center_x < self.world_viewable_center_min_x:
@@ -130,25 +147,19 @@ class WorldViewport(viewport.Viewport):
         self.world_viewable_y_rect = self.world_viewable_center_y - self.zoom_area_height/2
         self.world_viewable_rect = pygame.Rect(self.world_viewable_x_rect, self.world_viewable_y_rect, self.zoom_area_width, self.zoom_area_height)
             
-    #When the zoom level is changed, several variables must be changed with it.
-    def update_zoom_level(self, level):
-
-        #Since I want the zoom to re-center based on mouse location in the gameworld, we need to calculate
-        #that before we change any values below.
+    # When the zoom level is changed, several variables must be changed with it.
+    def update_zoom_level(self):
+        # Since I want the zoom to re-center based on mouse location in the 
+        # gameworld, we need to calculate that before we change any values below.
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        #Check to see if the mouse is above the game world viewport any only make adjustments if so.
-        #Will need to do something else for if the mouse is over the minimap.
+        # Check to see if the mouse is above the game world viewport any only make adjustments if so.
+        # Will need to do something else for if the mouse is over the minimap.
         if self.rect.collidepoint(mouse_x, mouse_y) == True:
             game_world_x, game_world_y = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
         else:
             game_world_x = self.world_viewable_center_x
             game_world_y = self.world_viewable_center_y
                         
-        x, y = level
-    
-        self.zoom_area_width = x
-        self.zoom_area_height = y
-    
         self.world_viewable_center_min_x = self.zoom_area_width/2
         self.world_viewable_center_max_x = self.world_width - self.zoom_area_width/2
 
@@ -157,29 +168,21 @@ class WorldViewport(viewport.Viewport):
 
         self.update_viewport_center(game_world_x, game_world_y)
 
-        #Change the scroll_speed based on the zoom level.
-        self.scroll_speed = int (self.scroll_speed_init * 1.5 * self.current_zoom_level)
-        
-        if self.rect.collidepoint(mouse_x, mouse_y) == True:
-            pygame.mouse.set_pos(self.gamepoint_to_screenpoint(game_world_x, game_world_y))
+        # Buggy. When zooming out near edge scrolls mouse outside of view.
+        #if self.rect.collidepoint(mouse_x, mouse_y) == True:
+            # Move the mouse to the center of the zoom.
+            #pygame.mouse.set_pos(self.gamepoint_to_screenpoint(game_world_x, game_world_y))
 
-        #self.print_debug()
         
+        if __debug__:
+            print "world viewable rectangle:", self.world_viewable_rect
+            print "zoom area width and height: ", self.zoom_area_width, self.zoom_area_height
+
     def change_zoom_level(self, direction):
-    
-        if direction == "in":
-            if self.current_zoom_level > 1:
-                self.current_zoom_level -= 1
-                self.update_zoom_level(self.zoom_level_ranges[self.current_zoom_level])
-        if direction == "out":
-            #if self.current_zoom_level < self.zoom_level_ranges['number_of_zoom_levels']:
-            if self.current_zoom_level < len(self.zoom_level_ranges):
-                self.current_zoom_level += 1
-                self.update_zoom_level(self.zoom_level_ranges[self.current_zoom_level])
-
-    def print_debug(self):
-        print "world viewable rectangle:", self.world_viewable_rect
-        print "zoom area width and height: ", self.zoom_area_width, self.zoom_area_height
+        new_zoom_level = self.current_zoom_level + direction
+        if new_zoom_level >= 0 and new_zoom_level < len(self.zoom_level_ranges):
+            self.current_zoom_level = new_zoom_level
+            self.update_zoom_level()
 
     def screenpoint_to_gamepoint(self, screenx, screeny):
         """Convert a screen coordinate to an equivalent game coordinate.
@@ -228,17 +231,17 @@ class WorldViewport(viewport.Viewport):
         # Adjust view based on mouse location (pan if mouse remains near borders
         # of game).
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        if mouse_x < 10:
+        if mouse_x >= 0 and mouse_x <= self.scroll_buffer:
             self.update_viewport_center(self.world_viewable_center_x - self.scroll_speed, self.world_viewable_center_y)    
-        if mouse_x > (self.width-10):
+        if (mouse_x >= self.width-self.scroll_buffer) and mouse_x <= self.width:
             self.update_viewport_center(self.world_viewable_center_x + self.scroll_speed, self.world_viewable_center_y)    
-        if mouse_y < 10:
+        if mouse_y >= 0 and mouse_y <= self.scroll_buffer:
             self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y - self.scroll_speed)    
-        if mouse_y > (self.height-10):
+        if (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
             self.update_viewport_center(self.world_viewable_center_x, self.world_viewable_center_y + self.scroll_speed)
 
-        # Using the spatial index to determine what to render.  
-        # Let's not use the index if we're completely zoomed out. 
+        # Using the spatial index to determine what to render,
+        # except let's not use the index if we're completely zoomed out. 
         if self.zoom_area_width != world.width:
             #Calculate the range.
             if self.zoom_area_width > self.zoom_area_height:
@@ -256,7 +259,8 @@ class WorldViewport(viewport.Viewport):
                 self.render_entity(entity)
 
     def render_entity(self, entity):
-
+        """Display logic for dealing with entities.
+        """
         image = entity.image
         x, y = entity.location
         w, h = image.get_size()
@@ -273,9 +277,9 @@ class WorldViewport(viewport.Viewport):
             x = (x - (self.world_viewable_center_x - self.zoom_area_width/2)) / scale_factor_width 
             y = (y - (self.world_viewable_center_y - self.zoom_area_height/2)) / scale_factor_height
             
-            #Render as scaled image or filled square? 
-            if self.current_zoom_level > 5:
-                #Render as square
+            # Render as scaled image or filled square? 
+            if self.current_zoom_level > self.strategic_zoom_level:
+                # Render as square.
                 self.surface.fill(entity.color, (x-5, y-5, 10, 10))           
             else:
                 # Deal with ants. (Blech, this is gross right now, but trying
@@ -285,14 +289,14 @@ class WorldViewport(viewport.Viewport):
                 if entity.name == "ant":
                     image = pygame.transform.rotate(entity.image, entity.direction*-1.)
                     # Inventory display.
-                    if self.current_zoom_level < 6:
+                    if self.current_zoom_level < self.strategic_zoom_level:
                         # If it's carrying a leaf, let's draw that too.
                         if entity.carry_image:
                             image = pygame.transform.rotate(entity.carry_image, entity.direction*-1.)
                             w, h = entity.image.get_size()
                     
                     # Energy/health bar display.
-                    if self.current_zoom_level < 6:
+                    if self.current_zoom_level < self.strategic_zoom_level:
                         #Energy and Health Bar.  Draw the inital bar.
                         entity.energy_bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
                         entity.health_bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
@@ -326,8 +330,8 @@ class WorldViewport(viewport.Viewport):
                 game_simulation.unit_information_display.set_unit(entity)
         
         if event.button == 4:  
-            # Mouse Scroll Wheel Up, so zoom in
-            self.change_zoom_level("in")
+            # Mouse Scroll Wheel Up == zoom in
+            self.change_zoom_level(-1)
         elif event.button == 5:  
-            # Mouse Scroll Wheel Down, so zoom out
-            self.change_zoom_level("out")
+            # Mouse Scroll Wheel Down == zoom out
+            self.change_zoom_level(1)
