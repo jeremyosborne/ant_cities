@@ -61,7 +61,7 @@ class ViewUnitInfoBox(viewport.Viewport):
             if self.track == True:
                 #Track the unit.
                 x, y = self.watching_entity.location
-                world_viewport.update_viewport_center(x, y)
+                world_viewport.update_viewport(x, y)
                 #Draw button to untrack.
                 self.surface.blit(self.Start_Tracking_Button, (self.width - 30, 0))            
                 

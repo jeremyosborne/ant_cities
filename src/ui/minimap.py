@@ -101,10 +101,14 @@ class MiniMap(viewport.Viewport):
             
         #Let's put rectangle that shows what's in the gamewindow on the minimap.
         #For polygon
-        point_pair_1 = (int(world_viewport.world_viewable_x_rect/self.x_scale_factor), int(world_viewport.world_viewable_y_rect/self.y_scale_factor))
-        point_pair_2 = (int((world_viewport.world_viewable_x_rect+world_viewport.zoom_area_width)/self.x_scale_factor)-2,  int(world_viewport.world_viewable_y_rect/self.y_scale_factor))
-        point_pair_3 = (int(world_viewport.world_viewable_x_rect/self.x_scale_factor), int((world_viewport.world_viewable_y_rect+world_viewport.zoom_area_height)/self.y_scale_factor)-2)
-        point_pair_4 = (int((world_viewport.world_viewable_x_rect+world_viewport.zoom_area_width)/self.x_scale_factor)-2, int((world_viewport.world_viewable_y_rect+world_viewport.zoom_area_height)/self.y_scale_factor)-2)
+        point_pair_1 = (int(world_viewport.world_viewable_rect.left/self.x_scale_factor), 
+                        int(world_viewport.world_viewable_rect.top/self.y_scale_factor))
+        point_pair_2 = (int((world_viewport.world_viewable_rect.left+world_viewport.zoom_area_width)/self.x_scale_factor)-2,  
+                        int(world_viewport.world_viewable_rect.top/self.y_scale_factor))
+        point_pair_3 = (int(world_viewport.world_viewable_rect.left/self.x_scale_factor), 
+                        int((world_viewport.world_viewable_rect.top+world_viewport.zoom_area_height)/self.y_scale_factor)-2)
+        point_pair_4 = (int((world_viewport.world_viewable_rect.left+world_viewport.zoom_area_width)/self.x_scale_factor)-2, 
+                        int((world_viewport.world_viewable_rect.top+world_viewport.zoom_area_height)/self.y_scale_factor)-2)
         
         pygame.draw.polygon(self.minimap_surface, (255, 255, 0), (point_pair_1, point_pair_3, point_pair_4, point_pair_2), 2)
         
@@ -136,7 +140,7 @@ class MiniMap(viewport.Viewport):
                 gameworld_y = int(viewport_mouse_y * self.y_scale_factor)
 
                 # Change centerpoint of the map.
-                game_simulation.world_viewport.update_viewport_center(gameworld_x, gameworld_y)
+                game_simulation.world_viewport.update_viewport(gameworld_x, gameworld_y)
 
     def mousebuttonup_listener(self, e):
         if e.data["ev"].button == 1:
