@@ -45,8 +45,6 @@ Key
 - Not Started or on hold.
 
 - User Interface
-    * BUG: Zoom in/out, recenter map, recenter minimap, notice the jump of the
-      bounding box in the minimap.
     * Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
         * Make sure all binary image data is isolated in the view code, not

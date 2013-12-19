@@ -46,11 +46,11 @@ class WorldViewport(viewport.Viewport):
         self.strategic_zoom_level = len(self.zoom_level_ranges)-3
         
         # Defines the viewable portion of the entire world.
-        # Initial values are set in the update_viewport call.
+        # Initial values are set in the move_viewport call.
         self.world_viewable_rect = pygame.Rect(0, 0, 0, 0)
         
         # Call once to initialize the first view.
-        self.update_viewport()
+        self.move_viewport()
         
         # Register event listeners.
         if controller is not None:
@@ -132,10 +132,23 @@ class WorldViewport(viewport.Viewport):
         if __debug__:
             print "Zoom level ranges (%s total zoom levels)" % len(self.zoom_level_ranges)
             print self.zoom_level_ranges
+    
+    def scroll_viewport(self, x=0, y=0):
+        """Scrolls the viewport relative to its current position.
         
-    def update_viewport(self, x=None, y=None):
+        (x, y) are offsets applied as a delta to the current position of the
+        center.
+        
+        """
+        # Convenience method, handoff to move_viewport.
+        self.move_viewport(self.world_viewable_rect.centerx+x,
+                           self.world_viewable_rect.centery+y)
+    
+    def move_viewport(self, x=None, y=None):
         """Moves the viewport and adjusts the dimensions of the bounding
         rectangle.
+        
+        (x, y) make up the new center coordinate for the viewport.
         
         Needs to be called to to after zoom level changes, too.
         """
@@ -145,7 +158,7 @@ class WorldViewport(viewport.Viewport):
 
         # Test to see if viewport center is out of range after the the zoom, 
         # if so, fix'um up.  This can happen if you're at the edge of the 
-        # screen and then zoom out - the center will be close to the edge.        
+        # screen and then zoom out - the center will be close to the edge.
         if x > self.world_viewable_center_max_x:
             x = self.world_viewable_center_max_x
         elif x < self.world_viewable_center_min_x:
@@ -176,8 +189,8 @@ class WorldViewport(viewport.Viewport):
             else:
                 game_world_x = self.world_viewable_rect.centerx
                 game_world_y = self.world_viewable_rect.centery
-
-                self.update_viewport(game_world_x, game_world_y)
+                
+            self.move_viewport(game_world_x, game_world_y)
             
             if __debug__:
                 print "Change of zoom level requested"
@@ -234,17 +247,16 @@ class WorldViewport(viewport.Viewport):
         # Clear.
         self.surface.blit(self.background, (0, 0))
 
-        # Adjust view based on mouse location (pan if mouse remains near borders
-        # of game).
+        # Pan if mouse near border of game.
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if mouse_x >= 0 and mouse_x <= self.scroll_buffer:
-            self.update_viewport(self.world_viewable_rect.centerx - self.scroll_speed, self.world_viewable_rect.centery)    
-        if (mouse_x >= self.width-self.scroll_buffer) and mouse_x <= self.width:
-            self.update_viewport(self.world_viewable_rect.centerx + self.scroll_speed, self.world_viewable_rect.centery)
+            self.scroll_viewport(x=-self.scroll_speed)
+        elif (mouse_x >= self.width-self.scroll_buffer) and mouse_x <= self.width:
+            self.scroll_viewport(x=self.scroll_speed)
         if mouse_y >= 0 and mouse_y <= self.scroll_buffer:
-            self.update_viewport(self.world_viewable_rect.centerx, self.world_viewable_rect.centery - self.scroll_speed)    
-        if (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
-            self.update_viewport(self.world_viewable_rect.centerx, self.world_viewable_rect.centery + self.scroll_speed)
+            self.scroll_viewport(y=-self.scroll_speed)
+        elif (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
+            self.scroll_viewport(y=self.scroll_speed)
 
         # Using the spatial index to determine what to render,
         # except let's not use the index if we're completely zoomed out. 
