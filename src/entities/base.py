@@ -1,5 +1,5 @@
 from entities.entity import Entity
-
+from entities.ant import Ant
 
 
 class Base(Entity):
@@ -17,7 +17,6 @@ class Base(Entity):
         self.ant_count = 0
         self.ant_born = 0
         self.ant_dead = 0
-
          
     def process(self, time_passed):
         if self.leaves > 100:
@@ -27,6 +26,29 @@ class Base(Entity):
     def increment_leaf(self):
         self.leaves += 1
         self.leaves_returned += 1
+
+    def create_entity(self, name, placement_offset=(0, 0)):
+        """Create an entity and place it under our control.
+        
+        [placement_offset] {tuple} (x, y) offset relative to starting location
+        on top of base.
+        
+        returns the entity.
+        """
+        # Right now, we only create ants.
+        entity = None
+        if name == "ant":
+            entity = Ant(self.world, self)
+            self.ant_count += 1
+            self.ant_born += 1
+            basex, basey = self.location
+            offsetx, offsety = placement_offset
+            entity.location = (basex+offsetx, basey+offsety)
+            entity.brain.set_state("exploring")
+        else:
+            assert False, "%s name is not acceptable for creating." % name
+        
+        return entity
 
     @property
     def team(self):

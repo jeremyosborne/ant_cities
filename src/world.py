@@ -6,13 +6,12 @@ Created on Jun 19, 2013
 
 import time
 from collections import Counter
-import pygame
-from pygame.locals import *
 
 from random import randint
 from pymunk.vec2d import Vec2d
 
-from entities.ant import Ant
+from commonmath import random_radial_offset
+
 from entities.base import Base
 from entities.leaf import Leaf
 import globaldata
@@ -44,40 +43,25 @@ class World(object):
         #Setting up initial entity elements.
         #-----------------------------------------------------------------------
 
-        #Let's make hut 1 for our little ants.
+        # Generate bases.
         self.base_1 = Base(self, 1, "Red Ants")
         self.base_1.location = globaldata.NEST_POSITION
         self.add_entity(self.base_1)
         
-        #Let's make hut 2 for our little ants.
         self.base_2 = Base(self, 2, "Blue Ants")
         self.base_2.location = globaldata.NEST_POSITION_2
         self.add_entity(self.base_2)
         
-        # Grid distance from base.
-        max_starting_delta = 100
+        # Generate ants.
         for _ in xrange(globaldata.ANT_COUNT):
-            # How far from base?
-            delta_x, delta_y = randint(0, max_starting_delta), randint(0, max_starting_delta)
-            delta_x *= -1 if randint(0, 10) > 5 else 1
-            delta_y *= -1 if randint(0, 10) > 5 else 1
+            # Randomize starting position.
+            startxy = random_radial_offset(100)
             # Red team (Team 1)
-            ant = Ant(self, self.base_1)
-            self.base_1.ant_count += 1
-            self.base_1.ant_born += 1
-            base_x, base_y = self.base_1.location
-            ant.location = (base_x+delta_x, base_y+delta_y)
-            ant.brain.set_state("exploring")
+            ant = self.base_1.create_entity("ant", startxy)
             self.add_entity(ant)
             # Blue team (Team 2)
-            ant = Ant(self, self.base_2)
-            self.base_2.ant_count += 1
-            self.base_2.ant_born += 1
-            base_x, base_y = self.base_2.location
-            ant.location = (base_x+delta_x, base_y+delta_y)
-            ant.brain.set_state("exploring")
+            ant = self.base_2.create_entity("ant", startxy)
             self.add_entity(ant)
-            
 
 
     #------------------------------------------------------------------------
