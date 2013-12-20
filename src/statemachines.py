@@ -8,7 +8,7 @@ import globaldata
 
 class State(object):
     
-    def __init__(self, name):        
+    def __init__(self, name):
         self.name = name
         
     def do_actions(self, time_passed):
@@ -69,22 +69,21 @@ class AntStateExploring(State):
         self.ant.destination = Vec2d(randint(0, self.ant.world.width), randint(0, self.ant.world.height))    
  
     def do_actions(self, time_passed):
+        #-------------------------------------------------------------------------------------------------------
+        #Experimental code for fun.  This section of code can me removed at any time.
         
-#-------------------------------------------------------------------------------------------------------
-#Experimental code for fun.  This section of code can me removed at any time.
-
-        #If I see another ant, I change my heading.
-#        close_ant = self.ant.world.get_close_entity(self.ant, "ant", 200)
-#        if close_ant != None:
-#            x, y = close_ant.destination
-#            new_x = y
-#            new_y = x
-#            if new_x > self.ant.world.width: new_x = self.ant.world.width
-#            if new_y > self.ant.world.height: new_y = self.ant.world.height
-#            self.ant.destination = Vec2d(new_x, new_y)
-            
-#End experimental code for fun
-#-------------------------------------------------------------------------------------------------------            
+                #If I see another ant, I change my heading.
+        #        close_ant = self.ant.world.get_close_entity(self.ant, "ant", 200)
+        #        if close_ant != None:
+        #            x, y = close_ant.destination
+        #            new_x = y
+        #            new_y = x
+        #            if new_x > self.ant.world.width: new_x = self.ant.world.width
+        #            if new_y > self.ant.world.height: new_y = self.ant.world.height
+        #            self.ant.destination = Vec2d(new_x, new_y)
+                    
+        #End experimental code for fun
+        #-------------------------------------------------------------------------------------------------------            
         if randint(1, 200) == 1:
             self.random_destination()
             
@@ -122,9 +121,7 @@ class AntStateSeeking(State):
             return "exploring"
         
         if self.ant.location.get_distance(leaf.location) < 2.0:
-        
-            self.ant.carry(leaf.image)
-            self.ant.world.remove_entity(leaf)  #Removing leaf from the world
+            self.ant.carry(leaf)
             return "delivering"
         
         return None
@@ -192,7 +189,7 @@ class AntStatePowerUp(State):
                 self.ant.base.energy_units -= self.ant.energy_recharge_to_energy_conversion_ratio*time_passed
            
     def check_conditions(self):
-        
+    
         #Have we fully powered up?        
         if self.ant.energy_current >= self.ant.max_energy:
             return "exploring"            

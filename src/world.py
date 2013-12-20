@@ -44,15 +44,13 @@ class World(object):
         #Setting up initial entity elements.
         #-----------------------------------------------------------------------
 
-        self.leaf_image = imageassets.get("leaf")
-        
         #Let's make hut 1 for our little ants.
-        self.base_1 = Base(self, imageassets.get("hut"), 1, "Red Ants")
+        self.base_1 = Base(self, 1, "Red Ants")
         self.base_1.location = globaldata.NEST_POSITION
         self.add_entity(self.base_1)
         
         #Let's make hut 2 for our little ants.
-        self.base_2 = Base(self, pygame.transform.flip(imageassets.get("hut"), 1, 0), 2, "Blue Ants")
+        self.base_2 = Base(self, 2, "Blue Ants")
         self.base_2.location = globaldata.NEST_POSITION_2
         self.add_entity(self.base_2)
         
@@ -64,7 +62,7 @@ class World(object):
             delta_x *= -1 if randint(0, 10) > 5 else 1
             delta_y *= -1 if randint(0, 10) > 5 else 1
             # Red team (Team 1)
-            ant = Ant(self, imageassets.get("red-ant"), self.base_1)
+            ant = Ant(self, self.base_1)
             self.base_1.ant_count += 1
             self.base_1.ant_born += 1
             base_x, base_y = self.base_1.location
@@ -72,7 +70,7 @@ class World(object):
             ant.brain.set_state("exploring")
             self.add_entity(ant)
             # Blue team (Team 2)
-            ant = Ant(self, imageassets.get("blue-ant"), self.base_2)
+            ant = Ant(self, self.base_2)
             self.base_2.ant_count += 1
             self.base_2.ant_born += 1
             base_x, base_y = self.base_2.location
@@ -113,7 +111,7 @@ class World(object):
         
         #Here's our chance to throw in a new leaf
         if randint(1, 20) == 1:
-            leaf = Leaf(self, self.leaf_image)
+            leaf = Leaf(self)
             leaf.location = Vec2d(randint(0, leaf.world.width), randint(0, leaf.world.height))
             self.add_entity(leaf)
                     

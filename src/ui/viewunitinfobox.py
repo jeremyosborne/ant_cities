@@ -96,7 +96,10 @@ class ViewUnitInfoBox(viewport.Viewport):
                         #change the leaf image.
                         leaf = self.watching_entity.world.get(self.watching_entity.leaf_id)
                         if leaf != None:
-                            leaf.image = self.watched_leaf_image
+                            # Removing the image change for now. Images are managed else
+                            # where. Perhaps pub/sub this to "announce" an image
+                            # is being watched via message?
+                            #leaf.image = self.watched_leaf_image
                             #Put more on the screen about this leaf.
                             text = self.font.render("Location of leaf: " + str(leaf.location), True, (255, 255, 255))
                             #w, h = text.get_size()

@@ -12,12 +12,11 @@ import appid
 
 class GameEntity(object):
 
-    def __init__(self, world, name, image):
+    def __init__(self, world, name):
         
         #a way for an entity to get at attributes about the world.
         self.world = world
         self.name = name
-        self.image = image
         
         self.brain = statemachines.StateMachine()
         self.born_time = time.time()

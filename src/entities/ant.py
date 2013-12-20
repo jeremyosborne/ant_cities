@@ -5,9 +5,9 @@ from entities.gameentity import GameEntity
 
 class Ant(GameEntity):
     
-    def __init__(self, world, image, base):
+    def __init__(self, world, base):
         
-        GameEntity.__init__(self, world, "ant", image)
+        GameEntity.__init__(self, world, "ant")
         
         exploring_state = statemachines.AntStateExploring(self)
         seeking_state = statemachines.AntStateSeeking(self)
@@ -47,17 +47,25 @@ class Ant(GameEntity):
         self.health_to_energy_conversion_value = 50
         self.health_to_energy_conversion_cost = 10
         
-        self.carry_image = None
+        # Right now, ants can cary a single entity.
+        self.inventory = None
         
-    def carry(self, image):
-        
-        self.carry_image = image
+    def carry(self, entity):
+        """Ant picks up the entity and takes possession of it.
+        """
+        # Remove the entity from the world.
+        # TODO: Should make this transactional and prevent attempting to
+        # remove things that don't exist in the world. (Perhaps remove_entity
+        # should remove the entity being removed, or return none?)
+        self.world.remove_entity(entity)
+        self.inventory = entity
         
     def drop(self, world):
-        #Question for Jeremy stop position
-        if self.carry_image:
-            self.carry_image = None
-            #We need to tell the base that an item has arrived.
+        """Drop a particular item, assumed to only be called at the base.
+        """
+        if self.inventory:
+            self.inventory = None
+            # Assume right now that the ant is carrying a leaf.
             self.base.increment_leaf()
         
     def process(self, time_passed):

@@ -3,8 +3,8 @@ from entities.gameentity import GameEntity
 
 
 class Base(GameEntity):
-    def __init__(self, world, image, team_id, team_name):
-        GameEntity.__init__(self, world, "base", image)
+    def __init__(self, world, team_id, team_name):
+        GameEntity.__init__(self, world, "base")
 
         # Bases represent the team hierarchy.
         self._team_id = team_id
