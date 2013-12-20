@@ -52,13 +52,13 @@ class World(object):
         self.leaf_image = imageassets.get("leaf")
         #Let's make hut 1 for our little ants.
         self.base_1 = Base(self, imageassets.get("hut"), 1, (255, 255, 0), "Red Ants")
-        self.base_1.location = (globaldata.NEST_POSITION)
+        self.base_1.location = globaldata.NEST_POSITION
         self.base_count += 1
         self.add_entity(self.base_1)
         
         #Let's make hut 2 for our little ants.
         self.base_2 = Base(self, pygame.transform.flip(imageassets.get("hut"), 1, 0), 2, (255, 255, 0), "Blue Ants")
-        self.base_2.location = (globaldata.NEST_POSITION_2)
+        self.base_2.location = globaldata.NEST_POSITION_2
         self.base_count += 1
         self.add_entity(self.base_2)
         
@@ -71,12 +71,16 @@ class World(object):
             delta_y *= -1 if randint(0, 10) > 5 else 1
             # Red team (Team 1)
             ant = Ant(self, imageassets.get("red-ant"), self.base_1, (255, 0, 0))
+            self.base_1.ant_count += 1
+            self.base_1.ant_born += 1
             base_x, base_y = globaldata.NEST_POSITION
             ant.location = (base_x+delta_x, base_y+delta_y)
             ant.brain.set_state("exploring")
             self.add_entity(ant)
             # Blue team (Team 2)
             ant = Ant(self, imageassets.get("blue-ant"), self.base_2, (0, 0, 255))
+            self.base_2.ant_count += 1
+            self.base_2.ant_born += 1
             base_x, base_y = globaldata.NEST_POSITION_2
             ant.location = (base_x+delta_x, base_y+delta_y)
             ant.brain.set_state("exploring")

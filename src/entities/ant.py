@@ -8,7 +8,7 @@ class Ant(GameEntity):
     def __init__(self, world, image, base, color):
         
         GameEntity.__init__(self, world, "ant", image)
-     
+        
         exploring_state = statemachines.AntStateExploring(self)
         seeking_state = statemachines.AntStateSeeking(self)
         delivering_state = statemachines.AntStateDelivering(self)
@@ -17,9 +17,7 @@ class Ant(GameEntity):
 
         self.color = color
         self.base = base
-        self.base.ant_count += 1
-        self.base.ant_born += 1
-        self.base_location = base.location        
+        self.base_location = base.location
         self.brain.add_state(exploring_state)
         self.brain.add_state(seeking_state)
         self.brain.add_state(delivering_state)

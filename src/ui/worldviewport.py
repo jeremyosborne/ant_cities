@@ -226,11 +226,10 @@ class WorldViewport(viewport.Viewport):
         gamey {number} Device Y game world location.
         
         return {Vec2d} Converted (x, y) screen pixel corresponding to game world location.
-        
         """
         
-        x = (gamex - self.world_viewable_x_rect) / self.zoom_area_width * self.width
-        y = (gamey - self.world_viewable_y_rect) / self.zoom_area_height * self.height
+        x = (gamex - self.world_viewable_rect.left) / self.zoom_area_width * self.width
+        y = (gamey - self.world_viewable_rect.top) / self.zoom_area_height * self.height
         
         return Vec2d(x, y)
 
@@ -276,67 +275,73 @@ class WorldViewport(viewport.Viewport):
             for entity in world.entities.itervalues():
                 self.render_entity(entity)
 
+    def render_entity_statusbars(self, entity, surface):
+        """Display status bars for a particular entity.
+        
+        Pass the entity and the surface on which to render the status bars.
+        
+        Returns the surface with the status bars rendered.
+        """
+        width = 25
+        height = 4
+        # colors
+        empty = (255, 0, 0)
+        full = (0, 255, 0)
+        bar = pygame.surface.Surface((width, height)).convert()
+        # Energy.
+        bar.fill(empty)
+        bar.fill(full, (0, 0, (entity.energy_current/entity.max_energy)*width, height))
+        surface.blit(bar, (0, 0))
+        # Health.
+        bar.fill(empty)
+        bar.fill(full, (0, 0, (entity.health_current/entity.max_health)*width, height))
+        surface.blit(bar, (0, height+1))
+        return surface
+
+    def render_scaling(self, surface):
+        """Scale a surface according to the zoom level we are at.
+        
+        Always returns a surface, even if the surface wasn't scaled.
+        """
+        if self.current_zoom_level != 1:
+            w, h = surface.get_size()
+            scale_width = int(w/(self.zoom_area_width/self.width))
+            scale_height = int(h/(self.zoom_area_height/self.height))
+            surface = pygame.transform.scale(surface, (scale_width, scale_height))
+        return surface
+
     def render_entity(self, entity):
         """Display logic for dealing with entities.
         """
         image = entity.image
-        x, y = entity.location
+        # Transform entity world coordinates to viewable coordinates.
+        x, y = self.gamepoint_to_screenpoint(*entity.location)
         w, h = image.get_size()
+        
+        # Render as scaled image or filled square? 
+        if self.current_zoom_level > self.strategic_zoom_level:
+            # Render as square.
+            self.surface.fill(entity.color, (x-5, y-5, 10, 10))           
+        else:
+            # Deal with ants. (Blech, this is gross right now, but trying
+            # to isolate view code, view specific logic, and will then
+            # normalize so that we simply do things to objects and need
+            # no or few entity specific code paths).
+            if entity.name == "ant":
+                image = pygame.transform.rotate(entity.image, entity.direction*-1.)
+                # Inventory display.
+                if self.current_zoom_level < self.strategic_zoom_level:
+                    # If it's carrying a leaf, let's draw that too.
+                    if entity.carry_image:
+                        image = pygame.transform.rotate(entity.carry_image, entity.direction*-1.)
 
-        resource_bar_width = 25
-        resource_bar_height = 4
-        # colors
-        resource_bar_empty = (255, 0, 0)
-        resource_bar_full = (0, 255, 0)
-        resource_bar = pygame.surface.Surface((resource_bar_width, resource_bar_height)).convert()
-
-        #Are we in view?
-        if self.world_viewable_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
-            
-            # Determine scale factor.  Used in calculating position in the viewport.
-            scale_factor_width = self.zoom_area_width/self.width
-            scale_factor_height = self.zoom_area_height/self.height
-            
-            # Convert object's coordinates to the viewport we're drawing on.
-            # Convert world coordinates to world viewable coordinates, then to viewport coordinates.
-            x = (x - (self.world_viewable_rect.centerx - self.zoom_area_width/2)) / scale_factor_width 
-            y = (y - (self.world_viewable_rect.centery - self.zoom_area_height/2)) / scale_factor_height
-            
-            # Render as scaled image or filled square? 
-            if self.current_zoom_level > self.strategic_zoom_level:
-                # Render as square.
-                self.surface.fill(entity.color, (x-5, y-5, 10, 10))           
-            else:
-                # Deal with ants. (Blech, this is gross right now, but trying
-                # to isolate view code, view specific logic, and will then
-                # normalize so that we simply do things to objects and need
-                # no or fiew entity speicfic code paths).
-                if entity.name == "ant":
-                    image = pygame.transform.rotate(entity.image, entity.direction*-1.)
-                    # Inventory display.
-                    if self.current_zoom_level < self.strategic_zoom_level:
-                        # If it's carrying a leaf, let's draw that too.
-                        if entity.carry_image:
-                            image = pygame.transform.rotate(entity.carry_image, entity.direction*-1.)
-                            w, h = entity.image.get_size()
-                    
+                if self.current_zoom_level < self.strategic_zoom_level:
                     # Energy/health bar display.
-                    if self.current_zoom_level < self.strategic_zoom_level:
-                        # Energy.
-                        resource_bar.fill(resource_bar_empty)
-                        resource_bar.fill(resource_bar_full, (0, 0, (entity.energy_current/entity.max_energy)*resource_bar_width, resource_bar_height))
-                        image.blit(resource_bar, (0, 0))
-                        # Health.
-                        resource_bar.fill(resource_bar_empty)
-                        resource_bar.fill(resource_bar_full, (0, 0, (entity.health_current/entity.max_health)*resource_bar_width, resource_bar_height))
-                        image.blit(resource_bar, (0, resource_bar_height+1))
-                        
+                    image = self.render_entity_statusbars(entity, image)
 
-                # Scaling according to zoom level.
-                if self.current_zoom_level != 1:
-                    image = pygame.transform.scale(image, (int(w/scale_factor_width), int(h/scale_factor_height)))
-                    w, h = image.get_size()
-                self.surface.blit(image, (x-w/2, y-h/2))
+            image = self.render_scaling(image)
+            
+            self.surface.blit(image, (x-w/2, y-h/2))
 
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
