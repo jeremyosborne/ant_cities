@@ -1,5 +1,4 @@
 import math
-import pygame
 import time
 
 from pymunk.vec2d import Vec2d
@@ -10,13 +9,16 @@ import appid
 
 
 
-class GameEntity(object):
+class Entity(object):
+    """Abstract base entity.
+    """
+    def __init__(self, name, world):
 
-    def __init__(self, world, name):
+        # generic name for this entity.
+        self.name = name
         
         #a way for an entity to get at attributes about the world.
         self.world = world
-        self.name = name
         
         self.brain = statemachines.StateMachine()
         self.born_time = time.time()

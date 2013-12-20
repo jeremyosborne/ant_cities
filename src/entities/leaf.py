@@ -1,11 +1,11 @@
 import time
-from entities.gameentity import GameEntity
+from entities.entity import Entity
 
 
 
-class Leaf(GameEntity):
+class Leaf(Entity):
     def __init__(self, world):
-        GameEntity.__init__(self, world, "leaf")
+        Entity.__init__(self, "leaf", world)
         
     def process(self, time_passed):
         # Die after 2 minutes.  

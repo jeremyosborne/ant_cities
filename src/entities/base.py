@@ -1,10 +1,10 @@
-from entities.gameentity import GameEntity
+from entities.entity import Entity
 
 
 
-class Base(GameEntity):
+class Base(Entity):
     def __init__(self, world, team_id, team_name):
-        GameEntity.__init__(self, world, "base")
+        Entity.__init__(self, "base", world)
 
         # Bases represent the team hierarchy.
         self._team_id = team_id

@@ -1,13 +1,13 @@
 import pygame
 import statemachines
-from entities.gameentity import GameEntity
+from entities.entity import Entity
 
 
-class Ant(GameEntity):
+class Ant(Entity):
     
     def __init__(self, world, base):
         
-        GameEntity.__init__(self, world, "ant")
+        Entity.__init__(self, "ant", world)
         
         exploring_state = statemachines.AntStateExploring(self)
         seeking_state = statemachines.AntStateSeeking(self)
@@ -70,18 +70,18 @@ class Ant(GameEntity):
         
     def process(self, time_passed):
         
-        #Process energy consumption
+        # Process energy consumption
         self.energy_current = self.energy_current - ((time_passed) * self.energy_consumption_per_second)
-        #Is ant energy so low that we need to dump health into energy?
+        # Is ant energy so low that we need to dump health into energy?
         if self.energy_current <= self.health_to_energy_needed:
             self.energy_current += self.health_to_energy_conversion_value
             self.health_current -= self.health_to_energy_conversion_cost
             
-        #Should the ant die?
+        # Should the ant die?
         if self.energy_current < self.energy_death or self.health_current <= self.health_death:
             self.world.remove_entity(self)
         else:
-            GameEntity.process(self, time_passed)
+            Entity.process(self, time_passed)
     
     def delete(self):
         # Update team stats.
