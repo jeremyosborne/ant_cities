@@ -14,8 +14,8 @@ def entity_colors(entity):
     elif entity.name == "leaf":
         color = (0, 255, 0)
     elif entity.name == "base" and entity.team == 1:
-        color = (255, 80, 80)
+        color = (255, 170, 170)
     elif entity.name == "base" and entity.team == 2:
-        color = (80, 80, 255)
+        color = (170, 170, 255)
     
     return color

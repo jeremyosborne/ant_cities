@@ -3,10 +3,13 @@ from entities.gameentity import GameEntity
 
 
 class Base(GameEntity):
-    def __init__(self, world, image, base_id, team_name):
+    def __init__(self, world, image, team_id, team_name):
         GameEntity.__init__(self, world, "base", image)
 
-        self.base_id = base_id
+        # Bases represent the team hierarchy.
+        self._team_id = team_id
+        self._team_name = team_name
+
         self.leaves = 0
         self.leaves_returned = 0  #Total number of leaves returned since start.
         self.leaves_mulching = 0
@@ -15,7 +18,6 @@ class Base(GameEntity):
         self.ant_born = 0
         self.ant_dead = 0
 
-        self._team_name = team_name
          
     def process(self, time_passed):
         if self.leaves > 100:
@@ -30,7 +32,7 @@ class Base(GameEntity):
     def team(self):
         """What team are we on?
         """
-        return self.base_id
+        return self._team_id
 
     def __str__(self):
         return "Base of %s" % self._team_name

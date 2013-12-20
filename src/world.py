@@ -5,6 +5,7 @@ Created on Jun 19, 2013
 '''
 
 import time
+from collections import Counter
 import pygame
 from pygame.locals import *
 
@@ -19,18 +20,15 @@ import spatialengine
 
 class World(object):
         
-    def __init__(self, x, y, w, h, imageassets):
+    def __init__(self, width, height, imageassets):
         """Notes:
         
         imageassets {AssetCache} Image cache.
         """
         
         #The size of the world for x and y
-        self.width = x
-        self.height = y
-        
-        self.viewable_width = w
-        self.viewable_height = h
+        self.width = width
+        self.height = height
         
         # Dictionary of all the entities
         self.entities = {}
@@ -38,28 +36,24 @@ class World(object):
         self.spatial_index = spatialengine.SpatialEngine(self.width, self.height)
 
         self.time_born = time.time()
-        #Initialize counters
-        self.base_count = 0
-        self.leaf_born = 0  #Total number of leaves created.
-        self.leaf_expired = 0 #Total number of leaves that died without being picked up.
-        self.leaf_world_count = 0 #Total number of leaves in the world.
-        
+        # Various score counters. 
+        # Short term solution to cut down on counting variables.
+        self.stats = Counter()
         
         #-----------------------------------------------------------------------
         #Setting up initial entity elements.
         #-----------------------------------------------------------------------
 
         self.leaf_image = imageassets.get("leaf")
+        
         #Let's make hut 1 for our little ants.
         self.base_1 = Base(self, imageassets.get("hut"), 1, "Red Ants")
         self.base_1.location = globaldata.NEST_POSITION
-        self.base_count += 1
         self.add_entity(self.base_1)
         
         #Let's make hut 2 for our little ants.
         self.base_2 = Base(self, pygame.transform.flip(imageassets.get("hut"), 1, 0), 2, "Blue Ants")
         self.base_2.location = globaldata.NEST_POSITION_2
-        self.base_count += 1
         self.add_entity(self.base_2)
         
         # Grid distance from base.
@@ -94,23 +88,23 @@ class World(object):
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
         self.entities[entity.id] = entity
+        # Count vs. net.
+        self.stats[entity.name] += 1
+        self.stats[entity.name+"-added"] += 1
         
     def remove_entity(self, entity):
-        # Should this be triggered by the ant delete for now?
-        self.spatial_index.remove(entity)
-        #execute triggers for deleted item.
-        entity.delete()
-        
-        if entity.name == "leaf":
-            self.leaf_world_count -= 1
-            self.leaf_expired += 1
-
-        if entity.name == "base":
-            self.base_count -= 1
-
         del self.entities[entity.id]
+        entity.delete()
+        self.spatial_index.remove(entity)
+
+        # Count vs. net.
+        self.stats[entity.name] -= 1
+        self.stats[entity.name+"-removed"] += 1
+
                 
     def get(self, entity_id):
+        """Retrieve an entity by id.
+        """
         return self.entities.get(entity_id)
         
     def process(self, time_passed):
@@ -121,8 +115,6 @@ class World(object):
         if randint(1, 20) == 1:
             leaf = Leaf(self, self.leaf_image)
             leaf.location = Vec2d(randint(0, leaf.world.width), randint(0, leaf.world.height))
-            self.leaf_born += 1
-            self.leaf_world_count += 1
             self.add_entity(leaf)
                     
         for entity in self.entities.values():

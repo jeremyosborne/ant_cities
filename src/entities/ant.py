@@ -84,4 +84,4 @@ class Ant(GameEntity):
     def team(self):
         """What team are we on?
         """
-        return self.base.base_id
+        return self.base.team
