@@ -33,8 +33,8 @@ class Ant(GameEntity):
         self.rotation_per_second = 90.
         
         #Related to energy
-        self.energy_full = 1000.
-        self.energy_current = self.energy_full
+        self.max_energy = 1000.
+        self.energy_current = self.max_energy
         self.energy_consumption_per_second = 10.
         self.energy_recharge_per_second = 1000
         self.energy_recharge_to_energy_conversion_ratio = .2
@@ -51,9 +51,6 @@ class Ant(GameEntity):
         self.health_to_energy_conversion_cost = 10
         
         self.carry_image = None
-        
-        self.energy_bar_surface = pygame.surface.Surface((25, 4)).convert()
-        self.health_bar_surface = pygame.surface.Surface((25, 4)).convert()
         
     def carry(self, image):
         

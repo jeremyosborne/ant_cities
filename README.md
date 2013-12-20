@@ -47,8 +47,7 @@ Key
 - User Interface
     * Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
-        * Make sure all binary image data is isolated in the view code, not
-          the simulation code.
+        * Pull surfaces out of entities and replace with identifiers.
         - Do views need caches of things like rotated ants since the ants aren't
           going to hold onto their surfaces?
     * Views should implement a View/Controller relationship between the UI and the

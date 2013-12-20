@@ -282,7 +282,14 @@ class WorldViewport(viewport.Viewport):
         image = entity.image
         x, y = entity.location
         w, h = image.get_size()
-        
+
+        resource_bar_width = 25
+        resource_bar_height = 4
+        # colors
+        resource_bar_empty = (255, 0, 0)
+        resource_bar_full = (0, 255, 0)
+        resource_bar = pygame.surface.Surface((resource_bar_width, resource_bar_height)).convert()
+
         #Are we in view?
         if self.world_viewable_rect.colliderect(pygame.Rect(x-w/2, y-h/2, w, h)):
             
@@ -315,17 +322,18 @@ class WorldViewport(viewport.Viewport):
                     
                     # Energy/health bar display.
                     if self.current_zoom_level < self.strategic_zoom_level:
-                        #Energy and Health Bar.  Draw the inital bar.
-                        entity.energy_bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
-                        entity.health_bar_surface.fill( (255, 0, 0), (0, 0, 25, 4))
-                        #Now draw how much energy is left over the inital bar and health
-                        entity.energy_bar_surface.fill( (0, 255, 0), (0, 0, entity.energy_current/40, 4))
-                        image.blit(entity.energy_bar_surface, (0, 0))
-                        entity.health_bar_surface.fill( (0, 255, 0), (0, 0, entity.health_current/4, 4))
-                        image.blit(entity.health_bar_surface, (0, 5))
+                        # Energy.
+                        resource_bar.fill(resource_bar_empty)
+                        resource_bar.fill(resource_bar_full, (0, 0, (entity.energy_current/entity.max_energy)*resource_bar_width, resource_bar_height))
+                        image.blit(resource_bar, (0, 0))
+                        # Health.
+                        resource_bar.fill(resource_bar_empty)
+                        resource_bar.fill(resource_bar_full, (0, 0, (entity.health_current/entity.max_health)*resource_bar_width, resource_bar_height))
+                        image.blit(resource_bar, (0, resource_bar_height+1))
+                        
 
                 # Scaling according to zoom level.
-                if self.current_zoom_level != 2:
+                if self.current_zoom_level != 1:
                     image = pygame.transform.scale(image, (int(w/scale_factor_width), int(h/scale_factor_height)))
                     w, h = image.get_size()
                 self.surface.blit(image, (x-w/2, y-h/2))

@@ -18,6 +18,7 @@ class GameEntity(object):
         self.world = world
         self.name = name
         self.image = image
+        
         self.brain = statemachines.StateMachine()
         self.born_time = time.time()
         # Entity promises to have a unique id.

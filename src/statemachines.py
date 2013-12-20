@@ -96,7 +96,7 @@ class AntStateExploring(State):
             return "seeking"        
         
         #Let's take care of the energy depleted state
-        if self.ant.energy_current < .25 * self.ant.energy_full:
+        if self.ant.energy_current < .25 * self.ant.max_energy:
             return "energy depleted"
         
         return None
@@ -185,7 +185,7 @@ class AntStatePowerUp(State):
         self.ant = ant
         
     def do_actions(self, time_passed):
-        if self.ant.energy_current < self.ant.energy_full:
+        if self.ant.energy_current < self.ant.max_energy:
             #Only powerup if energy is available.
             if self.ant.base.energy_units > 0:
                 self.ant.energy_current += self.ant.energy_recharge_per_second*time_passed
@@ -194,7 +194,7 @@ class AntStatePowerUp(State):
     def check_conditions(self):
         
         #Have we fully powered up?        
-        if self.ant.energy_current >= self.ant.energy_full:
+        if self.ant.energy_current >= self.ant.max_energy:
             return "exploring"            
         return None
         
