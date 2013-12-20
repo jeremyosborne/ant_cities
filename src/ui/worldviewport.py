@@ -1,6 +1,7 @@
 import pygame
 from pymunk.vec2d import Vec2d
 import viewport
+from assets.colors import entity_colors
 
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
 #So it doesn't belong in the main viewport class.
@@ -310,19 +311,23 @@ class WorldViewport(viewport.Viewport):
             surface = pygame.transform.scale(surface, (scale_width, scale_height))
         return surface
 
-    def render_entity(self, entity):
-        """Display logic for dealing with entities.
+    def render_entity_strategic_icon(self, entity):
+        """Renders the entity as a strategic icon on the view surface.
         """
-        image = entity.image
+        color = entity_colors(entity)
         # Transform entity world coordinates to viewable coordinates.
         x, y = self.gamepoint_to_screenpoint(*entity.location)
-        w, h = image.get_size()
-        
+        self.surface.fill(color, (x-5, y-5, 10, 10))
+
+    def render_entity(self, entity):
+        """Display logic for dealing with entities.
+        """        
         # Render as scaled image or filled square? 
         if self.current_zoom_level > self.strategic_zoom_level:
             # Render as square.
-            self.surface.fill(entity.color, (x-5, y-5, 10, 10))           
+            self.render_entity_strategic_icon(entity)
         else:
+            image = entity.image
             # Deal with ants. (Blech, this is gross right now, but trying
             # to isolate view code, view specific logic, and will then
             # normalize so that we simply do things to objects and need
@@ -340,7 +345,10 @@ class WorldViewport(viewport.Viewport):
                     image = self.render_entity_statusbars(entity, image)
 
             image = self.render_scaling(image)
-            
+
+            w, h = image.get_size()
+            # Transform entity world coordinates to viewable coordinates.
+            x, y = self.gamepoint_to_screenpoint(*entity.location)
             self.surface.blit(image, (x-w/2, y-h/2))
 
     def mousebuttondown_listener(self, e):

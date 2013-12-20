@@ -1,5 +1,6 @@
 import pygame
 import viewport
+from assets.colors import entity_colors
 
 class MiniMap(viewport.Viewport):
     def __init__(self, x_right=0, y_down=0, width=256, height=256, 
@@ -84,20 +85,20 @@ class MiniMap(viewport.Viewport):
         if not draw:
             return
 
-        #Clear the mini map.
+        # Clear the mini map.
         self.minimap_surface.blit(self.minimap_background, (0, 0))
-        #Let's go through all the entities and put them on the mini_map
+        # Let's go through all the entities and put them on the mini_map
         for entity in world.entities.itervalues():
             x_location, y_location = entity.location
             minimap_x = x_location/self.x_scale_factor
             minimap_y = y_location/self.y_scale_factor
-            #The following line would be useful for doing single pixels.
+            # The following line would be useful for doing single pixels.
             #self.minimap_surface.set_at((int(minimap_x), int(minimap_y)), entity.color)
-            #The following line draws the 2x2 square on the minimap using a rect.
+            # The following line draws the 2x2 square on the minimap using a rect.
             #pygame.draw.rect(self.minimap_surface, entity.color, (int(minimap_x), int(minimap_y), 2, 2))
-            #The folling line draws the rect, but uses the fill method.  Trying here
-            #because I read in the API documentation that fill would be hardware accelerated and rect isn't.
-            self.minimap_surface.fill(entity.color, (int(minimap_x), int(minimap_y), 2, 2))
+            # The following line draws the rect, but uses the fill method.  Trying here
+            # because I read in the API documentation that fill would be hardware accelerated and rect isn't.
+            self.minimap_surface.fill(entity_colors(entity), (int(minimap_x), int(minimap_y), 2, 2))
             
         #Let's put rectangle that shows what's in the gamewindow on the minimap.
         #For polygon

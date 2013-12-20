@@ -59,7 +59,7 @@ class GameSimulation():
         # Base Information Displays
         self.base_display_1 = DataColumnDisplay(1, globaldata.screen_size_y-170, 
                                                 200, 170,
-                                                "Base "+self.world.base_1.description,
+                                                str(self.world.base_1),
                                                 [
                                                  ("# Ants Born:", lambda: str(self.world.base_1.ant_born)),
                                                  ("# Ants Died:", lambda: str(self.world.base_1.ant_dead)),
@@ -69,7 +69,7 @@ class GameSimulation():
                                                 ])
         self.base_display_2 = DataColumnDisplay(201, globaldata.screen_size_y-170, 
                                                 200, 170,
-                                                "Base "+self.world.base_2.description,
+                                                str(self.world.base_2),
                                                 [
                                                  ("# Ants Born:", lambda: str(self.world.base_2.ant_born)),
                                                  ("# Ants Died:", lambda: str(self.world.base_2.ant_dead)),

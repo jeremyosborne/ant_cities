@@ -49,7 +49,13 @@ class GameEntity(object):
         #if value[0] > self.world.width + 20 or value[1] > self.world.height + 20:
         #    print "id: ", self.id, " location: ", self._location, " speed: ", self.speed, " Destination: ", self.destination
         self.world.spatial_index.update(self)
-        
+    
+    @property
+    def team(self):
+        """By default, we are neutral.
+        """
+        return None
+    
     def apply_acceleration(self, time_passed, distance_to_destination):
 
         #If we're at 0 and location != destination, then we should start moving.

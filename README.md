@@ -48,14 +48,12 @@ Key
     * Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
         * Pull surfaces out of entities and replace with identifiers.
-        - Do views need caches of things like rotated ants since the ants aren't
-          going to hold onto their surfaces?
+        - Views should have: dirty rects and view entities (for tracking
+        objects that are viewable).
     * Views should implement a View/Controller relationship between the UI and the
       game sim (separation of concerns, future availability of multi-core
       support).
-    - If resolution changes are allowed, allow preservation of aspect ratio and/or
-      auto scaling.
-    - Correct aspect ratio when world completely zoomed out.
+    - Allow preservation of aspect ratio and auto scaling.
 - Ant Entity
     - Adjust leaf carrying position from back to the mouth.
     - Add collision detection so that entities can not run over each other.

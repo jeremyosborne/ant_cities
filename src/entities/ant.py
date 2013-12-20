@@ -5,7 +5,7 @@ from entities.gameentity import GameEntity
 
 class Ant(GameEntity):
     
-    def __init__(self, world, image, base, color):
+    def __init__(self, world, image, base):
         
         GameEntity.__init__(self, world, "ant", image)
         
@@ -15,7 +15,6 @@ class Ant(GameEntity):
         energy_depleted_state = statemachines.AntStateEnergyDepleted(self)
         powerup_state = statemachines.AntStatePowerUp(self)
 
-        self.color = color
         self.base = base
         self.base_location = base.location
         self.brain.add_state(exploring_state)
@@ -81,4 +80,8 @@ class Ant(GameEntity):
         self.base.ant_count -= 1
         self.base.ant_dead += 1
         
-        
+    @property
+    def team(self):
+        """What team are we on?
+        """
+        return self.base.base_id
