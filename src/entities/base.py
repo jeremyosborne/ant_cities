@@ -17,6 +17,10 @@ class Base(Entity):
         self.ant_count = 0
         self.ant_born = 0
         self.ant_dead = 0
+        
+        # Radial size of the nest from location attribute.
+        # Hackish: allows ants to drop things back at the base.
+        self.size = 5.
          
     def process(self, time_passed):
         if self.leaves > 100:

@@ -9,7 +9,6 @@ GAME_TITLE = "Ant Cities"
 
 # Game settings.
 ANT_COUNT = 60
-NEST_SIZE = 5.
 
 # Screen Based (width, height)
 SCREEN_SIZE = (1200, 700)

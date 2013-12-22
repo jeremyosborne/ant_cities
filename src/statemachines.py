@@ -142,7 +142,7 @@ class AntStateDelivering(State):
     #Question for Jeremy start position    
     def check_conditions(self):
                
-        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < globaldata.NEST_SIZE:
+        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < self.ant.base.size:
             self.ant.drop(self.ant.world)  # Removes leaf.
             return "exploring"
             
@@ -156,15 +156,13 @@ class AntStateDelivering(State):
 class AntStateEnergyDepleted(State):
     
     def __init__(self, ant):
-        
         State.__init__(self, "energy depleted")
         self.ant = ant
         
         
     def check_conditions(self):
-        
         #Did we make it back to base to eat yet?        
-        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < globaldata.NEST_SIZE:
+        if self.ant.base.location.get_distance(self.ant.location) < self.ant.base.location:
             # Time to eat.
             return "powering up"            
         return None
