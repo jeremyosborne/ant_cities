@@ -1,11 +1,11 @@
 from random import randint
 from pymunk.vec2d import Vec2d
 
-from entities.ai.brains import Behavior
+from entities.ai.brains import BrainState
 
-class Exploring(Behavior):
+class Exploring(BrainState):
     def __init__(self):
-        Behavior.__init__(self, "exploring")
+        BrainState.__init__(self, "exploring")
         
     def random_destination(self):
         self.entity.destination = Vec2d(randint(0, self.entity.world.width), randint(0, self.entity.world.height))    
@@ -47,9 +47,9 @@ class Exploring(Behavior):
         
 
 
-class Seeking(Behavior):
+class Seeking(BrainState):
     def __init__(self):
-        Behavior.__init__(self, "seeking")
+        BrainState.__init__(self, "seeking")
         self.leaf_id = None
 
     def check_conditions(self):
@@ -70,9 +70,9 @@ class Seeking(Behavior):
 
 
 
-class Delivering(Behavior):
+class Delivering(BrainState):
     def __init__(self):
-        Behavior.__init__(self, "delivering")
+        BrainState.__init__(self, "delivering")
         
     #Question for Jeremy start position    
     def check_conditions(self):
@@ -87,9 +87,9 @@ class Delivering(Behavior):
 
 
 
-class EnergyDepleted(Behavior):
+class EnergyDepleted(BrainState):
     def __init__(self):
-        Behavior.__init__(self, "energy depleted")
+        BrainState.__init__(self, "energy depleted")
         
     def check_conditions(self):
         #Did we make it back to base to eat yet?        
@@ -103,9 +103,9 @@ class EnergyDepleted(Behavior):
 
 
 
-class PowerUp(Behavior):
+class PowerUp(BrainState):
     def __init__(self):
-        Behavior.__init__(self, "powering up")
+        BrainState.__init__(self, "powering up")
         
     def do_actions(self, time_passed):
         if self.entity.energy_current < self.entity.max_energy:

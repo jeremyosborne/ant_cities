@@ -1,5 +1,5 @@
 
-class Behavior(object):
+class BrainState(object):
     def __init__(self, name):
         self.name = name
         self.entity = None
