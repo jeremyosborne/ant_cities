@@ -74,7 +74,7 @@ class ViewUnitInfoBox(viewport.Viewport):
             text = self.font.render(str("{:10.4f}".format(self.watching_entity.location[1])), True, (255, 255, 255))
             self.surface.blit(text, (150, 60))
             
-            #Unit Type
+            # Unit Type
             unit_text = self.font.render(self.watching_entity.name, True, (255, 255, 255))
             w, h = unit_text.get_size()
             self.surface.blit(unit_text, ((self.width / 2) - w / 2, 15))
@@ -83,13 +83,13 @@ class ViewUnitInfoBox(viewport.Viewport):
                 self.surface.blit(text, (10, 30))
                 
                 text = self.font.render("Speed: " + str(self.watching_entity.speed), True, (255, 255, 255))
-                self.surface.blit(text, (138, 30))
+                self.surface.blit(text, (10, 45))
             
                 text = self.font.render("Destinaton: " + str(self.watching_entity.destination), True, (255, 255, 255))
-                self.surface.blit(text, (10, 45))
+                self.surface.blit(text, (10, 75))
                 
                 text = self.font.render("Distance to Destinaton: " + str("{:10.4f}".format(self.watching_entity.location.get_distance(self.watching_entity.destination))), True, (255, 255, 255))
-                self.surface.blit(text, (10, 75))
+                self.surface.blit(text, (10, 90))
                 
                 if self.watching_entity.brain.active_state.name == "seeking":
                     if self.watching_entity.leaf_id != None:

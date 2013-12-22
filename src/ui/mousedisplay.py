@@ -22,6 +22,6 @@ class MouseDisplay(viewport.Viewport):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if worldviewport.rect.collidepoint(mouse_x, mouse_y) == True:
             game_world_x, game_world_y = worldviewport.screenpoint_to_gamepoint(mouse_x, mouse_y)
-            text = "Mouse coords: (%s, %s)" % (game_world_x, game_world_y)
+            text = "Mouse coords: (%d, %d)" % (game_world_x, game_world_y)
             font = self.font.render(text, True, (0, 0, 0))
             self.surface.blit(font, (0, 0))
