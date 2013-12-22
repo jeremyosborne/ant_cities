@@ -7,7 +7,6 @@ from pymunk.vec2d import Vec2d
 import globaldata
 
 class State(object):
-    
     def __init__(self, name):
         self.name = name
         
@@ -24,20 +23,14 @@ class State(object):
         pass
     
 class StateMachine(object):
-    
     def __init__(self):
-        
         self.states = {}
         self.active_state = None
     
-    
     def add_state(self, state):
-        
         self.states[state.name] = state
         
-        
     def think(self, time_passed):
-        
         if self.active_state is None:
             return
         
@@ -47,9 +40,7 @@ class StateMachine(object):
         if new_state_name is not None:
             self.set_state(new_state_name)
         
-    
     def set_state(self, new_state_name):
-        
         if self.active_state is not None:
             self.active_state.exit_actions()
             
@@ -58,14 +49,11 @@ class StateMachine(object):
         
      
 class AntStateExploring(State):
-    
     def __init__(self, ant):
-        
         State.__init__(self, "exploring")
         self.ant = ant
         
     def random_destination(self):
-        
         self.ant.destination = Vec2d(randint(0, self.ant.world.width), randint(0, self.ant.world.height))    
  
     def do_actions(self, time_passed):
@@ -88,7 +76,6 @@ class AntStateExploring(State):
             self.random_destination()
             
     def check_conditions(self):
-               
         leaf = self.ant.world.get_close_entity(self.ant, "leaf", 100)        
         if leaf is not None:
             self.ant.leaf_id = leaf.id
@@ -101,21 +88,18 @@ class AntStateExploring(State):
         return None
     
     def entry_actions(self):
-
         self.ant.speed += 1.
         self.random_destination()
         
-        
+
+
 class AntStateSeeking(State):
-    
     def __init__(self, ant):
-        
         State.__init__(self, "seeking")
         self.ant = ant
         self.leaf_id = None
 
     def check_conditions(self):
-        
         leaf = self.ant.world.get(self.ant.leaf_id)
         if leaf is None:
             return "exploring"
@@ -127,38 +111,34 @@ class AntStateSeeking(State):
         return None
     
     def entry_actions(self):
-    
         leaf = self.ant.world.get(self.ant.leaf_id)
         if leaf is not None:                        
             self.ant.destination = leaf.location
-        
+
+
+
 class AntStateDelivering(State):
-    
     def __init__(self, ant):
-        
         State.__init__(self, "delivering")
         self.ant = ant
         
     #Question for Jeremy start position    
     def check_conditions(self):
-               
-        if Vec2d(*self.ant.base_location).get_distance(self.ant.location) < self.ant.base.size:
+        if self.ant.base.location.get_distance(self.ant.location) < self.ant.base.size:
             self.ant.drop(self.ant.world)  # Removes leaf.
             return "exploring"
             
         return None
         
-        
     def entry_actions(self):
-                
-        self.ant.destination = Vec2d(*self.ant.base_location)     
-       
+        self.ant.destination = self.ant.base.location
+
+
+
 class AntStateEnergyDepleted(State):
-    
     def __init__(self, ant):
         State.__init__(self, "energy depleted")
         self.ant = ant
-        
         
     def check_conditions(self):
         #Did we make it back to base to eat yet?        
@@ -167,15 +147,13 @@ class AntStateEnergyDepleted(State):
             return "powering up"            
         return None
         
-        
     def entry_actions(self):
-             
-        self.ant.destination = Vec2d(*self.ant.base_location)
+        self.ant.destination = self.ant.base.location
+
+
 
 class AntStatePowerUp(State):
-    
     def __init__(self, ant):
-        
         State.__init__(self, "powering up")
         self.ant = ant
         
@@ -187,13 +165,10 @@ class AntStatePowerUp(State):
                 self.ant.base.energy_units -= self.ant.energy_recharge_to_energy_conversion_ratio*time_passed
            
     def check_conditions(self):
-    
         #Have we fully powered up?        
         if self.ant.energy_current >= self.ant.max_energy:
             return "exploring"            
         return None
-        
-        
+    
     def entry_actions(self):
-        
         self.ant.speed = 0.

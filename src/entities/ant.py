@@ -9,19 +9,13 @@ class Ant(Entity):
         
         Entity.__init__(self, "ant", world)
         
-        exploring_state = statemachines.AntStateExploring(self)
-        seeking_state = statemachines.AntStateSeeking(self)
-        delivering_state = statemachines.AntStateDelivering(self)
-        energy_depleted_state = statemachines.AntStateEnergyDepleted(self)
-        powerup_state = statemachines.AntStatePowerUp(self)
-
         self.base = base
-        self.base_location = base.location
-        self.brain.add_state(exploring_state)
-        self.brain.add_state(seeking_state)
-        self.brain.add_state(delivering_state)
-        self.brain.add_state(energy_depleted_state)
-        self.brain.add_state(powerup_state)
+        
+        self.brain.add_state(statemachines.AntStateExploring(self))
+        self.brain.add_state(statemachines.AntStateSeeking(self))
+        self.brain.add_state(statemachines.AntStateDelivering(self))
+        self.brain.add_state(statemachines.AntStateEnergyDepleted(self))
+        self.brain.add_state(statemachines.AntStatePowerUp(self))
         
         #Following attributes exist in base class, values specific to our ants.
         self.speed_up_acceleration = 30.
@@ -47,7 +41,7 @@ class Ant(Entity):
         self.health_to_energy_conversion_value = 50
         self.health_to_energy_conversion_cost = 10
         
-        # Right now, ants can cary a single entity.
+        # Right now, ants can carry a single entity (that is likely a leaf).
         self.inventory = None
         
     def carry(self, entity):
@@ -69,7 +63,6 @@ class Ant(Entity):
             self.base.increment_leaf()
         
     def process(self, time_passed):
-        
         # Process energy consumption
         self.energy_current = self.energy_current - ((time_passed) * self.energy_consumption_per_second)
         # Is ant energy so low that we need to dump health into energy?
