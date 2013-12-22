@@ -3,7 +3,7 @@ import time
 
 from pymunk.vec2d import Vec2d
 
-import statemachines
+from entities.ai.brains import Brain
 import appid
 
 
@@ -20,7 +20,7 @@ class Entity(object):
         #a way for an entity to get at attributes about the world.
         self.world = world
         
-        self.brain = statemachines.StateMachine()
+        self.brain = Brain()
         self.born_time = time.time()
         # Entity promises to have a unique id.
         self.id = appid.gen()

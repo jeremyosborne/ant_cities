@@ -1,7 +1,6 @@
 import pygame
-import statemachines
 from entities.entity import Entity
-
+import entities.ai.ants as antbehaviors
 
 class Ant(Entity):
     
@@ -11,11 +10,11 @@ class Ant(Entity):
         
         self.base = base
         
-        self.brain.add_state(statemachines.AntStateExploring(self))
-        self.brain.add_state(statemachines.AntStateSeeking(self))
-        self.brain.add_state(statemachines.AntStateDelivering(self))
-        self.brain.add_state(statemachines.AntStateEnergyDepleted(self))
-        self.brain.add_state(statemachines.AntStatePowerUp(self))
+        self.brain.add_state(antbehaviors.AntStateExploring(self))
+        self.brain.add_state(antbehaviors.AntStateSeeking(self))
+        self.brain.add_state(antbehaviors.AntStateDelivering(self))
+        self.brain.add_state(antbehaviors.AntStateEnergyDepleted(self))
+        self.brain.add_state(antbehaviors.AntStatePowerUp(self))
         
         #Following attributes exist in base class, values specific to our ants.
         self.speed_up_acceleration = 30.
