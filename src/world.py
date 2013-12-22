@@ -88,12 +88,22 @@ class World(object):
         """Retrieve an entity by id.
         """
         return self.entities.get(entity_id)
-        
+
+    def get_close_entity(self, entity, name, the_range=100.):
+        closest_entity, distance = self.spatial_index.find_closest(entity.location, 
+                                                                   the_range, 
+                                                                   validate=lambda e: e.name == name and e != entity)
+        return closest_entity
+    
     def process(self, time_passed):
-                
+        """Update the world.
+        
+        time_passed {float} ms since the last time this function was called.
+        """
+        # The entities work in seconds.
         time_passed_seconds = time_passed / 1000.0
         
-        #Here's our chance to throw in a new leaf
+        # Here's our chance to throw in a new leaf.
         if randint(1, 20) == 1:
             leaf = Leaf(self)
             leaf.location = Vec2d(randint(0, leaf.world.width), randint(0, leaf.world.height))
@@ -101,13 +111,7 @@ class World(object):
                     
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
-            
-    def get_close_entity(self, entity, name, the_range=100.):
-        closest_entity, distance = self.spatial_index.find_closest(entity.location, 
-                                                                   the_range, 
-                                                                   validate=lambda e: e.name == name and e != entity)
-        return closest_entity
-
+    
     def count(self, name):
         entity_count = 0
         for entity in self.entities.itervalues():
