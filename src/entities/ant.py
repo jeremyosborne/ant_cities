@@ -10,12 +10,14 @@ class Ant(Entity):
         
         self.base = base
         
-        self.brain.add_state(antbehaviors.AntStateExploring(self))
-        self.brain.add_state(antbehaviors.AntStateSeeking(self))
-        self.brain.add_state(antbehaviors.AntStateDelivering(self))
-        self.brain.add_state(antbehaviors.AntStateEnergyDepleted(self))
-        self.brain.add_state(antbehaviors.AntStatePowerUp(self))
-        
+        self.brain.add_state(antbehaviors.Exploring())
+        self.brain.add_state(antbehaviors.Seeking())
+        self.brain.add_state(antbehaviors.Delivering())
+        self.brain.add_state(antbehaviors.EnergyDepleted())
+        self.brain.add_state(antbehaviors.PowerUp())
+        # Default state.
+        self.brain.set_state("exploring")
+
         #Following attributes exist in base class, values specific to our ants.
         self.speed_up_acceleration = 30.
         self.slow_down_acceleration = -50.

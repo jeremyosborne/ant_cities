@@ -2,6 +2,7 @@
 class Behavior(object):
     def __init__(self, name):
         self.name = name
+        self.entity = None
         
     def do_actions(self, time_passed):
         pass
@@ -14,14 +15,20 @@ class Behavior(object):
     
     def exit_actions(self):        
         pass
-    
+
+
+
 class Brain(object):
-    def __init__(self):
+    def __init__(self, entity=None):
         self.states = {}
+        # Which entity instance currently owns this brain?
+        self.entity = entity
         self.active_state = None
     
     def add_state(self, state):
         self.states[state.name] = state
+        # Side effect: set the owner of the behavior.
+        state.entity = self.entity
         
     def think(self, time_passed):
         if self.active_state is None:

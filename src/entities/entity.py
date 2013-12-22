@@ -20,7 +20,8 @@ class Entity(object):
         #a way for an entity to get at attributes about the world.
         self.world = world
         
-        self.brain = Brain()
+        self.brain = Brain(self)
+        
         self.born_time = time.time()
         # Entity promises to have a unique id.
         self.id = appid.gen()

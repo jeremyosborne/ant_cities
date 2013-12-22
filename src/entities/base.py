@@ -48,7 +48,6 @@ class Base(Entity):
             basex, basey = self.location
             offsetx, offsety = placement_offset
             entity.location = (basex+offsetx, basey+offsety)
-            entity.brain.set_state("exploring")
         else:
             assert False, "%s name is not acceptable for creating." % name
         
