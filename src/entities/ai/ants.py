@@ -97,7 +97,7 @@ class PowerUp(BrainState):
         energy = self.entity.components["energy"]
         if energy.current < energy.max:
             # Only powerup if energy is available.
-            if self.entity.base.energy_units > 0:
+            if self.entity.base.components["energy"].current > 0:
                 # TODO: Get energy from the base. No energy at base, dead ant.
                 energy.current += 1000*time_passed
 

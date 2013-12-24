@@ -19,7 +19,7 @@ class Ant(Entity):
         self.brain.set_state("exploring")
         
         self.add_component("health")
-        self.add_component("energy")
+        self.add_component("energy", burn_rate=10)
 
         #Following attributes exist in base class, values specific to our ants.
         self.speed_up_acceleration = 30.

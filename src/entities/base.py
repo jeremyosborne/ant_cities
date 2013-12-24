@@ -7,9 +7,9 @@ class Base(Entity):
         Entity.__init__(self, "base", world)
 
         self.add_component("team", id=team_id, name=team_name)
+        self.add_component("energy", current=0)
         
         self.leaves = 0
-        self.energy_units = 5
         
         # Radial size of the nest from location attribute.
         # Hackish: allows ants to drop things back at the base.
@@ -22,9 +22,10 @@ class Base(Entity):
         return self.components["team"].id
     
     def process(self, time_passed):
+        # TODO: Allow spending of resources.
         if self.leaves > 20:
             self.leaves -= 20
-            self.energy_units += 100
+            self.components["energy"].current += 100
             
     def increment_leaf(self):
         self.leaves += 1
