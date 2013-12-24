@@ -125,7 +125,7 @@ class Entity(object):
 
     def process(self, time_passed):
         
-        self.brain.think(time_passed)
+        self.brain.process(time_passed)
         
         if self.speed > 0. and self.location != self.destination:
             self.move(time_passed)

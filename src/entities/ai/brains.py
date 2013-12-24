@@ -12,7 +12,7 @@ class BrainState(object):
         # {Entity} Reserve property for entity that this state is attached to.
         self.entity = None
         
-    def do(self, time_passed):
+    def process(self, time_passed):
         """Called each moment this state can be processed.
         
         time_passed {float} Number of seconds since this function was last
@@ -59,7 +59,7 @@ class Brain(object):
         # Side effect: set the owner of the behavior.
         state.entity = self.entity
         
-    def think(self, time_passed):
+    def process(self, time_passed):
         """Process the current state and determine if there is a state
         transition.
         
@@ -69,7 +69,7 @@ class Brain(object):
         if self.active_state is None:
             return
 
-        new_state_name = self.active_state.do(time_passed)
+        new_state_name = self.active_state.process(time_passed)
         if new_state_name is not None:
             self.set_state(new_state_name)
         

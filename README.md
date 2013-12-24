@@ -44,6 +44,10 @@ Key
 * In process
 - Not Started or on hold.
 
+- Entities
+    * Add component system.
+        * Health component.
+        * Energy component.
 - User Interface
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
