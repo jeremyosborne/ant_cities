@@ -3,6 +3,7 @@ import time
 
 from pymunk.vec2d import Vec2d
 
+from entities.components import get_component
 from entities.ai.brains import Brain
 import appid
 
@@ -128,12 +129,15 @@ class Entity(object):
         #print "location:", self.location
         #print "speed:", self.speed
 
-    def add_component(self, component):
+    def add_component(self, name, **kwargs):
         """Interface to adding a component to an entity.
         
-        component {Component} A component derived instance, or an object
-        that implmeents the component interface.
+        name {str} Name of the componet to add.
+        kwargs {kwargs} Labeled arguments to pass in to the instantiation
+        of the component.
         """
+        # Load and immediately instantiate.
+        component = get_component(name)(**kwargs)
         # Part of the contract: we must add ourselves as an entity reference.
         component.entity = self
         # Add for easy iteration as well as easy reference.

@@ -2,8 +2,6 @@ import pygame
 from entities.entity import Entity
 import entities.ai.ants as antbehaviors
 
-from entities.components import Health, Energy
-
 class Ant(Entity):
     
     def __init__(self, world, base):
@@ -20,8 +18,8 @@ class Ant(Entity):
         # Default state.
         self.brain.set_state("exploring")
         
-        self.add_component(Health())
-        self.add_component(Energy())
+        self.add_component("health")
+        self.add_component("energy")
 
         #Following attributes exist in base class, values specific to our ants.
         self.speed_up_acceleration = 30.
