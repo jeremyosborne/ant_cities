@@ -39,3 +39,34 @@ def random_boxed_offset(max_length):
     """
     # Randomize starting position.
     return (random_sign()*randint(0, max_length), random_sign()*randint(0, max_length))
+
+def percent(a, b):
+    """Calculate a percent.
+    
+    a {number} Dividend.
+    b {number} Divisor.
+    
+    return {float} quotient as a percent multiplier (e.g. .25)
+    """
+    return a/float(b)
+
+def percint(a, b):
+    """Calculate a percent.
+    
+    a {number} Dividend.
+    b {number} Divisor.
+    
+    return {int} quotient as a truncated percent value (e.g. 25 for .25)
+    """
+    return int((a/float(b)) * 100)
+
+def percfloat(a, b, ndigits=0):
+    """Calculate a percent.
+    
+    a {number} Dividend.
+    b {number} Divisor.
+    [ndigits] {int} Number of digits to round to. Default is 0.
+    
+    return {float} quotient as a rounded percent value (e.g. 25.1 for .251)
+    """
+    return int(round((a/float(b) * 100), ndigits))

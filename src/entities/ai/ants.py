@@ -10,7 +10,7 @@ class Exploring(BrainState):
     def random_destination(self):
         self.entity.destination = Vec2d(randint(0, self.entity.world.width), randint(0, self.entity.world.height))    
  
-    def do(self, time_passed):
+    def process(self, time_passed):
         # We wants leaves.
         leaf = self.entity.world.get_close_entity(self.entity, "leaf", 100)        
         if leaf is not None:
@@ -18,7 +18,8 @@ class Exploring(BrainState):
             return "seeking"        
         
         # Let's take care of the energy depleted state.
-        if self.entity.energy_current < .25 * self.entity.max_energy:
+        energy = self.entity.components["energy"]
+        if energy.current < .25*energy.max:
             return "energy depleted"
 
         # Random walk.
@@ -38,7 +39,7 @@ class Seeking(BrainState):
         BrainState.__init__(self, "seeking")
         self.leaf_id = None
 
-    def do(self, time_passed):
+    def process(self, time_passed):
         leaf = self.entity.world.get(self.entity.leaf_id)
         if leaf is None:
             return "exploring"
@@ -60,7 +61,7 @@ class Delivering(BrainState):
     def __init__(self):
         BrainState.__init__(self, "delivering")
         
-    def do(self, time_passed):
+    def process(self, time_passed):
         if self.entity.base.location.get_distance(self.entity.location) < self.entity.base.size:
             self.entity.drop(self.entity.world)  # Removes leaf.
             return "exploring"
@@ -76,7 +77,7 @@ class EnergyDepleted(BrainState):
     def __init__(self):
         BrainState.__init__(self, "energy depleted")
         
-    def do(self, time_passed):
+    def process(self, time_passed):
         #Did we make it back to base to eat yet?        
         if self.entity.base.location.get_distance(self.entity.location) < self.entity.base.size:
             # Time to eat.
@@ -92,15 +93,16 @@ class PowerUp(BrainState):
     def __init__(self):
         BrainState.__init__(self, "powering up")
         
-    def do(self, time_passed):
-        if self.entity.energy_current < self.entity.max_energy:
-            #Only powerup if energy is available.
+    def process(self, time_passed):
+        energy = self.entity.components["energy"]
+        if energy.current < energy.max:
+            # Only powerup if energy is available.
             if self.entity.base.energy_units > 0:
-                self.entity.energy_current += self.entity.energy_recharge_per_second*time_passed
-                self.entity.base.energy_units -= self.entity.energy_recharge_to_energy_conversion_ratio*time_passed
+                # TODO: Get energy from the base. No energy at base, dead ant.
+                energy.current += 1000*time_passed
 
-        #Have we fully powered up?        
-        if self.entity.energy_current >= self.entity.max_energy:
+        # Have we fully powered up?
+        if energy.current >= energy.max:
             return "exploring"            
         return None
     

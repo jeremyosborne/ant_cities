@@ -26,7 +26,12 @@ class Entity(object):
         # Entity promises to have a unique id.
         self.id = appid.gen()
         
-        #Movement in the game world
+        # Components are stored for easy iteration...
+        self._components_list = []
+        # ...and made available to the public via an index of named components.
+        self.components = {}
+        
+        # Movement in the game world
         self._location = Vec2d(0., 0.)
         self.destination = Vec2d(0., 0.)
         self.current_heading = Vec2d(1., 0.)
@@ -118,15 +123,48 @@ class Entity(object):
         
         self.direction = ((math.atan2(self.current_heading.y, self.current_heading.x)*(180/math.pi))+90)
 
-        #print "headings ", self.current_heading, self.desired_heading
+        #print "headings:", self.current_heading, self.desired_heading
         #print "distance to destination:", distance_to_destination
-        #print "location: ", self.location
+        #print "location:", self.location
         #print "speed:", self.speed
 
-    def process(self, time_passed):
+    def add_component(self, component):
+        """Interface to adding a component to an entity.
         
+        component {Component} A component derived instance, or an object
+        that implmeents the component interface.
+        """
+        # Part of the contract: we must add ourselves as an entity reference.
+        component.entity = self
+        # Add for easy iteration as well as easy reference.
+        self._components_list.append(component)
+        self.components[component.name] = component
+    
+    def remove_component(self, name):
+        """Remove a particular component from the component hash.
+        
+        name {str} Name of the component to remove.
+        """
+        # Remove index and location in list. This should be an uncommon operation.
+        component = self.components.pop(name)
+        self._components_list.remove(component)
+        # Part of the contract: call destroy on the component.
+        component.destroy()
+
+    def process(self, time_passed):
+        """Update this entity.
+        
+        time_passed {float} how much time has passed since the last call in 
+        seconds.
+        """
+        # Update components first.
+        for component in self._components_list:
+            component.process(time_passed)
+        
+        # AI.
         self.brain.process(time_passed)
         
+        # Perform actions. Should this be part of the world?
         if self.speed > 0. and self.location != self.destination:
             self.move(time_passed)
     

@@ -1,6 +1,7 @@
 import pygame
 from pymunk.vec2d import Vec2d
 import viewport
+from commonmath import percent
 from ui.assets.colors import entity_colors
 
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
@@ -285,19 +286,23 @@ class WorldViewport(viewport.Viewport):
         
         Returns the surface with the status bars rendered.
         """
+        # Common settings.
         width = 25
         height = 4
-        # colors
         empty = (255, 0, 0)
-        full = (0, 255, 0)
         bar = pygame.surface.Surface((width, height)).convert()
+        
         # Energy.
+        full = (230, 100, 230)
         bar.fill(empty)
-        bar.fill(full, (0, 0, (entity.energy_current/entity.max_energy)*width, height))
+        component = entity.components["energy"]
+        bar.fill(full, (0, 0, percent(component.current, component.max)*width, height))
         surface.blit(bar, (0, 0))
         # Health.
+        full = (0, 255, 0)
         bar.fill(empty)
-        bar.fill(full, (0, 0, (entity.health_current/entity.max_health)*width, height))
+        component = entity.components["health"]
+        bar.fill(full, (0, 0, percent(component.current, component.max)*width, height))
         surface.blit(bar, (0, height+1))
         return surface
 

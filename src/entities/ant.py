@@ -2,6 +2,8 @@ import pygame
 from entities.entity import Entity
 import entities.ai.ants as antbehaviors
 
+from entities.components import Health, Energy
+
 class Ant(Entity):
     
     def __init__(self, world, base):
@@ -17,6 +19,9 @@ class Ant(Entity):
         self.brain.add_state(antbehaviors.PowerUp())
         # Default state.
         self.brain.set_state("exploring")
+        
+        self.add_component(Health())
+        self.add_component(Energy())
 
         #Following attributes exist in base class, values specific to our ants.
         self.speed_up_acceleration = 30.
@@ -24,25 +29,7 @@ class Ant(Entity):
         self.max_speed = 120.
         self.rotation_per_second = 90.
         
-        #Related to energy
-        self.max_energy = 1000.
-        self.energy_current = self.max_energy
-        self.energy_consumption_per_second = 10.
-        self.energy_recharge_per_second = 1000
-        self.energy_recharge_to_energy_conversion_ratio = .2
-        self.energy_death = -100.
-        
-        #Related to health
-        self.max_health = 100
-        self.health_current = self.max_health
-        self.health_heal_rate = 10 #Per second.
-        self.energy_to_heal_rate = .1 #Amount of extra energy required to heal
-        self.health_death = 0
-        self.health_to_energy_needed = 0 #Value of energy where health gets converted to energy.  10 health to 50 energy  
-        self.health_to_energy_conversion_value = 50
-        self.health_to_energy_conversion_cost = 10
-        
-        # Right now, ants can carry a single entity (that is likely a leaf).
+        # Ants can carry a single entity (that is likely a leaf).
         self.inventory = None
         
     def carry(self, entity):
@@ -64,18 +51,20 @@ class Ant(Entity):
             self.base.increment_leaf()
         
     def process(self, time_passed):
-        # Process energy consumption
-        self.energy_current = self.energy_current - ((time_passed) * self.energy_consumption_per_second)
+        Entity.process(self, time_passed)
+
+        energy = self.components["energy"]
+        health = self.components["health"]
+        
         # Is ant energy so low that we need to dump health into energy?
-        if self.energy_current <= self.health_to_energy_needed:
-            self.energy_current += self.health_to_energy_conversion_value
-            self.health_current -= self.health_to_energy_conversion_cost
+        if energy.empty:
+            # TODO: Have a converter component.
+            energy.current += 100
+            health.current -= 10
             
         # Should the ant die?
-        if self.energy_current < self.energy_death or self.health_current <= self.health_death:
+        if health.dead:
             self.world.remove_entity(self)
-        else:
-            Entity.process(self, time_passed)
     
     def delete(self):
         # Update team stats.

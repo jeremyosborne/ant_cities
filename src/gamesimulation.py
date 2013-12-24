@@ -84,8 +84,8 @@ class GameSimulation():
                                                 ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
                                                 ("Bases:", lambda: str(self.world.stats["base"])),
                                                 ("Leaves:", lambda: str(self.world.stats["leaf"])),
-                                                ("Leaves Added:", lambda: str(self.world.stats["leaves-added"])),
-                                                ("Leaves Removed:", lambda: str(self.world.stats["leaves-removed"])),
+                                                ("Leaves Added:", lambda: str(self.world.stats["leaf-added"])),
+                                                ("Leaves Removed:", lambda: str(self.world.stats["leaf-removed"])),
                                               ])
 
     def process_game_loop(self):
