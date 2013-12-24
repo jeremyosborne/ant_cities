@@ -19,12 +19,7 @@ import spatialengine
 
 class World(object):
         
-    def __init__(self, width, height, imageassets):
-        """Notes:
-        
-        imageassets {AssetCache} Image cache.
-        """
-        
+    def __init__(self, width, height):
         #The size of the world for x and y
         self.width = width
         self.height = height

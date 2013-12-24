@@ -3,18 +3,18 @@ from pymunk.vec2d import Vec2d
 import viewport
 from commonmath import percent
 from ui.assets.colors import entity_colors
+from ui.assets.images import entity_images
 
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
 #So it doesn't belong in the main viewport class.
 class WorldViewport(viewport.Viewport):
     def __init__(self, world_width, world_height, 
                  viewable_width, viewable_height, 
-                 controller, imageassets):
+                 controller):
         """Arguments not inherited from viewport.
         
         controller {EventPublisher} Provides a pipeline to events in the outside
         world.
-        imageassets {AssetCache} Image cache.
         """
         
         viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
@@ -60,8 +60,6 @@ class WorldViewport(viewport.Viewport):
         # TODO: Need a way to unsubscribe listeners.
         controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
         
-        self.imageassets = imageassets
-
     @property
     def zoom_area_width(self):
         """Width in pixels at the current zoom level.
@@ -325,26 +323,6 @@ class WorldViewport(viewport.Viewport):
         # Transform entity world coordinates to viewable coordinates.
         x, y = self.gamepoint_to_screenpoint(*entity.location)
         self.surface.fill(color, (x-5, y-5, 10, 10))
-
-    def render_entity_surface(self, entity):
-        """Return the image to be used for a particular entity as a surface.
-        """
-        # Most common first.
-        if entity.name == "ant" and entity.team == 1:
-            surface = self.imageassets.get("red-ant")
-        elif entity.name == "ant" and entity.team == 2:
-            surface = self.imageassets.get("blue-ant")
-        elif entity.name == "leaf":
-            surface = self.imageassets.get("leaf")
-        elif entity.name == "base" and entity.team == 1:
-            surface = self.imageassets.get("hut")
-        elif entity.name == "base" and entity.team == 2:
-            surface = pygame.transform.flip(self.imageassets.get("hut"), 1, 0)
-        else:
-            # Should never get here, but allow for default images.
-            surface = pygame.surface.Surface((10, 10)).convert()
-            surface.fill((0, 0, 0))
-        return surface
     
     def render_entity(self, entity):
         """Display logic for dealing with entities.
@@ -354,7 +332,7 @@ class WorldViewport(viewport.Viewport):
             # Render as square.
             self.render_entity_strategic_icon(entity)
         else:
-            image = self.render_entity_surface(entity)
+            image = entity_images(entity)
             # Deal with ants. (Blech, this is gross right now, but trying
             # to isolate view code, view specific logic, and will then
             # normalize so that we simply do things to objects and need
@@ -365,7 +343,7 @@ class WorldViewport(viewport.Viewport):
                 if self.current_zoom_level < self.strategic_zoom_level:
                     # If it's carrying a leaf, let's draw that too.
                     if entity.inventory:
-                        inventory_image = self.render_entity_surface(entity.inventory)
+                        inventory_image = entity_images(entity.inventory)
                         image = pygame.transform.rotate(inventory_image, entity.direction*-1.)
 
                 if self.current_zoom_level < self.strategic_zoom_level:

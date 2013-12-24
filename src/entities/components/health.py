@@ -5,7 +5,7 @@ class Health(Component):
     When number reaches zero, it is assumed entity is in some state of death.
     """
     
-    name = "health"
+    _cname = "health"
     
     def __init__(self, maximum=100):
         """Set up initial health of the entity.

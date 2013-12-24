@@ -29,7 +29,13 @@ class Ant(Entity):
         
         # Ants can carry a single entity (that is likely a leaf).
         self.inventory = None
-        
+
+    @property
+    def team_id(self):
+        """What team are we on?
+        """
+        return self.base.components["team"].id
+
     def carry(self, entity):
         """Ant picks up the entity and takes possession of it.
         """
@@ -68,9 +74,3 @@ class Ant(Entity):
         # Update team stats.
         self.base.ant_count -= 1
         self.base.ant_dead += 1
-        
-    @property
-    def team(self):
-        """What team are we on?
-        """
-        return self.base.team

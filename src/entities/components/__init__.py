@@ -27,27 +27,28 @@ exceptions = set(["__init__", "component"])
 
 
 
-def get_component(name):
+def get_component(cname):
     """Retrieve a component class.
     
     Entities wishing to use components should call this function.
     
     If the component is not yet loaded, the component is loaded.
     
-    name {str} The common name of the component.
+    cname {str} The common name of the component.
     """
-    if name in _components_cache:
-        return _components_cache[name]
+    if cname in _components_cache:
+        return _components_cache[cname]
     # What the name of the module should be.
-    elif name not in exceptions:
-        component_mod = __import__(".".join([__package__, name]), fromlist=[name])
+    elif cname not in exceptions:
+        # Due to directory structure, we should load from package and alias.
+        component_mod = __import__(".".join([__package__, cname]), fromlist=[cname])
         for item in dir(component_mod):
             item = component_mod.__dict__[item]
             # Sanity checking.
             if issubclass(Component, item) and item not in _components_cache:
-                _components_cache[item.name] = item
+                _components_cache[item._cname] = item
             # Load until we get the component we want.
-            if name == item.name:
+            if cname == item._cname:
                 return item
     else:
         raise ValueError("%s cannot be loaded for some reason")

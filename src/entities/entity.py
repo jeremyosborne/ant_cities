@@ -59,7 +59,7 @@ class Entity(object):
         self.world.spatial_index.update(self)
     
     @property
-    def team(self):
+    def team_id(self):
         """By default, we are neutral.
         """
         return None
@@ -129,20 +129,20 @@ class Entity(object):
         #print "location:", self.location
         #print "speed:", self.speed
 
-    def add_component(self, name, **kwargs):
+    def add_component(self, cname, **kwargs):
         """Interface to adding a component to an entity.
         
-        name {str} Name of the componet to add.
+        cname {str} Name of the component to add.
         kwargs {kwargs} Labeled arguments to pass in to the instantiation
         of the component.
         """
         # Load and immediately instantiate.
-        component = get_component(name)(**kwargs)
+        component = get_component(cname)(**kwargs)
         # Part of the contract: we must add ourselves as an entity reference.
         component.entity = self
         # Add for easy iteration as well as easy reference.
         self._components_list.append(component)
-        self.components[component.name] = component
+        self.components[component._cname] = component
     
     def remove_component(self, name):
         """Remove a particular component from the component hash.

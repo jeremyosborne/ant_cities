@@ -4,7 +4,7 @@ class Energy(Component):
     """Simple view of metabolic resource of an entity.
     """
     
-    name = "energy"
+    _cname = "energy"
     
     def __init__(self, maximum=1000):
         """Set up initial health of the entity.

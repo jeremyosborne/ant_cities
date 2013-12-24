@@ -31,13 +31,12 @@ class GameSimulation():
         #Set up game world
 
         #The minus 170 below is the y size of the UI elements.  
-        self.world = World(globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1],
-                           imageassets)
+        self.world = World(globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1])
 
         # viewport is the screen entity that contains the view of the game world.
         self.world_viewport = WorldViewport(globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1], 
                                       globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
-                                      events, imageassets)
+                                      events)
         
         #Setup UI elements.
         self.mini_map = MiniMap(globaldata.SCREEN_SIZE[0]-256, globaldata.SCREEN_SIZE[1]-170, 
@@ -58,7 +57,7 @@ class GameSimulation():
         # Base Information Displays
         self.base_display_1 = DataColumnDisplay(1, globaldata.SCREEN_SIZE[1]-170, 
                                                 200, 170,
-                                                str(self.world.base_1),
+                                                str(self.world.base_1.components["team"]),
                                                 [
                                                  ("# Ants Born:", lambda: str(self.world.base_1.ant_born)),
                                                  ("# Ants Died:", lambda: str(self.world.base_1.ant_dead)),
@@ -68,7 +67,7 @@ class GameSimulation():
                                                 ])
         self.base_display_2 = DataColumnDisplay(201, globaldata.SCREEN_SIZE[1]-170, 
                                                 200, 170,
-                                                str(self.world.base_2),
+                                                str(self.world.base_2.components["team"]),
                                                 [
                                                  ("# Ants Born:", lambda: str(self.world.base_2.ant_born)),
                                                  ("# Ants Died:", lambda: str(self.world.base_2.ant_dead)),

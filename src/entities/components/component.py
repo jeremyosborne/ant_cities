@@ -12,10 +12,11 @@ to a component dict via name and add interface.
 
 
 class Component(object):
-    """Components are an opt in interface accept for the name class attribute.
-    Components must all have a unique name.
+    """Components are an opt in interface.
     """
-    name = None
+    
+    # Required: components must all have a unique name.
+    _cname = None
     
     # Components receive a pointer to their owner entity when they are added.
     entity = None

@@ -34,7 +34,7 @@ class ViewUnitInfoBox(viewport.Viewport):
         #The unit we're watching.
         self.watching_entity = None
         # Image to show which leaf is being watched.
-        self.watched_leaf_image = imageassets.get("leaf2")
+        #self.watched_leaf_image = imageassets.get("leaf2")
         #Toggle for tracking the entity on screen.
         self.track = False
         
