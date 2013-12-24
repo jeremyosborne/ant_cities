@@ -7,14 +7,9 @@ class Base(Entity):
         Entity.__init__(self, "base", world)
 
         self.add_component("team", id=team_id, name=team_name)
-
+        
         self.leaves = 0
-        self.leaves_returned = 0  #Total number of leaves returned since start.
-        self.leaves_mulching = 0
         self.energy_units = 5
-        self.ant_count = 0
-        self.ant_born = 0
-        self.ant_dead = 0
         
         # Radial size of the nest from location attribute.
         # Hackish: allows ants to drop things back at the base.
@@ -27,13 +22,13 @@ class Base(Entity):
         return self.components["team"].id
     
     def process(self, time_passed):
-        if self.leaves > 100:
-            self.leaves -= 100
-            self.energy_units += 10
+        if self.leaves > 20:
+            self.leaves -= 20
+            self.energy_units += 100
             
     def increment_leaf(self):
         self.leaves += 1
-        self.leaves_returned += 1
+        self.components["team"].stats["leaves-returned"] += 1
 
     def create_entity(self, name, placement_offset=(0, 0)):
         """Create an entity and place it under our control.
@@ -43,12 +38,13 @@ class Base(Entity):
         
         returns the entity.
         """
+        team = self.components["team"]
         # Right now, we only create ants.
         entity = None
         if name == "ant":
             entity = Ant(self.world, self)
-            self.ant_count += 1
-            self.ant_born += 1
+            team.stats[entity.name] += 1
+            team.stats[entity.name+"-added"] += 1
             basex, basey = self.location
             offsetx, offsety = placement_offset
             entity.location = (basex+offsetx, basey+offsety)

@@ -59,21 +59,21 @@ class GameSimulation():
                                                 200, 170,
                                                 str(self.world.base_1.components["team"]),
                                                 [
-                                                 ("# Ants Born:", lambda: str(self.world.base_1.ant_born)),
-                                                 ("# Ants Died:", lambda: str(self.world.base_1.ant_dead)),
-                                                 ("# Ants Net:", lambda: str(self.world.base_1.ant_count)),
+                                                 ("# Ants Born:", lambda: str(self.world.base_2.components["team"].stats["ant-added"])),
+                                                 ("# Ants Died:", lambda: str(self.world.base_2.components["team"].stats["ant-removed"])),
+                                                 ("# Ants Net:", lambda: str(self.world.base_2.components["team"].stats["ant"])),
                                                  ("Energy:", lambda: str(self.world.base_1.energy_units)),
-                                                 ("Leaf Storage:", lambda: str(self.world.base_1.leaves_returned)),
+                                                 ("Leaf Storage:", lambda: str(self.world.base_1.leaves)),
                                                 ])
         self.base_display_2 = DataColumnDisplay(201, globaldata.SCREEN_SIZE[1]-170, 
                                                 200, 170,
                                                 str(self.world.base_2.components["team"]),
                                                 [
-                                                 ("# Ants Born:", lambda: str(self.world.base_2.ant_born)),
-                                                 ("# Ants Died:", lambda: str(self.world.base_2.ant_dead)),
-                                                 ("# Ants Net:", lambda: str(self.world.base_2.ant_count)),
+                                                 ("# Ants Born:", lambda: str(self.world.base_2.components["team"].stats["ant-added"])),
+                                                 ("# Ants Died:", lambda: str(self.world.base_2.components["team"].stats["ant-removed"])),
+                                                 ("# Ants Net:", lambda: str(self.world.base_2.components["team"].stats["ant"])),
                                                  ("Energy:", lambda: str(self.world.base_2.energy_units)),
-                                                 ("Leaf Storage:", lambda: str(self.world.base_2.leaves_returned)),
+                                                 ("Leaf Storage:", lambda: str(self.world.base_2.leaves)),
                                                 ])
         # World Info Display
         self.world_info_display = DataColumnDisplay(402, globaldata.SCREEN_SIZE[1]-170, 

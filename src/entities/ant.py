@@ -72,5 +72,5 @@ class Ant(Entity):
     
     def delete(self):
         # Update team stats.
-        self.base.ant_count -= 1
-        self.base.ant_dead += 1
+        self.base.components["team"].stats[self.name] -= 1
+        self.base.components["team"].stats[self.name+"-removed"] += 1

@@ -65,7 +65,7 @@ class World(object):
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
         self.entities[entity.id] = entity
-        # Count vs. net.
+        # Gross vs. net.
         self.stats[entity.name] += 1
         self.stats[entity.name+"-added"] += 1
         
@@ -74,7 +74,7 @@ class World(object):
         entity.delete()
         self.spatial_index.remove(entity)
 
-        # Count vs. net.
+        # Gross vs. net.
         self.stats[entity.name] -= 1
         self.stats[entity.name+"-removed"] += 1
 

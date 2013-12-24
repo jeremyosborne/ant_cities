@@ -12,7 +12,7 @@ modifying the directory structure.
 """
 
 import os
-import inspect
+from inspect import isclass
 
 # Here we do want to do a relative import.
 from component import Component
@@ -43,13 +43,14 @@ def get_component(cname):
         # Due to directory structure, we should load from package and alias.
         component_mod = __import__(".".join([__package__, cname]), fromlist=[cname])
         for item in dir(component_mod):
-            item = component_mod.__dict__[item]
-            # Sanity checking.
-            if issubclass(Component, item) and item not in _components_cache:
+            item = component_mod.__dict__[item]            
+            # Ugh... this is... can't even say how awful this is.
+            if isclass(item) and \
+                issubclass(item, Component) and \
+                item._cname != None and \
+                item._cname not in _components_cache:
                 _components_cache[item._cname] = item
-            # Load until we get the component we want.
-            if cname == item._cname:
-                return item
+        return _components_cache[cname]
     else:
         raise ValueError("%s cannot be loaded for some reason")
 
