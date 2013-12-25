@@ -1,5 +1,5 @@
 import pygame
-import viewport
+import ui.viewport as viewport
 
 class MouseDisplay(viewport.Viewport):
     """Display the mouse coordinates on the screen.

@@ -1,5 +1,5 @@
 import pygame
-import viewport
+import ui.viewport as viewport
 
 class ViewUnitInfoBox(viewport.Viewport):
     """Traditional area that displays information about a single unit a user has clicked on.

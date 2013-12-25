@@ -1,5 +1,5 @@
-import viewport
 import pygame
+import ui.viewport as viewport
 
 class DataColumnDisplay(viewport.Viewport):
     """Generic data display.

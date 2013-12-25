@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 
 import globaldata
-import viewport
+import ui.viewport as viewport
 import time
 from world import World
 from ui.minimap import MiniMap

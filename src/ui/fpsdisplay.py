@@ -1,5 +1,5 @@
 import pygame
-import viewport
+import ui.viewport as viewport
 
 class FPSDisplay(viewport.Viewport):
     def __init__(self, x_right=5, y_down=5):

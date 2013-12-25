@@ -1,6 +1,6 @@
 import pygame
 from pymunk.vec2d import Vec2d
-import viewport
+import ui.viewport as viewport
 from commonmath import percent
 from ui.assets.colors import entity_colors
 from ui.assets.images import entity_images

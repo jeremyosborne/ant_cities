@@ -1,5 +1,5 @@
 import pygame
-import viewport
+import ui.viewport as viewport
 from assets.colors import entity_colors
 
 class MiniMap(viewport.Viewport):
