@@ -3,8 +3,12 @@ from entities.ant import Ant
 
 
 class Base(Entity):
+    
+    name = "base"
+    
     def __init__(self, world, team_id, team_name):
-        Entity.__init__(self, "base", world)
+        
+        Entity.__init__(self, world)
 
         self.add_component("team", id=team_id, name=team_name)
         self.add_component("energy", current=0)

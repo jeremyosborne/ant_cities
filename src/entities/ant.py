@@ -1,20 +1,22 @@
 import pygame
 from entities.entity import Entity
-import entities.ai.ants as antbehaviors
+import entities.ai.ants as antbrainstates
 
 class Ant(Entity):
     
+    name = "ant"
+    
     def __init__(self, world, base):
         
-        Entity.__init__(self, "ant", world)
+        Entity.__init__(self, world)
         
         self.base = base
         
-        self.brain.add_state(antbehaviors.Exploring())
-        self.brain.add_state(antbehaviors.Seeking())
-        self.brain.add_state(antbehaviors.Delivering())
-        self.brain.add_state(antbehaviors.EnergyDepleted())
-        self.brain.add_state(antbehaviors.PowerUp())
+        self.brain.add_state(antbrainstates.Exploring())
+        self.brain.add_state(antbrainstates.Seeking())
+        self.brain.add_state(antbrainstates.Delivering())
+        self.brain.add_state(antbrainstates.EnergyDepleted())
+        self.brain.add_state(antbrainstates.PowerUp())
         # Default state.
         self.brain.set_state("exploring")
         

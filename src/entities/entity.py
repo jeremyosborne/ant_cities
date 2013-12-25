@@ -5,27 +5,26 @@ from pymunk.vec2d import Vec2d
 
 from entities.components import get_component
 from entities.ai.brains import Brain
-import appid
-
 
 
 
 class Entity(object):
     """Abstract base entity.
     """
-    def __init__(self, name, world):
 
-        # generic name for this entity.
-        self.name = name
-        
+    # Generic name for this entity. Subclass must set this class property or
+    # override in constructor.
+    name = "entity"
+
+    def __init__(self, world):
+
         #a way for an entity to get at attributes about the world.
         self.world = world
         
         self.brain = Brain(self)
         
-        self.born_time = time.time()
         # Entity promises to have a unique id.
-        self.id = appid.gen()
+        self.id = world.generate_id()
         
         # Components are stored for easy iteration...
         self._components_list = []
@@ -44,7 +43,7 @@ class Entity(object):
         self.max_speed = 0.
         self.direction = 0.
         self.rotation_per_second = 0.
-
+    
     @property
     def location(self):
         return self._location
@@ -174,6 +173,7 @@ class Entity(object):
     
     def delete(self):
         """Called during the end of life removal of an entity from the world.
+        
+        Implement in subclasses to handle last rites and resource cleanup.
         """
-        # default no op.
         pass

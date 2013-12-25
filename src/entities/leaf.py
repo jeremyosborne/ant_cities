@@ -4,12 +4,17 @@ from entities.entity import Entity
 
 
 class Leaf(Entity):
+    
+    name = "leaf"
+    
     def __init__(self, world):
-        Entity.__init__(self, "leaf", world)
+        
+        Entity.__init__(self, world)
+        
+        # Leaves have a max lifespan of 120 seconds.
+        self.add_component("age", lifespan=120)
         
     def process(self, time_passed):
-        # Die after 2 minutes.  
-        # If an ant has already grabbed it, it's already out of the game world.
-        if time.time() - self.born_time > 120.:
+        Entity.process(self, time_passed)
+        if self.components["age"].old:
             self.world.remove_entity(self)
-            #print "Removing leaf from game world."

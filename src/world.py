@@ -16,18 +16,20 @@ from entities.base import Base
 from entities.leaf import Leaf
 import globaldata
 import spatialengine
+import identifier
+
 
 class World(object):
         
     def __init__(self, width, height):
-        #The size of the world for x and y
+        # The size of the world.
         self.width = width
         self.height = height
-        
-        # Dictionary of all the entities
-        self.entities = {}
 
         self.spatial_index = spatialengine.SpatialEngine(self.width, self.height)
+        
+        # Dictionary of all the entities.
+        self.entities = {}
 
         self.time_born = time.time()
         # Various score counters. 
@@ -59,9 +61,9 @@ class World(object):
             self.add_entity(ant)
 
 
-    #------------------------------------------------------------------------
-    #Done setting up initial entity elements.
-    #------------------------------------------------------------------------
+        #------------------------------------------------------------------------
+        #Done setting up initial entity elements.
+        #------------------------------------------------------------------------
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
         self.entities[entity.id] = entity
@@ -78,7 +80,13 @@ class World(object):
         self.stats[entity.name] -= 1
         self.stats[entity.name+"-removed"] += 1
 
-                
+    def generate_id(self):
+        """Returns an identifier unique in this world.
+        
+        Assumed usage with entities of this world.
+        """
+        return identifier.gen()
+    
     def get(self, entity_id):
         """Retrieve an entity by id.
         """

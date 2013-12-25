@@ -1,4 +1,4 @@
-""" Generate a unique id for applications.
+"""Generate a runtime unique id.
 """
 
 # The next id that will be handed out.
