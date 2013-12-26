@@ -1,7 +1,7 @@
 import pygame
 from pymunk.vec2d import Vec2d
 import ui.viewport as viewport
-from commonmath import percent
+from commonmath import fdiv
 from ui.assets.colors import entity_colors
 from ui.assets.images import entity_images
 
@@ -294,13 +294,13 @@ class WorldViewport(viewport.Viewport):
         full = (230, 100, 230)
         bar.fill(empty)
         component = entity.components["energy"]
-        bar.fill(full, (0, 0, percent(component.current, component.max)*width, height))
+        bar.fill(full, (0, 0, fdiv(component.current, component.max)*width, height))
         surface.blit(bar, (0, 0))
         # Health.
         full = (0, 255, 0)
         bar.fill(empty)
         component = entity.components["health"]
-        bar.fill(full, (0, 0, percent(component.current, component.max)*width, height))
+        bar.fill(full, (0, 0, fdiv(component.current, component.max)*width, height))
         surface.blit(bar, (0, height+1))
         return surface
 

@@ -20,9 +20,9 @@ class ViewUnitInfoBox(viewport.Viewport):
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
 
-        #Add title to the background image.
-        label = self.font.render("Unit Information Display", True, (255, 255, 255))
-        w, h = label.get_size()
+        # Add title to the background image.
+        label = self.font.render("Unit Info", True, (255, 255, 255))
+        w, _ = label.get_size()
         self.background.blit(label, ((self.width / 2) - w / 2, 0))
         
         pygame.draw.line(self.background, (255, 255, 255), (0, 0), (0, self.height), 10)
@@ -53,68 +53,47 @@ class ViewUnitInfoBox(viewport.Viewport):
         self.watching_entity = entity
         
     def update(self, world_viewport):
-        #Is there something selected?
         self.surface.blit(self.background, (0, 0))
-        if self.watching_entity != None:
-            
-            #Should we be tracking the unit?  And what kind of button should we show (Track/Untrack)?
-            if self.track == True:
-                #Track the unit.
-                x, y = self.watching_entity.location
-                world_viewport.move_viewport(x, y)
-                #Draw button to untrack.
-                self.surface.blit(self.Start_Tracking_Button, (self.width - 30, 0))            
-                
-            else:
-                #Draw button to track.
-                self.surface.blit(self.Stop_Tracking_Button, (self.width -30, 0))
-                
-            text = self.font.render("Location: " + str("{:10.4f}".format(self.watching_entity.location[0])), True, (255, 255, 255))
-            self.surface.blit(text, (10, 60))
-            text = self.font.render(str("{:10.4f}".format(self.watching_entity.location[1])), True, (255, 255, 255))
-            self.surface.blit(text, (150, 60))
-            
-            # Unit Type
-            unit_text = self.font.render(self.watching_entity.name, True, (255, 255, 255))
-            w, h = unit_text.get_size()
-            self.surface.blit(unit_text, ((self.width / 2) - w / 2, 15))
-            if self.watching_entity.name == "ant":
-                text = self.font.render("State: " + self.watching_entity.brain.active_state.name, True, (255, 255, 255))
-                self.surface.blit(text, (10, 30))
-                
-                text = self.font.render("Speed: " + str(self.watching_entity.speed), True, (255, 255, 255))
-                self.surface.blit(text, (10, 45))
-                            
-                text = self.font.render("Destinaton: " + str(self.watching_entity.destination), True, (255, 255, 255))
-                self.surface.blit(text, (10, 75))
-                
-                text = self.font.render("Distance to Destinaton: " + str("{:10.4f}".format(self.watching_entity.location.get_distance(self.watching_entity.destination))), True, (255, 255, 255))
-                self.surface.blit(text, (10, 90))
-
-                text = self.font.render("Health: " + str(self.watching_entity.components["health"].current), True, (255, 255, 255))
-                self.surface.blit(text, (10, 105))
-
-                text = self.font.render("Energy: " + str(self.watching_entity.components["energy"].current), True, (255, 255, 255))
-                self.surface.blit(text, (10, 120))
-                
-                if self.watching_entity.brain.active_state.name == "seeking":
-                    if self.watching_entity.leaf_id != None:
-                        #change the leaf image.
-                        leaf = self.watching_entity.world.get(self.watching_entity.leaf_id)
-                        if leaf != None:
-                            # Removing the image change for now. Images are managed else
-                            # where. Perhaps pub/sub this to "announce" an image
-                            # is being watched via message?
-                            #leaf.image = self.watched_leaf_image
-                            #Put more on the screen about this leaf.
-                            text = self.font.render("Location of leaf: " + str(leaf.location), True, (255, 255, 255))
-                            #w, h = text.get_size()
-                            self.surface.blit(text, (10, 90))
-                        
-                
-        else:
+        
+        if not self.watching_entity:
             self.surface.blit(self.background, (0, 0))
             self.track = False
+            return
+
+        # else... cut down on indenting.
+        ent = self.watching_entity
+        
+        if self.track == True:
+            # Track the unit visually and show toggle off.
+            world_viewport.move_viewport(*ent.location)
+            self.surface.blit(self.Start_Tracking_Button, (self.width - 30, 0))            
+        else:
+            self.surface.blit(self.Stop_Tracking_Button, (self.width -30, 0))
+            
+        # Unit details.
+        unit_text = self.font.render(ent.name, True, (255, 255, 255))
+        w, _ = unit_text.get_size()
+        self.surface.blit(unit_text, ((self.width / 2) - w / 2, 15))
+        
+        output = ["Location: (%d, %d)" % tuple(ent.location)]
+
+        if self.watching_entity.name == "ant":
+            output.append("Energy: %s" % ent.components["energy"].current)
+            output.append("Health: %s" % ent.components["health"].current)
+            output.append("Brain state: %s" % ent.brain.active_state.name)
+            output.append("Speed: %d" % ent.speed)
+            output.append("Destinaton: (%d, %d)" % tuple(ent.destination))
+            output.append("Distance to destination: %d" % ent.location.get_distance(ent.destination))
+            
+            if ent.brain.active_state.name == "seeking":
+                if ent.leaf_id != None:
+                    leaf = ent.world.get(ent.leaf_id)
+                    if leaf != None:
+                        output.append("Location of leaf: (%d, %d)" % tuple(leaf.location))
+            
+        for i, line in enumerate(output):
+            text = self.font.render(line, True, (255, 255, 255))
+            self.surface.blit(text, (10, 30 + i*15))
         
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]

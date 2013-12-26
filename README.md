@@ -46,8 +46,12 @@ Key
 
 - Entities
     * Add component system.
-        * Health component.
-        * Energy component.
+        * Velocity.
+            * Direction of travel, newtonian physics.
+        * Facing.
+            * With the assumption something can travel in one direction (velocity)
+              and face in another. Will deal with line of sight and visual
+              rotation of sprites.
 - User Interface
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).

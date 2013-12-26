@@ -1,4 +1,5 @@
 from entities.components.component import Component
+from commonmath import mmval
 
 class Health(Component):
     """Simple view of the life of an entity via a number.
@@ -11,8 +12,17 @@ class Health(Component):
         """Set up initial health of the entity.
         """
         self.max = maximum
-        self.current = maximum
+        self._current = maximum
         self.min = 0
+
+    @property
+    def current(self):
+        return self._current
+
+    @current.setter
+    def current(self, value):
+        # Boundary check.
+        self._current = mmval(self._current+value, self.max, self.min)
 
     @property
     def dead(self):

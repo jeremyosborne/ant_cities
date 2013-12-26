@@ -40,13 +40,13 @@ def random_boxed_offset(max_length):
     # Randomize starting position.
     return (random_sign()*randint(0, max_length), random_sign()*randint(0, max_length))
 
-def percent(a, b):
-    """Calculate a percent.
+def fdiv(a, b):
+    """Divide and always return as a float.
     
     a {number} Dividend.
     b {number} Divisor.
     
-    return {float} quotient as a percent multiplier (e.g. .25)
+    return {float} quotient as a float (e.g. .25)
     """
     return a/float(b)
 
@@ -70,3 +70,15 @@ def percfloat(a, b, ndigits=0):
     return {float} quotient as a rounded percent value (e.g. 25.1 for .251)
     """
     return int(round((a/float(b) * 100), ndigits))
+
+def mmval(val, maxi, mini=0):
+    """Return the value if within maxi or mini, otherwise return the boundary
+    (mini if less than mini, maxi if greater than maxi).
+    
+    val {number} Value to boundary check.
+    maxi {number} Upper bound.
+    [mini=0] {number} Lower bound, assumes zero.
+    
+    return {number} val or associated boundary.
+    """
+    return max(mini, min(val, maxi))

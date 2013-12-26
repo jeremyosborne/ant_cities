@@ -5,7 +5,7 @@ from pymunk.vec2d import Vec2d
 
 from entities.components import get_component
 from entities.ai.brains import Brain
-
+from commonmath import mmval
 
 
 class Entity(object):
@@ -33,14 +33,19 @@ class Entity(object):
         
         # Movement in the game world
         self._location = Vec2d(0., 0.)
+        
         self.destination = Vec2d(0., 0.)
-        self.current_heading = Vec2d(1., 0.)
-        self.desired_heading = Vec2d(0., 0.)
-        self.speed = 0.
+        
+        # Pixels per second.
+        self._speed = 0.
+        #self.speed = 0.
+        self.max_speed = 0.
         self.acceleration = 0.
         self.speed_up_acceleration = 0.
         self.slow_down_acceleration = 0.
-        self.max_speed = 0.
+
+        self.current_heading = Vec2d(1., 0.)
+        self.desired_heading = Vec2d(0., 0.)        
         self.direction = 0.
         self.rotation_per_second = 0.
     
@@ -63,31 +68,40 @@ class Entity(object):
         """
         return None
     
+    @property
+    def speed(self):
+        return self._speed
+     
+    @speed.setter
+    def speed(self, value):
+        # Boundary check.
+        self._speed = mmval(self._speed+value, self.max_speed)
+    
     def apply_acceleration(self, time_passed, distance_to_destination):
-
-        #If we're at 0 and location != destination, then we should start moving.
         if (self.location != self.destination) and (self.speed == 0):
+            # Well then we should start moving.
             self.speed = 1.
         else:
-            #calculate the distance needed to stop.  If the travel distance is greater than the stopping
-            #distance, then speed up or keep going, slow down when we get close.  
+            # calculate the distance needed to stop.  
+            # If the travel distance is greater than the stopping
+            # distance, then speed up or keep going.
+            # Slow down when we get close.  
         
-            #then keep going, else start stopping.
+            # Then keep going, else start stopping.
             if abs(self.speed / self.slow_down_acceleration) >= (distance_to_destination/self.speed) or \
-            (distance_to_destination < 30 and self.current_heading != self.desired_heading):
-                #slow down
+                    (distance_to_destination < 30 and self.current_heading != self.desired_heading):
+                # slow down
                 self.acceleration = self.slow_down_acceleration
                 self.speed += self.acceleration * time_passed
                 if self.speed <= 0: self.speed = 5
             else:
-                #speed up
+                # speed up
                 self.acceleration = self.speed_up_acceleration
                 self.speed += self.acceleration * time_passed
                 if self.speed > self.max_speed:
                     self.speed = self.max_speed
                 
     def steer(self, angle_between_vectors, time_passed):
-        
         #How much we can steer this tick of the clock.
         steer_time_tick = self.rotation_per_second * time_passed
 
@@ -104,15 +118,14 @@ class Entity(object):
             self.current_heading = self.current_heading.rotated_degrees(angle_to_steer).normalized()
                     
     def move(self, time_passed):
-        
         self.desired_heading = (self.destination - self.location).normalized()
         angle_between_vectors = self.current_heading.get_angle_degrees_between(self.desired_heading)
         
-        #Do we have to change direction?
+        # Do we have to change direction?
         if angle_between_vectors != 0.0:
             self.steer(angle_between_vectors, time_passed)    
         
-        #Update location.
+        # Update location.
         vec_to_destination = self.destination - self.location
         distance_to_destination = vec_to_destination.get_length()
         travel_distance = min(distance_to_destination, time_passed * self.speed)
@@ -122,11 +135,6 @@ class Entity(object):
         self.apply_acceleration(time_passed, distance_to_destination)
         
         self.direction = ((math.atan2(self.current_heading.y, self.current_heading.x)*(180/math.pi))+90)
-
-        #print "headings:", self.current_heading, self.desired_heading
-        #print "distance to destination:", distance_to_destination
-        #print "location:", self.location
-        #print "speed:", self.speed
 
     def add_component(self, cname, **kwargs):
         """Interface to adding a component to an entity.
@@ -168,7 +176,8 @@ class Entity(object):
         self.brain.process(time_passed)
         
         # Perform actions. Should this be part of the world?
-        if self.speed > 0. and self.location != self.destination:
+        #if self.speed > 0. and self.location != self.destination:
+        if self.location != self.destination:
             self.move(time_passed)
     
     def delete(self):

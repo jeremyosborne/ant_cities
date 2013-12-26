@@ -9,17 +9,16 @@ from collections import deque
 
 
 class SpatialEngine(object):
-    ''' Coarser spatial storage for entities using 2d points for location.
+    '''Coarser spatial storage for entities using 2d points for location.
     '''
     def __init__(self, world_size_x, world_size_y):
-        '''
-        Constructor
+        '''Constructor.
         
         world_size_x {int} number of pixels wide the world is.
         world_size_y {int} number of pixels hight he world is.
         '''
-        #Size for X and Y for a grid element (cell.)  Turns out the code is not generalized
-        #to suppport anything but 100x100 cell size.  So, if you want to change this, then
+        # Size for X and Y for a cell.  Turns out the code is not generalized
+        # to suppport anything but 100x100 cell size.  So, if you want to change this, then
         #you have to generalize the code associated with cells.
         self.cell_size = 100
         
@@ -36,7 +35,7 @@ class SpatialEngine(object):
                 self.spatial_index[i,j] = []
 
     def _insert(self, entity):
-        """ Add an entity to the spatial index.
+        """Add an entity to the spatial index.
         Call update as the public API instead of _insert.
         
         entity {entity} Must provide a .id and .location interface to the 2d location
@@ -51,7 +50,7 @@ class SpatialEngine(object):
         self.entity_index[entity.id] = cell
         
     def remove(self, entity):
-        """ Remove an entity from the spatial index.
+        """Remove an entity from the spatial index.
         
         entity {entity} Must provide a .id attribute uniquely identifying the
         entity.
@@ -110,7 +109,7 @@ class SpatialEngine(object):
         return cell_list
 
     def find_all_in_range(self, point, the_range=1, validate=None):
-        ''' Returns list of all entities in range.
+        '''Returns list of all entities in range.
 
         point {Vec2d} Location to search from.
         [tolerance=5.0] {float} Number of pixels radius to allow for a match.

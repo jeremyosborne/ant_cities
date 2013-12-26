@@ -1,4 +1,5 @@
 from entities.components.component import Component
+from commonmath import mmval
 
 class Energy(Component):
     """Simple view of metabolic resource of an entity.
@@ -30,8 +31,7 @@ class Energy(Component):
     @current.setter
     def current(self, value):
         # Boundary check.
-        self._current += value
-        self._current = max(self.min, (min(self._current, self.max)))
+        self._current = mmval(self._current+value, self.max, self.min)
         
     @property
     def empty(self):
