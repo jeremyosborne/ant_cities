@@ -14,8 +14,6 @@ class DataColumnDisplay(viewport.Viewport):
                  title="Data Column Display", data=None):
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)
 
-        self.description = title
-
         self.font_family = "arial"
         self.font_size = 16
         self.font = pygame.font.SysFont(self.font_family, self.font_size)

@@ -19,8 +19,6 @@ class WorldViewport(viewport.Viewport):
         
         viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
         
-        self.description = "Game World Viewport"
-        
         # Size of the game world.
         self.world_height = world_height
         self.world_width = world_width

@@ -10,7 +10,6 @@ class FPSDisplay(viewport.Viewport):
         #Make it such that when the surface is blitted on something else,
         #the background is transparent.
         self.surface.set_colorkey((255, 255, 255))
-        self.description = "FPS display."
         
     def update(self, clock):
         fps = clock.get_fps()

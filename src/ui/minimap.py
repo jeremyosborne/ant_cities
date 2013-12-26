@@ -16,8 +16,6 @@ class MiniMap(viewport.Viewport):
         self.border_size = 10  #Made it 10 to match the screen scrolling width.
         self.border_color = (165,42,42)  #Brown
 
-        self.description = "Mini Map"
-
         self.world_width = world_width
         self.world_height = world_height
                             

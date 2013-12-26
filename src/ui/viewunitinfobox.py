@@ -29,8 +29,6 @@ class ViewUnitInfoBox(viewport.Viewport):
         
         self.surface.blit(self.background, (0, 0))
 
-        self.description = "Unit Info."
-        
         #The unit we're watching.
         self.watching_entity = None
         # Image to show which leaf is being watched.

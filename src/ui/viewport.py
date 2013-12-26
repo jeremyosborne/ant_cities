@@ -65,7 +65,7 @@ class Viewport(pygame.Surface):
             if i.is_visable:
                 main_surface.blit(i.surface, ((i.x_right, i.y_down)))
                 #This is for debug purposes.
-                #print "Rendering:  " + i.description
+                #print "Rendering:  " + i.__class__.__name__
     
     @classmethod
     def highest_layer(cls):
@@ -96,8 +96,6 @@ class Viewport(pygame.Surface):
         self._layer = layer
         #Should this be rendered?
         self.is_visable=is_visable
-        #User defined description field.
-        self.description = "Not defined"       
         # Add to viewport management list.
         self.add_viewport(self)
         # Rectangle area matching the actual screen area this viewport maps to.

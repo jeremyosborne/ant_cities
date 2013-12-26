@@ -13,7 +13,6 @@ class MouseDisplay(viewport.Viewport):
         # Make it such that when the surface is blitted on something else,
         # the background is transparent.
         self.surface.set_colorkey((255, 255, 255))
-        self.description = "Mouse coordinate display."
         
     def update(self, worldviewport):
         # Clear the surface.
