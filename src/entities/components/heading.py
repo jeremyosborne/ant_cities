@@ -16,7 +16,7 @@ class Heading(Component):
     Degrees is the default, radians are optional.
     """
     
-    _cname = "facing"
+    _cname = "heading"
     
     def __init__(self, current=0.):
         """Constructor.
@@ -36,9 +36,8 @@ class Heading(Component):
         """ {number} set in degrees.
         """
         # This will work for positive or negative numbers, where the 
-        # negative numbers are "corrected" via rotation some magic modulo op. 
-        # Even though this feels black magicky, it's a factor of 10 faster 
-        # than the more logical math.fmod().
+        # negative numbers are "corrected" via modulo. 
+        # It's a factor of 10 faster than the more logical math.fmod().
         self._current = value % MOD_DEG
 
     @property
@@ -51,5 +50,5 @@ class Heading(Component):
     def current_rad(self, value):
         """ {float}
         """
-        # math.degrees is about 45% faster than arithmetic conversion. go figure.
+        # math.degrees is about 45% faster than arithmetic conversion.
         self._current = math.degrees(value) % MOD_DEG
