@@ -1,4 +1,3 @@
-import pygame
 from entities.entity import Entity
 import entities.ai.ants as antbrainstates
 

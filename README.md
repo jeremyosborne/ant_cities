@@ -46,12 +46,19 @@ Key
 
 - Entities
     * Add component system.
-        * Velocity.
-            * Direction of travel, newtonian physics.
-        * Facing.
+        * Heading
             * With the assumption something can travel in one direction (velocity)
               and face in another. Will deal with line of sight and visual
               rotation of sprites.
+        * Velocity
+            * Direction of travel + speed. Classical mechanics.
+        * VelocityEngine
+            * Controls the velocity.
+            * Add in place velocity changes.
+            * Change properties to normal properties, not the setter stuff.
+        * associated math still needed
+            * courseto(frompoint, topoint)
+
 - User Interface
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).

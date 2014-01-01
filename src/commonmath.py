@@ -5,8 +5,11 @@ or let me know if others exist in our libraries if I can't
 find them.
 """
 
-from math import sqrt
+import math
 from random import random, randint
+
+pi2 = math.pi*2
+pidiv2 = math.pi/2
 
 def random_sign():
     """Generate either +1 or -1.
@@ -23,7 +26,7 @@ def random_radial_offset(max_length):
     returns {tuple} of ({int} x, {int} y) as a random offset.
     """
     x = randint(0, max_length)
-    ymax = int(sqrt(max_length**2 - x**2))
+    ymax = int(math.sqrt(max_length**2 - x**2))
     y = randint(0, ymax)
     return (random_sign()*x, random_sign()*y)
 
@@ -82,3 +85,25 @@ def mmval(val, maxi, mini=0):
     return {number} val or associated boundary.
     """
     return max(mini, min(val, maxi))
+
+def heading_xy(heading=0.):
+    """Take a heading or course and return parts x, y of the heading as parts 
+    of a unit circle.
+    
+    Heading measurement is north = 0, east = 90, south = 180, west = 270.
+    
+    Function is used to determine how much heading should be applied in the x
+    direction and the y direction (e.g. for applying velocity over time to an
+    entity's location).
+    
+    heading {number} Heading in degrees.
+    
+    return {tuple} The (x, y) components of this heading.
+    
+    """
+    heading_rad = math.radians(heading)
+    signage = 1 if heading <= 180 else -1 
+    x = math.copysign(math.sqrt(1-math.sin(pi2 - heading_rad + pidiv2)**2), signage)
+    signage = 1 if heading >= 90 and heading <= 270 else -1
+    y = math.copysign(math.sqrt(1-math.cos(pi2 - heading_rad + pidiv2)**2), signage)
+    return (x, y)

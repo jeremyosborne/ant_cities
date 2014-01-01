@@ -14,6 +14,7 @@ from commonmath import random_radial_offset
 
 from entities.base import Base
 from entities.leaf import Leaf
+from entities.dummy import Dummy
 import globaldata
 import spatialengine
 import identifier
@@ -39,6 +40,12 @@ class World(object):
         #-----------------------------------------------------------------------
         #Setting up initial entity elements.
         #-----------------------------------------------------------------------
+
+#         if __debug__:
+#             # Dummy entity for testing components.
+#             dummy = Dummy(self)
+#             dummy.location = (self.width/2, self.height/2)
+#             self.add_entity(dummy)
 
         # Generate bases.
         self.base_1 = Base(self, 1, "Red Ants")

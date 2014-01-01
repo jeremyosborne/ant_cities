@@ -1,5 +1,6 @@
-from entities.components.component import Component
 import math
+from commonmath import heading_xy
+from entities.components.component import Component
 
 MOD_DEG = 360.0
 pi2 = math.pi*2
@@ -34,10 +35,9 @@ class Velocity(Component):
         """
         # Unit circle math applied with corrected signage.
         # We do this approach because we assume we have more reads than writes.
-        signage = 1 if self.course <= 180 else -1 
-        self._x = math.copysign(math.sqrt(1-math.sin(pi2 - self.course_rad + pidiv2)**2) * self.speed, signage)
-        signage = 1 if self.course >= 90 and self.course <= 270 else -1
-        self._y = math.copysign(math.sqrt(1-math.cos(pi2 - self.course_rad + pidiv2)**2) * self.speed, signage)
+        deltas = heading_xy(self.course)
+        self._x = deltas[0] * self.speed
+        self._y = deltas[1] * self.speed
 
     @property
     def speed(self):
@@ -96,3 +96,6 @@ class Velocity(Component):
         """
         return self._y
 
+    def process(self, time_passed):
+        loc = self.entity.location
+        self.entity.location = loc[0]+self.x*time_passed, loc[1]+self.y*time_passed
