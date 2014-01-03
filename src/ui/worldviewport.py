@@ -292,13 +292,13 @@ class WorldViewport(viewport.Viewport):
         full = (230, 100, 230)
         bar.fill(empty)
         component = entity.components["energy"]
-        bar.fill(full, (0, 0, fdiv(component.current, component.max)*width, height))
+        bar.fill(full, (0, 0, component.current/float(component.max)*width, height))
         surface.blit(bar, (0, 0))
         # Health.
         full = (0, 255, 0)
         bar.fill(empty)
         component = entity.components["health"]
-        bar.fill(full, (0, 0, fdiv(component.current, component.max)*width, height))
+        bar.fill(full, (0, 0, component.current/float(component.max)*width, height))
         surface.blit(bar, (0, height+1))
         return surface
 

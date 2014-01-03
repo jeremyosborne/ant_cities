@@ -56,9 +56,9 @@ Key
             * Controls the velocity.
             * Add in place velocity changes.
             * Change properties to normal properties, not the setter stuff.
-        * associated math still needed
-            * courseto(frompoint, topoint)
-
+        * more brain methods
+            * courseto(from_p, to_p) use
+                (360 - math.degrees(math.atan2(to_p[0]-from_p1[0], to_p[1]-from_p1[1])) + 90) % 360
 - User Interface
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).

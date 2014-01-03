@@ -1,9 +1,8 @@
 from entities.components.component import Component
+from commonmath import Heading
 import math
 
-MOD_DEG = 360.0
-
-class Heading(Component):
+class Heading(Heading):
     """Which direction our entity is facing.
     
     This is in regards to navigational heading where the nose of a ship or
@@ -18,37 +17,4 @@ class Heading(Component):
     
     _cname = "heading"
     
-    def __init__(self, current=0.):
-        """Constructor.
-        
-        facing {float} The initial facing of our entity.
-        """
-        self.current = current
-
-    @property
-    def current(self):
-        """ {float} heading in degrees.
-        """
-        return self._current
-
-    @current.setter
-    def current(self, value):
-        """ {number} set in degrees.
-        """
-        # This will work for positive or negative numbers, where the 
-        # negative numbers are "corrected" via modulo. 
-        # It's a factor of 10 faster than the more logical math.fmod().
-        self._current = value % MOD_DEG
-
-    @property
-    def current_rad(self):
-        """ {float}
-        """
-        return math.radians(self._current)
-    
-    @current_rad.setter
-    def current_rad(self, value):
-        """ {float}
-        """
-        # math.degrees is about 45% faster than arithmetic conversion.
-        self._current = math.degrees(value) % MOD_DEG
+    # Everything else should be made available through the heading class.

@@ -1,6 +1,6 @@
-import math
-from commonmath import heading_xy
 from entities.components.component import Component
+from commonmath import Heading
+import math
 
 MOD_DEG = 360.0
 pi2 = math.pi*2
@@ -26,16 +26,15 @@ class Velocity(Component):
         """
         # Set defaults so our caching of properties works.
         self._speed = speed
-        self._course = course
+        self._course = Heading(course)
         # Update cached x/y values.
         self._reset_xy()
 
     def _reset_xy(self):
         """Resets the xy values. Call when setting speed or course.
         """
-        # Unit circle math applied with corrected signage.
-        # We do this approach because we assume we have more reads than writes.
-        deltas = heading_xy(self.course)
+        # We assume we have more reads than writes.
+        deltas = self._course.screenxy
         self._x = deltas[0] * self.speed
         self._y = deltas[1] * self.speed
 
@@ -54,30 +53,26 @@ class Velocity(Component):
     def course(self):
         """ {float} course in degrees.
         """
-        return self._course
+        return self._course.current
 
     @course.setter
     def course(self, value):
         """ {number} set in degrees.
         """
-        # This will work for positive or negative numbers, where the 
-        # negative numbers are "corrected" via modulo. 
-        # It's a factor of 10 faster than the more logical math.fmod().
-        self._course = value % MOD_DEG
+        self._course.current = value
         self._reset_xy()
 
     @property
     def course_rad(self):
         """ {float}
         """
-        return math.radians(self._course)
+        return self._course.current_rad
     
     @course_rad.setter
     def course_rad(self, value):
         """ {float}
         """
-        # math.degrees is about 45% faster than arithmetic conversion.
-        self._course = math.degrees(value) % MOD_DEG
+        self._course.current_rad = value
         self._reset_xy()
 
     @property
