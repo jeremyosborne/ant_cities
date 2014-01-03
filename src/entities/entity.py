@@ -77,6 +77,30 @@ class Entity(object):
         # Boundary check.
         self._speed = mmval(self._speed+value, self.max_speed)
     
+    def find_closest_entity(self, the_range=100., name=None):
+        """Finds an entity closest to self within given range.
+        
+        the_range {number} Distance units radius to search within.
+        [name] {str|set} A single or set of entity categories to filter
+        against. (e.g. "leaf" or {"leaf", "ant"}).
+        
+        returns (closest_entity, distance), where closest_entity is an object
+        reference and distance is the distance in pixels from the initial
+        location.
+        """
+        if name is not None:
+            # be nice to strings and sequences, even though we officially
+            # only support sets.
+            if type(name) == str:
+                v = lambda e: e != self and e.name == name
+            else:
+                v = lambda e: e != self and e.name in name
+        else:
+            # default validation.
+            v = lambda e: e != self
+
+        return self.world.find_closest(self.location, the_range, v)
+    
     def apply_acceleration(self, time_passed, distance_to_destination):
         if (self.location != self.destination) and (self.speed == 0):
             # Well then we should start moving.

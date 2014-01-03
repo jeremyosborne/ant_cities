@@ -12,7 +12,7 @@ class Exploring(BrainState):
  
     def process(self, time_passed):
         # We wants leaves.
-        leaf = self.entity.world.get_close_entity(self.entity, "leaf", 100)        
+        leaf, _ = self.entity.find_closest_entity(100, "leaf")        
         if leaf is not None:
             self.entity.leaf_id = leaf.id
             return "seeking"        
@@ -40,7 +40,7 @@ class Seeking(BrainState):
         self.leaf_id = None
 
     def process(self, time_passed):
-        leaf = self.entity.world.get(self.entity.leaf_id)
+        leaf = self.entity.world.find(self.entity.leaf_id)
         if leaf is None:
             return "exploring"
         
@@ -51,7 +51,7 @@ class Seeking(BrainState):
         return None
     
     def entry_actions(self):
-        leaf = self.entity.world.get(self.entity.leaf_id)
+        leaf = self.entity.world.find(self.entity.leaf_id)
         if leaf is not None:                        
             self.entity.destination = leaf.location
 

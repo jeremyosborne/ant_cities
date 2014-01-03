@@ -85,7 +85,7 @@ class ViewUnitInfoBox(viewport.Viewport):
             
             if ent.brain.active_state.name == "seeking":
                 if ent.leaf_id != None:
-                    leaf = ent.world.get(ent.leaf_id)
+                    leaf = ent.world.find(ent.leaf_id)
                     if leaf != None:
                         output.append("Location of leaf: (%d, %d)" % tuple(leaf.location))
             

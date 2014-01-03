@@ -46,19 +46,18 @@ Key
 
 - Entities
     * Add component system.
-        * Heading
-            * With the assumption something can travel in one direction (velocity)
-              and face in another. Will deal with line of sight and visual
-              rotation of sprites.
-        * Velocity
-            * Direction of travel + speed. Classical mechanics.
         * VelocityEngine
-            * Controls the velocity.
             * Add in place velocity changes.
             * Change properties to normal properties, not the setter stuff.
         * more brain methods
             * courseto(from_p, to_p) use
                 (360 - math.degrees(math.atan2(to_p[0]-from_p1[0], to_p[1]-from_p1[1])) + 90) % 360
+
+- Spatial Index:
+    - Keep the seeding of the expected index, but allow dynamic creation of cells
+    outside of the world area if/when an entity travels outside the boundaries.
+    - Add a togglable warning mechanism when entities travel outside of the
+    boundaries.
 - User Interface
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).

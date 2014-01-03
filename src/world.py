@@ -6,12 +6,8 @@ Created on Jun 19, 2013
 
 import time
 from collections import Counter
-
 from random import randint
-from pymunk.vec2d import Vec2d
-
 from commonmath import random_radial_offset
-
 from entities.base import Base
 from entities.leaf import Leaf
 from entities.dummy import Dummy
@@ -66,11 +62,6 @@ class World(object):
             # Blue team (Team 2)
             ant = self.base_2.create_entity("ant", startxy)
             self.add_entity(ant)
-
-
-        #------------------------------------------------------------------------
-        #Done setting up initial entity elements.
-        #------------------------------------------------------------------------
         
     def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
         self.entities[entity.id] = entity
@@ -94,16 +85,36 @@ class World(object):
         """
         return identifier.gen()
     
-    def get(self, entity_id):
+    def find(self, entity_id):
         """Retrieve an entity by id.
+        
+        entity_id {mixed} A value representing an entity id.
+        
+        returns {Entity|None} Returns a reference to the entity matched by
+        id, or None if no entity was found.
         """
         return self.entities.get(entity_id)
 
-    def get_close_entity(self, entity, name, the_range=100.):
-        closest_entity, distance = self.spatial_index.find_closest(entity.location, 
-                                                                   the_range, 
-                                                                   validate=lambda e: e.name == name and e != entity)
-        return closest_entity
+    def find_closest(self, location, the_range=100., validation=lambda e: True):
+        """Find the closest entity to a point.
+        
+        In the event that there might be more than one entity that
+        meets the closest criteria, this function will still return only one.
+        
+        location {tuple} A point object that expresses x,y world coordinates
+        as items 0,1.
+        [the_range] {number} Number of pixels from a location to search for
+        an entity. Value is constrained by default.
+        [validation] {function} A validation function that is used to filter()
+        the entities found. The validation function will be passed a single
+        argument which is a closest entity candidate. The function should return
+        True if the entity is a valid choice, false if not. 
+        
+        returns (closest_entity, distance), where closest_entity is an object
+        reference and distance is the distance in pixels from the initial
+        location.
+        """
+        return self.spatial_index.find_closest(location, the_range, validate=validation)
     
     def process(self, time_passed):
         """Update the world.
@@ -116,15 +127,26 @@ class World(object):
         # Here's our chance to throw in a new leaf.
         if randint(1, 20) == 1:
             leaf = Leaf(self)
-            leaf.location = Vec2d(randint(0, leaf.world.width), randint(0, leaf.world.height))
+            leaf.location = (randint(0, leaf.world.width), randint(0, leaf.world.height))
             self.add_entity(leaf)
                     
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
+            
+#         if __debug__:
+#             # Do some processing on dummy.
+#             dummy, _ = self.find_closest((self.width/2,self.height/2), 10000, validation=lambda e: e.name == "dummy")
+#             if dummy is not None:
+#                 print "dummy direction ==", dummy.direction
     
-    def count(self, name):
-        entity_count = 0
-        for entity in self.entities.itervalues():
-            if entity.name == name:
-                entity_count += 1
-        return entity_count
+    def count(self, validation=None):
+        """Retrieve current counts of entities in world.
+        
+        [validation] {function} If included, will be used to filter entities
+        in the same way as the filter() builtin. Default will count all
+        entities in the world (as long as the entities report themselves as
+        non-zero).
+        
+        return {number} of entities found.
+        """
+        return len(validation, self.entities.itervalues())

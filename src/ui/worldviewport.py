@@ -331,10 +331,16 @@ class WorldViewport(viewport.Viewport):
             self.render_entity_strategic_icon(entity)
         else:
             image = entity_images(entity)
+            
+            # Do special things to the dummy.
+#             if __debug__:
+#                 if entity.name == "dummy":
+#                     image = pygame.transform.rotate(image, entity.direction*-1.)
+            
             # Deal with ants. (Blech, this is gross right now, but trying
             # to isolate view code, view specific logic, and will then
             # normalize so that we simply do things to objects and need
-            # no or few entity specific code paths).
+            # no or few entity specific code paths).            
             if entity.name == "ant":
                 image = pygame.transform.rotate(image, entity.direction*-1.)
                 # Inventory display.
