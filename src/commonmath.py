@@ -123,6 +123,20 @@ def courseto(from_p, to_p):
 
 
 
+def distanceto(from_p, to_p):
+    """Find the distance between two points.
+
+    from_p {mixed} An object implementing a getitem interface that supports
+    x as [0] and y as [1]. Represents the origin point.
+    to_p {mixed} An object implementing a getitem interface that supports
+    x as [0] and y as [1]. Represents the destination point.
+    
+    return {float} The distance between the two points.
+    """
+    return math.hypot(from_p[0]-to_p[0], from_p[1]-to_p[1])
+
+
+
 class Heading(object):
     """Handle facing/direction calculations.
     
@@ -154,6 +168,32 @@ class Heading(object):
     def __isub__(self, other):
         self.current -= other
         return self
+
+    def __eq__(self, other):
+        """Heading is pretty much a wrapper for a number class so we allow
+        testing against numbers, too.
+        """
+        if isinstance(other, Heading):
+            return self.current == other.current
+        elif type(other) == int or type(other) == float:
+            # We don't correct the other with a modulo. It's either a
+            # match or it is not.
+            return self.current == other
+        else:
+            raise TypeError("Can't compare to %s of type %s." % (other, type(other)))
+
+    def __ne__(self, other):
+        """Heading is pretty much a wrapper for a number class so we allow
+        testing against numbers, too.
+        """
+        if isinstance(other, Heading):
+            return self.current != other.current
+        elif type(other) == int or type(other) == float:
+            # We don't correct the other with a modulo. It's either a
+            # match or it is not.
+            return self.current != other
+        else:
+            raise TypeError("Can't compare to %s of type %s." % (other, type(other)))
 
     @property
     def current(self):

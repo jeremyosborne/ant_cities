@@ -45,14 +45,11 @@ Key
 - Not Started or on hold.
 
 - Entities
-    * Add component system.
-        * VelocityEngine
-            * Add in place velocity changes.
-            * Change properties to normal properties, not the setter stuff.
-        * more brain methods
-            * courseto(from_p, to_p) use
-                (360 - math.degrees(math.atan2(to_p[0]-from_p1[0], to_p[1]-from_p1[1])) + 90) % 360
-
+    * Data types
+        * Refactor attr "current" into "val".
+    * Destination component.
+        * Destination component has some niceties to handle entities and places
+          in the world problematically.
 - Spatial Index:
     - Keep the seeding of the expected index, but allow dynamic creation of cells
     outside of the world area if/when an entity travels outside the boundaries.
