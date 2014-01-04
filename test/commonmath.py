@@ -1,5 +1,5 @@
 import math
-from src.commonmath import Heading, mmval
+from src.commonmath import mmval, courseto, Heading
 
 
 
@@ -10,6 +10,11 @@ def test_mmval():
     assert mmval(100, -10, -25) == -10, "Expected value."
     assert mmval(100, 110, -25) == 100, "Expected value."
 
+def test_courseto():
+    assert courseto((1, 1), (0, 0)) == 225, "Correct course."
+    assert courseto((0, 0), (1, 1)) == 45, "Correct course."
+    #assert courseto((0, 0), (0, 0)) == 0, "Correct course."
+    print courseto((0, 0), (0, 0))
 
 def test_heading():
     h = Heading()

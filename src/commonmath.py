@@ -10,7 +10,6 @@ from random import random, randint
 
 
 
-MOD_360 = 360.
 PI2 = math.pi*2
 PIDIV2 = math.pi/2
 
@@ -105,6 +104,25 @@ def mmval(mx, val, mn=0):
 
 
 
+def courseto(from_p, to_p):
+    """Find a course from one point to another point in 2d.
+    
+    from_p {mixed} An object implementing a getitem interface that supports
+    x as [0] and y as [1]. Represents the origin point.
+    to_p {mixed} An object implementing a getitem interface that supports
+    x as [0] and y as [1]. Represents the destination point.
+    
+    return {float} The course/heading (north = 0, east = 90, south = 180, west = 270)
+    from the origin point to the destination point.
+    
+    NOTE: It is the job of the caller to test for sameness of points. The value
+    returned is arbitrary (right now 90.0) when the points are the same, which
+    corresponds correctly to the math employed with math.atan2.
+    """
+    return (360. - math.degrees(math.atan2(to_p[0]-from_p[0], to_p[1]-from_p[1])) + 90) % 360.
+
+
+
 class Heading(object):
     """Handle facing/direction calculations.
     
@@ -150,7 +168,7 @@ class Heading(object):
         # This will work for positive or negative numbers, where the 
         # negative numbers are "corrected" via modulo. 
         # It's a factor of 10 faster than the more logical math.fmod().
-        self._current = value % MOD_360
+        self._current = value % 360.
 
     @property
     def current_rad(self):
@@ -163,7 +181,7 @@ class Heading(object):
         """ {float}
         """
         # math.degrees is about 45% faster than arithmetic conversion.
-        self._current = math.degrees(value) % MOD_360
+        self._current = math.degrees(value) % 360.
     
     @property
     def cartesian_rad(self):
