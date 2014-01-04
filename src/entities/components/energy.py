@@ -31,7 +31,7 @@ class Energy(Component):
     @current.setter
     def current(self, value):
         # Boundary check.
-        self._current = mmval(self._current+value, self.max, self.min)
+        self._current = mmval(self.max, self._current+value, self.min)
         
     @property
     def empty(self):

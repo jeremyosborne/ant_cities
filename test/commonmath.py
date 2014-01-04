@@ -1,6 +1,14 @@
 import math
-from src.commonmath import Heading
+from src.commonmath import Heading, mmval
 
+
+
+def test_mmval():
+    assert mmval(100, 10, 0) == 10, "Expected value."
+    assert mmval(100, 10) == 10, "Expected value."
+    assert mmval(100, -10) == 0, "Expected value."
+    assert mmval(100, -10, -25) == -10, "Expected value."
+    assert mmval(100, 110, -25) == 100, "Expected value."
 
 
 def test_heading():

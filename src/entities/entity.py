@@ -75,7 +75,7 @@ class Entity(object):
     @speed.setter
     def speed(self, value):
         # Boundary check.
-        self._speed = mmval(self._speed+value, self.max_speed)
+        self._speed = mmval(self.max_speed, self._speed+value)
     
     def find_closest_entity(self, the_range=100., name=None):
         """Finds an entity closest to self within given range.

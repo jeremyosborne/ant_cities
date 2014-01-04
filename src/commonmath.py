@@ -91,41 +91,17 @@ def percfloat(a, b, ndigits=0):
 
 
 
-def mmval(val, maxi, mini=0):
+def mmval(mx, val, mn=0):
     """Return the value if within maxi or mini, otherwise return the boundary
     (mini if less than mini, maxi if greater than maxi).
     
+    mx {number} Upper bound.
     val {number} Value to boundary check.
-    maxi {number} Upper bound.
-    [mini=0] {number} Lower bound, assumes zero.
+    [mn=0] {number} Lower bound, assumes zero.
     
     return {number} val or associated boundary.
     """
-    return max(mini, min(val, maxi))
-
-
-
-def heading_xy(heading=0.):
-    """Take a heading or course and return parts x, y of the heading as parts 
-    of a unit circle.
-    
-    Heading measurement is north = 0, east = 90, south = 180, west = 270.
-    
-    Function is used to determine how much heading should be applied in the x
-    direction and the y direction (e.g. for applying velocity over time to an
-    entity's location).
-    
-    heading {number} Heading in degrees.
-    
-    return {tuple} The (x, y) components of this heading.
-    
-    """
-    heading_rad = math.radians(heading)
-    signage = 1 if heading <= 180 else -1 
-    x = math.copysign(math.sqrt(1-math.sin(PI2 - heading_rad + PIDIV2)**2), signage)
-    signage = 1 if heading >= 90 and heading <= 270 else -1
-    y = math.copysign(math.sqrt(1-math.cos(PI2 - heading_rad + PIDIV2)**2), signage)
-    return (x, y)
+    return max(mn, min(val, mx))
 
 
 

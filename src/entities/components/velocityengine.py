@@ -48,7 +48,7 @@ class VelocityEngine(Component):
         speed {float} New speed.
         course {float} New course (in degrees).
         """
-        self.target_speed = float(mmval(speed, self.max_speed))
+        self.target_speed = float(mmval(self.max_speed, speed))
         self.target_course = float(course) % MOD_DEG
         
     def coast(self):
@@ -67,7 +67,7 @@ class VelocityEngine(Component):
             direction = 1 if self.target_speed > velocity.speed else -1
             delta = time_passed * self.acceleration
             speed = velocity.speed + math.copysign(delta, direction)
-            velocity.speed = mmval(speed, self.target_speed)
+            velocity.speed = mmval(self.target_speed, speed)
         
         if self.target_course != None and self.target_course != velocity.course:
             direction = 1 if self.target_course > velocity.course else -1
