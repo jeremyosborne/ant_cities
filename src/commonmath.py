@@ -180,7 +180,7 @@ class Heading(object):
             # match or it is not.
             return self.current == other
         else:
-            raise TypeError("Can't compare to %s of type %s." % (other, type(other)))
+            return NotImplemented
 
     def __ne__(self, other):
         """Heading is pretty much a wrapper for a number class so we allow
@@ -193,7 +193,59 @@ class Heading(object):
             # match or it is not.
             return self.current != other
         else:
-            raise TypeError("Can't compare to %s of type %s." % (other, type(other)))
+            return NotImplemented
+
+    def __ge__(self, other):
+        """Heading is pretty much a wrapper for a number class so we allow
+        testing against numbers, too.
+        """
+        if isinstance(other, Heading):
+            return self.current >= other.current
+        elif type(other) == int or type(other) == float:
+            # We don't correct the other with a modulo. It's either a
+            # match or it is not.
+            return self.current >= other
+        else:
+            return NotImplemented
+
+    def __le__(self, other):
+        """Heading is pretty much a wrapper for a number class so we allow
+        testing against numbers, too.
+        """
+        if isinstance(other, Heading):
+            return self.current <= other.current
+        elif type(other) == int or type(other) == float:
+            # We don't correct the other with a modulo. It's either a
+            # match or it is not.
+            return self.current <= other
+        else:
+            return NotImplemented
+
+    def __gt__(self, other):
+        """Heading is pretty much a wrapper for a number class so we allow
+        testing against numbers, too.
+        """
+        if isinstance(other, Heading):
+            return self.current > other.current
+        elif type(other) == int or type(other) == float:
+            # We don't correct the other with a modulo. It's either a
+            # match or it is not.
+            return self.current > other
+        else:
+            return NotImplemented
+
+    def __lt__(self, other):
+        """Heading is pretty much a wrapper for a number class so we allow
+        testing against numbers, too.
+        """
+        if isinstance(other, Heading):
+            return self.current < other.current
+        elif type(other) == int or type(other) == float:
+            # We don't correct the other with a modulo. It's either a
+            # match or it is not.
+            return self.current < other
+        else:
+            return NotImplemented
 
     @property
     def current(self):

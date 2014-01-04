@@ -87,3 +87,13 @@ def test_heading():
     h5 += 0.5
     assert h4 != h5, "Should not be equal."
     
+    h6 = Heading(360.)
+    h7 = Heading(275.)
+    assert h6 <= 0., "Is true."
+    assert h6 < h7, "Correctly True (360 rotates back to zero)."
+    assert h6 < 360, "Treat numbers literally."
+    assert (h7 < 275) == False, "Is truely false."
+
+    assert h6 >= 0., "Is True."
+    assert (h6 > 0) == False, "Is truely false."
+    
