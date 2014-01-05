@@ -2,10 +2,6 @@ from entities.components.component import Component
 from commonmath import Heading
 import math
 
-MOD_DEG = 360.0
-pi2 = math.pi*2
-pidiv2 = math.pi/2
-
 class Velocity(Component):
     """The course of our entity: speed plus direction. May be distinct from
     heading (facing) of the entity.

@@ -97,3 +97,9 @@ def test_heading():
     assert h6 >= 0., "Is True."
     assert (h6 > 0) == False, "Is truely false."
     
+    h8 = Heading(15)
+    h9 = Heading(180)
+    h8.set(h9)
+    assert h8 == h9, "Now equal."
+    assert h9 == 180, "Now equal."
+    

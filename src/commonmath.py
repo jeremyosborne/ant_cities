@@ -6,6 +6,7 @@ find them.
 """
 
 import math
+import copy
 from random import random, randint
 
 
@@ -308,3 +309,17 @@ class Heading(object):
         signage = 1 if self.current >= 90 and self.current <= 270 else -1
         y = math.copysign(math.sqrt(1-math.cos(heading_rad)**2), signage)
         return (x, y)
+
+    def set(self, val):
+        """Set the direction of this heading.
+        
+        val {mixed} Can be a number or a Heading.
+        """
+        if isinstance(val, Heading):
+            self.current = val.current
+        else:
+            # Assume number
+            self.current = val
+            
+            
+        

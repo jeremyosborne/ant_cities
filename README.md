@@ -45,6 +45,13 @@ Key
 - Not Started or on hold.
 
 - Entities
+    * Ants
+        * Ants are always moving and should manage their velocity engine and
+          movement in the ant process, not the brain process.
+          In particular move the chunk in the ant brains to the ant entity.
+          UNLESS the brains should make a decision about the course or the
+          speed.
+        * Sync the velocity course and the heading during the process.
     * Data types
         * Refactor attr "current" into "val".
     * Destination component.

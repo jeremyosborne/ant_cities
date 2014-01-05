@@ -8,9 +8,7 @@ class Ant(Entity):
     def __init__(self, world, base):
         
         Entity.__init__(self, world)
-        
-        self.base = base
-        
+                
         self.brain.add_state(antbrainstates.Exploring())
         self.brain.add_state(antbrainstates.Seeking())
         self.brain.add_state(antbrainstates.Delivering())
@@ -21,14 +19,17 @@ class Ant(Entity):
         
         self.add_component("health")
         self.add_component("energy", burn_rate=10)
-
-        #Following attributes exist in base class, values specific to our ants.
-        self.speed_up_acceleration = 30.
-        self.slow_down_acceleration = -50.
-        self.max_speed = 120.
-        self.rotation_per_second = 90.
         
-        # Ants can carry a single entity (that is likely a leaf).
+        self.add_component("heading")
+        self.add_component("velocity")
+        self.add_component("velocityengine", acceleration=30., 
+                           max_speed=120., rotation_speed=90.)
+        self.add_component("destination")
+
+        # {Entity} What is our home base.
+        self.base = base
+        
+        # {Entity|None} Ants can carry a single entity (that is likely a leaf).
         self.inventory = None
 
     @property
@@ -47,7 +48,7 @@ class Ant(Entity):
         self.world.remove_entity(entity)
         self.inventory = entity
         
-    def drop(self, world):
+    def drop(self):
         """Drop a particular item, assumed to only be called at the base.
         """
         if self.inventory:
@@ -73,5 +74,6 @@ class Ant(Entity):
     
     def delete(self):
         # Update team stats.
+        Entity.delete(self)
         self.base.components["team"].stats[self.name] -= 1
         self.base.components["team"].stats[self.name+"-removed"] += 1
