@@ -148,9 +148,14 @@ class Heading(object):
     def __init__(self, current=0.):
         """Constructor.
         
-        facing {float} The initial facing of our entity.
+        current {float} The initial facing of our entity.
         """
-        self.current = current
+        # If we're attempting to create a heading from a heading, then allow it.
+        if isinstance(current, Heading):
+            self.current = current.current
+        else:
+            # We're just a number.
+            self.current = current
 
     def __add__(self, other):
         return Heading(self.current + other)

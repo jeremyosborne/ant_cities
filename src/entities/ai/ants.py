@@ -17,9 +17,8 @@ class Exploring(BrainState):
         BrainState.__init__(self, "exploring")
         
     def set_random_destination(self):
-        self.entity.components["destination"].set(
-               randint(0, self.entity.world.width), 
-               randint(0, self.entity.world.height))    
+        p = (randint(0, self.entity.world.width), randint(0, self.entity.world.height))
+        self.entity.components["destination"].set(p)
  
     def process(self, time_passed):
         # Requires a destination component
@@ -49,8 +48,8 @@ class Exploring(BrainState):
         
     def entry_actions(self):
         # Exploring is exploring. Don't come here if you already have a target.
-        self.set_random_destination()
-        
+        #self.set_random_destination()
+        pass
 
 
 class Seeking(BrainState):

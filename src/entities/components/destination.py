@@ -75,7 +75,7 @@ class Destination(Component):
     def isentity(self):
         """{bool} Is the destination a valid entity?
         """
-        if isinstance(self.val, Entity) and self.inworld:
+        if isinstance(self._val, Entity) and self._val.inworld:
             return True
         else:
             return False
@@ -86,7 +86,7 @@ class Destination(Component):
         
         Does not confirm the validity of the point.
         """
-        p = self.val
+        p = self._val
         if hasattr(p, "__getitem__") and (p[0] is not None) and (p[1] is not None):
             return True
         else:

@@ -61,7 +61,12 @@ class VelocityEngine(Component):
         return self._target_course
     @target_course.setter
     def target_course(self, value):
-        self._target_course = Heading(value) if value is not None else None
+        if isinstance(value, Heading):
+            self._target_course = value
+        elif value is not None:
+            self._target_course = Heading(value)
+        else:
+            self._target_course = None
 
     def update(self, speed=None, course=None):
         """Set a new speed and course target.
@@ -103,10 +108,12 @@ class VelocityEngine(Component):
         if self.target_course != None and self.target_course != velocity.course:
             direction = 1 if self.target_course > velocity.course else -1
             delta = time_passed * self.rotation_speed
-            course = velocity + math.copysign(delta, direction)
-            velocity.course = course
+            course = velocity.course + math.copysign(delta, direction)
             if (direction == 1 and course > self.target_course) or \
                 (direction == -1 and course < self.target_course):
                 velocity.course.set(self.target_course)
+            else:
+                velocity.course = course
+
             
         

@@ -1,8 +1,8 @@
 from entities.components.component import Component
-from commonmath import Heading
+import commonmath
 import math
 
-class Heading(Heading):
+class Heading(commonmath.Heading, Component):
     """Which direction our entity is facing.
     
     This is in regards to navigational heading where the nose of a ship or

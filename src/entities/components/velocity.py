@@ -49,26 +49,13 @@ class Velocity(Component):
     def course(self):
         """ {float} course in degrees.
         """
-        return self._course.current
+        return self._course
 
     @course.setter
     def course(self, value):
         """ {number} set in degrees.
         """
-        self._course.current = value
-        self._reset_xy()
-
-    @property
-    def course_rad(self):
-        """ {float}
-        """
-        return self._course.current_rad
-    
-    @course_rad.setter
-    def course_rad(self, value):
-        """ {float}
-        """
-        self._course.current_rad = value
+        self._course = Heading(value)
         self._reset_xy()
 
     @property

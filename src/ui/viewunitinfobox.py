@@ -79,15 +79,12 @@ class ViewUnitInfoBox(viewport.Viewport):
             output.append("Energy: %s" % ent.components["energy"].current)
             output.append("Health: %s" % ent.components["health"].current)
             output.append("Brain state: %s" % ent.brain.active_state.name)
-            output.append("Speed: %d" % ent.speed)
-            output.append("Destinaton: (%d, %d)" % tuple(ent.destination))
-            output.append("Distance to destination: %d" % ent.location.get_distance(ent.destination))
-            
-            if ent.brain.active_state.name == "seeking":
-                if ent.leaf_id != None:
-                    leaf = ent.world.find(ent.leaf_id)
-                    if leaf != None:
-                        output.append("Location of leaf: (%d, %d)" % tuple(leaf.location))
+            output.append("Speed: %d" % ent.components["velocity"].speed)
+            if ent.components["destination"].location:
+                output.append("Destination: (%s, %s)" % tuple(ent.components["destination"].location))
+            if ent.components["destination"].isentity:
+                target = ent.components["destionation"].val.name
+                output.append("Target: (%s)" % ent.components["destionation"].val.name)
             
         for i, line in enumerate(output):
             text = self.font.render(line, True, (255, 255, 255))
