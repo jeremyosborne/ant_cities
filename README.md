@@ -49,9 +49,6 @@ Key
         * In particular move the chunk in the ant brains to the ant entity.
           UNLESS the brains should make a decision about the course or the
           speed.
-    * Destination component.
-        * Destination component has some niceties to handle entities and places
-          in the world problematically.
 - Spatial Index:
     - Keep the seeding of the expected index, but allow dynamic creation of cells
     outside of the world area if/when an entity travels outside the boundaries.

@@ -1,6 +1,3 @@
-import math
-import time
-
 from pymunk.vec2d import Vec2d
 
 from entities.components import get_component
@@ -30,31 +27,28 @@ class Entity(object):
         # ...and made available to the public via an index of named components.
         self.components = {}
         
-        # Movement in the game world
-        self.location = (0., 0.)
-        self.destination = (0., 0.)
+        # Where we are currently located.
+        self._location = Vec2d(0, 0)
         
         # A flag flipped when this entity has been deleted. For lazy cleanup.
         self.deleted = False
         
     @property
     def location(self):
+        """{Vec2d} Where the entity is currently located.
+        """
         return self._location
     
     @location.setter
     def location(self, value):
-        self._location = Vec2d(value)
+        """{Vec2d}
+        """
+        # We assume that location 
+        self._location.x = value[0]
+        self._location.y = value[1]
         
         self.world.spatial_index.update(self)
-    
-    @property
-    def destination(self):
-        return self._destination
-    
-    @destination.setter
-    def destination(self, value):
-        self._destination = Vec2d(value)
-        
+            
     @property
     def team_id(self):
         """By default, we are neutral.

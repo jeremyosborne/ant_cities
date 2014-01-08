@@ -6,15 +6,22 @@ class Exploring(BrainState):
     
     # What is close_enough to our destination when randomly exploring.
     close_enough = 100.
-    
-    # What is the search radius for finding leaves?
-    leaf_in_eyesight = 200.
-    
+        
     # At what percentage will we attempt to go get energy.
     energy_depleted = .25
     
+    # How many ticks between when we search for leaves?
+    leaf_search_period = 17
+
+    # What is the search radius for finding leaves?
+    leaf_in_eyesight = 200.
+    
     def __init__(self):
         BrainState.__init__(self, "exploring")
+        
+        # Allows things to be done not-every frame.
+        # Should be reset on enter. This is just a place holder.
+        self.tick_counter = 0
         
     def set_random_destination(self):
         p = (randint(0, self.entity.world.width), randint(0, self.entity.world.height))
@@ -24,11 +31,12 @@ class Exploring(BrainState):
         # Requires a destination component
         destination = self.entity.components["destination"]
         
-        # We wants leaves.
-        leaf, _ = self.entity.find_closest_entity(self.leaf_in_eyesight, "leaf")        
-        if leaf is not None:
-            destination.set(leaf)
-            return "seeking"        
+        # Search for leaves periodically.
+        if self.tick_counter % self.leaf_search_period == 0:
+            leaf, _ = self.entity.find_closest_entity(self.leaf_in_eyesight, "leaf")        
+            if leaf is not None:
+                destination.set(leaf)
+                return "seeking"
         
         # Let's take care of the energy depleted state.
         energy = self.entity.components["energy"]
@@ -45,11 +53,13 @@ class Exploring(BrainState):
             # TODO: Move this part to the ant process. Brain just makes the
             # decisions.
             v.fullspeedto(destination.courseto)
+            
+        # Increase frame counter.
+        self.tick_counter += 1
         
     def entry_actions(self):
-        # Exploring is exploring. Don't come here if you already have a target.
-        #self.set_random_destination()
-        pass
+        self.tick_counter = 0
+
 
 
 class Seeking(BrainState):
@@ -66,7 +76,7 @@ class Seeking(BrainState):
         if destination.isentity == False:
             return "exploring"
         elif destination.distanceto < self.close_enough:
-            self.entity.carry(self.destination.val)
+            self.entity.carry(destination.val)
             return "delivering"
         else:
             # TODO: Possible course correction if for some reason we can't
