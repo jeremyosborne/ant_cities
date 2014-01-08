@@ -20,7 +20,7 @@ class Ant(Entity):
         self.add_component("health")
         self.add_component("energy", burn_rate=10)
         
-        self.add_component("heading")
+        self.add_component("facing")
         self.add_component("velocity")
         self.add_component("velocityengine", acceleration=30., 
                            max_speed=120., rotation_speed=90.)
@@ -64,10 +64,12 @@ class Ant(Entity):
         
         # Is ant energy so low that we need to dump health into energy?
         if energy.empty:
-            # TODO: Have a converter component.
             energy.current += 100
             health.current -= 10
-            
+        
+        # Heading matches course of velocity.
+        self.components["facing"].set(self.components["velocity"].course)
+        
         # Should the ant die?
         if health.dead:
             self.world.remove_entity(self)

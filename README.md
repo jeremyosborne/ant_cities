@@ -45,6 +45,10 @@ Key
 - Not Started or on hold.
 
 - Entities
+    * Data types and components
+        * Change Heading component to Facing. It's too confusing with two
+          headings running around, even if Facing will be a Heading subclass.
+        * Refactor attr "current" into "val".
     * Ants
         * Ants are always moving and should manage their velocity engine and
           movement in the ant process, not the brain process.
@@ -52,8 +56,6 @@ Key
           UNLESS the brains should make a decision about the course or the
           speed.
         * Sync the velocity course and the heading during the process.
-    * Data types
-        * Refactor attr "current" into "val".
     * Destination component.
         * Destination component has some niceties to handle entities and places
           in the world problematically.

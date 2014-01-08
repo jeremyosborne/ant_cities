@@ -137,7 +137,7 @@ class World(object):
 #             # Do some processing on dummy.
 #             dummy, _ = self.find_closest((self.width/2,self.height/2), 10000, validation=lambda e: e.name == "dummy")
 #             if dummy is not None:
-#                 print "dummy direction ==", dummy.direction
+#                 print "I am dummy!", dummy
     
     def count(self, validation=None):
         """Retrieve current counts of entities in world.

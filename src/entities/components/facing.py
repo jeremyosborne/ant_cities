@@ -1,8 +1,7 @@
 from entities.components.component import Component
 import commonmath
-import math
 
-class Heading(commonmath.Heading, Component):
+class Facing(commonmath.Heading, Component):
     """Which direction our entity is facing.
     
     This is in regards to navigational heading where the nose of a ship or
@@ -15,6 +14,8 @@ class Heading(commonmath.Heading, Component):
     Degrees is the default, radians are optional.
     """
     
-    _cname = "heading"
+    _cname = "facing"
     
     # Everything else should be made available through the heading class.
+    # Name change from "Headings" because it's difficult having two "Headings"
+    # float around and be used a lot.
