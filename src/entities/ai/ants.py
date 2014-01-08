@@ -36,7 +36,7 @@ class Exploring(BrainState):
             return "energy depleted"
         
         # Move
-        ve = self.entity.components["velocityengine"]
+        v = self.entity.components["velocity"]
         if not destination.isvalid or destination.distanceto < self.close_enough:
             # New course.
             self.set_random_destination()
@@ -44,7 +44,7 @@ class Exploring(BrainState):
             # Assume we have a valid destionation at this point.
             # TODO: Move this part to the ant process. Brain just makes the
             # decisions.
-            ve.fullspeedto(destination.courseto)
+            v.fullspeedto(destination.courseto)
         
     def entry_actions(self):
         # Exploring is exploring. Don't come here if you already have a target.
@@ -106,10 +106,10 @@ class EnergyDepleted(BrainState):
     
     def entry_actions(self):
         destination = self.entity.components["destination"]
-        ve = self.entity.components["velocityengine"]
+        v = self.entity.components["velocity"]
         
         destination.set(self.entity.base)
-        ve.fullspeedto(destination.courseto)
+        v.fullspeedto(destination.courseto)
         
 
 
@@ -133,5 +133,5 @@ class PowerUp(BrainState):
     
     def entry_actions(self):
         self.entity.components["destination"].clear()
-        self.entity.components["velocityengine"].stop()
+        self.entity.components["velocity"].stop()
         

@@ -45,18 +45,8 @@ Key
 - Not Started or on hold.
 
 - Entities
-    * Data types and components
-        * Combine velocityengine and velocity together. It's more complex
-          keeping these things separate than just combining them. Things that
-          should just have a constant velocity (bullets, sharks with lazers,
-          small children with magnifying glasses) should just not augment
-          the engine component of velocity. Outside forces (gravity, etc.)
-          should apply additional force to our entities through separate
-          means.
     * Ants
-        * Ants are always moving and should manage their velocity engine and
-          movement in the ant process, not the brain process.
-          In particular move the chunk in the ant brains to the ant entity.
+        * In particular move the chunk in the ant brains to the ant entity.
           UNLESS the brains should make a decision about the course or the
           speed.
     * Destination component.

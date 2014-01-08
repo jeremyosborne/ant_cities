@@ -21,9 +21,7 @@ class Ant(Entity):
         self.add_component("energy", burn_rate=10)
         
         self.add_component("facing")
-        self.add_component("velocity")
-        self.add_component("velocityengine", acceleration=30., 
-                           max_speed=120., rotation_speed=90.)
+        self.add_component("velocity", max_speed=120., acceleration=30., rotation_speed=90.)
         self.add_component("destination")
 
         # {Entity} What is our home base.

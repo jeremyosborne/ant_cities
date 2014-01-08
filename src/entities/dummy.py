@@ -11,9 +11,7 @@ class Dummy(Entity):
         
         Entity.__init__(self, world)
         
-        self.add_component("velocity")
-        self.add_component("velocityengine", acceleration=10, max_speed=200, rotation_speed=90)
-        self.components["velocityengine"].update(speed=200, course=180)
+        self.add_component("velocity", speed=200, course=180, acceleration=10, max_speed=200, rotation_speed=90)
         
     def process(self, time_passed):
         Entity.process(self, time_passed)
