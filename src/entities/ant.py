@@ -64,8 +64,8 @@ class Ant(Entity):
         
         # Is ant energy so low that we need to dump health into energy?
         if energy.empty:
-            energy.current += 100
-            health.current -= 10
+            energy.val += 100
+            health.val -= 10
         
         # Heading matches course of velocity.
         self.components["facing"].set(self.components["velocity"].course)

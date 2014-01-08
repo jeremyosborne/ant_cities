@@ -4,7 +4,7 @@ import math
 
 class Velocity(Component):
     """The course of our entity: speed plus direction. May be distinct from
-    heading (facing) of the entity.
+    facing of the entity.
     
     Using degrees: 0 is north, 90 is east, 180 is south, 270 is west.
     

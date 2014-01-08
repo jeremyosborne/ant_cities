@@ -32,7 +32,7 @@ class Exploring(BrainState):
         
         # Let's take care of the energy depleted state.
         energy = self.entity.components["energy"]
-        if energy.current < self.energy_depleted*energy.max:
+        if energy.val < self.energy_depleted*energy.max:
             return "energy depleted"
         
         # Move
@@ -120,15 +120,15 @@ class PowerUp(BrainState):
         
     def process(self, time_passed):
         energy = self.entity.components["energy"]
-        if energy.current < energy.max:
+        if energy.val < energy.max:
             # Only powerup if energy is available.
-            if self.entity.base.components["energy"].current > 0:
+            if self.entity.base.components["energy"].val > 0:
                 # TODO: Get energy from the base. No energy at base, dead ant.
                 # Right now, the base will not be drained of energy at all.
-                energy.current += 1000*time_passed
+                energy.val += 1000*time_passed
 
         # Have we fully powered up?
-        if energy.current >= energy.max:
+        if energy.val >= energy.max:
             return "exploring"            
     
     def entry_actions(self):

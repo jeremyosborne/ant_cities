@@ -6,7 +6,6 @@ find them.
 """
 
 import math
-import copy
 from random import random, randint
 
 
@@ -145,46 +144,48 @@ class Heading(object):
     
     Using radians: 0 is north, pi/2 is east, pi is south, 3*pi/2 is west.
     """
-    def __init__(self, current=0.):
+    def __init__(self, deg=0.):
         """Constructor.
         
-        current {float} The initial facing of our entity.
+        deg {float|Heading} The initial facing of our entity in degrees, or another
+        Heading instance.
         """
-        # If we're attempting to create a heading from a heading, then allow it.
-        if isinstance(current, Heading):
-            self.current = current.current
+        if hasattr(deg, "deg"):
+            # If we're attempting to create a heading from a heading, or
+            # something masquerading as one, then allow it.
+            self.deg = deg.deg
         else:
             # We're just a number.
-            self.current = current
+            self.deg = deg
 
     def __add__(self, other):
-        return Heading(self.current + other)
+        return Heading(self.deg + other)
 
     __radd__ = __add__
 
     def __iadd__(self, other):
-        self.current += other
+        self.deg += other
         return self
 
     def __sub__(self, other):
-        return Heading(self.current - other)
+        return Heading(self.deg - other)
 
     __rsub__ = __sub__
     
     def __isub__(self, other):
-        self.current -= other
+        self.deg -= other
         return self
 
     def __eq__(self, other):
         """Heading is pretty much a wrapper for a number class so we allow
         testing against numbers, too.
         """
-        if isinstance(other, Heading):
-            return self.current == other.current
+        if hasattr(other, "deg"):
+            return self.deg == other.deg
         elif type(other) == int or type(other) == float:
             # We don't correct the other with a modulo. It's either a
             # match or it is not.
-            return self.current == other
+            return self.deg == other
         else:
             return NotImplemented
 
@@ -192,12 +193,12 @@ class Heading(object):
         """Heading is pretty much a wrapper for a number class so we allow
         testing against numbers, too.
         """
-        if isinstance(other, Heading):
-            return self.current != other.current
+        if hasattr(other, "deg"):
+            return self.deg != other.deg
         elif type(other) == int or type(other) == float:
             # We don't correct the other with a modulo. It's either a
             # match or it is not.
-            return self.current != other
+            return self.deg != other
         else:
             return NotImplemented
 
@@ -205,12 +206,12 @@ class Heading(object):
         """Heading is pretty much a wrapper for a number class so we allow
         testing against numbers, too.
         """
-        if isinstance(other, Heading):
-            return self.current >= other.current
+        if hasattr(other, "deg"):
+            return self.deg >= other.deg
         elif type(other) == int or type(other) == float:
             # We don't correct the other with a modulo. It's either a
             # match or it is not.
-            return self.current >= other
+            return self.deg >= other
         else:
             return NotImplemented
 
@@ -218,12 +219,12 @@ class Heading(object):
         """Heading is pretty much a wrapper for a number class so we allow
         testing against numbers, too.
         """
-        if isinstance(other, Heading):
-            return self.current <= other.current
+        if hasattr(other, "deg"):
+            return self.deg <= other.deg
         elif type(other) == int or type(other) == float:
             # We don't correct the other with a modulo. It's either a
             # match or it is not.
-            return self.current <= other
+            return self.deg <= other
         else:
             return NotImplemented
 
@@ -231,12 +232,12 @@ class Heading(object):
         """Heading is pretty much a wrapper for a number class so we allow
         testing against numbers, too.
         """
-        if isinstance(other, Heading):
-            return self.current > other.current
+        if hasattr(other, "deg"):
+            return self.deg > other.deg
         elif type(other) == int or type(other) == float:
             # We don't correct the other with a modulo. It's either a
             # match or it is not.
-            return self.current > other
+            return self.deg > other
         else:
             return NotImplemented
 
@@ -244,42 +245,45 @@ class Heading(object):
         """Heading is pretty much a wrapper for a number class so we allow
         testing against numbers, too.
         """
-        if isinstance(other, Heading):
-            return self.current < other.current
+        if hasattr(other, "deg"):
+            return self.deg < other.deg
         elif type(other) == int or type(other) == float:
             # We don't correct the other with a modulo. It's either a
             # match or it is not.
-            return self.current < other
+            return self.deg < other
         else:
             return NotImplemented
 
+    def __repr__(self):
+        return "Heading(%s)" % self.deg
+
     @property
-    def current(self):
+    def deg(self):
         """ {float} heading in degrees.
         """
-        return self._current
+        return self._deg
 
-    @current.setter
-    def current(self, value):
+    @deg.setter
+    def deg(self, value):
         """ {number} set in degrees.
         """
         # This will work for positive or negative numbers, where the 
         # negative numbers are "corrected" via modulo. 
         # It's a factor of 10 faster than the more logical math.fmod().
-        self._current = value % 360.
+        self._deg = value % 360.
 
     @property
-    def current_rad(self):
-        """ {float} Current heading as radians.
+    def rad(self):
+        """ {float} heading in radians.
         """
-        return math.radians(self._current)
+        return math.radians(self._deg)
     
-    @current_rad.setter
-    def current_rad(self, value):
-        """ {float}
+    @rad.setter
+    def rad(self, value):
+        """ {float} set in radians.
         """
         # math.degrees is about 45% faster than arithmetic conversion.
-        self._current = math.degrees(value) % 360.
+        self._deg = math.degrees(value) % 360.
     
     @property
     def cartesian_rad(self):
@@ -288,7 +292,7 @@ class Heading(object):
     
         Useful when passing the heading to trig functions.
         """
-        return PI2 - math.radians(self.current) + PIDIV2
+        return PI2 - math.radians(self.deg) + PIDIV2
 
     @property
     def screenxy(self):
@@ -309,9 +313,9 @@ class Heading(object):
         return {tuple} The (x, y) components of this heading.
         """
         heading_rad = self.cartesian_rad
-        signage = 1 if self.current <= 180 else -1 
+        signage = 1 if self.deg <= 180 else -1 
         x = math.copysign(math.sqrt(1-math.sin(heading_rad)**2), signage)
-        signage = 1 if self.current >= 90 and self.current <= 270 else -1
+        signage = 1 if self.deg >= 90 and self.deg <= 270 else -1
         y = math.copysign(math.sqrt(1-math.cos(heading_rad)**2), signage)
         return (x, y)
 
@@ -321,10 +325,10 @@ class Heading(object):
         val {mixed} Can be a number or a Heading.
         """
         if isinstance(val, Heading):
-            self.current = val.current
+            self.deg = val.deg
         else:
             # Assume number
-            self.current = val
+            self.deg = val
             
             
         

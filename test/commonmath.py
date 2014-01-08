@@ -23,55 +23,55 @@ def test_distanceto():
 def test_heading():
     h = Heading()
     
-    assert h.current == 0., "Expected default."
-    assert type(h.current) == float, "Expected type."
-    assert h.current_rad == 0., "Expected default."
-    assert type(h.current_rad) == float, "Expected type."
+    assert h.deg == 0., "Expected default."
+    assert type(h.deg) == float, "Expected type."
+    assert h.rad == 0., "Expected default."
+    assert type(h.rad) == float, "Expected type."
     
-    h.current = 90
-    assert h.current == 90., "Expected value."
-    assert type(h.current) == float, "Expected type."
-    assert h.current_rad == math.pi/2, "Expected value."
-    assert type(h.current_rad) == float, "Expected type."
+    h.deg = 90
+    assert h.deg == 90., "Expected value."
+    assert type(h.deg) == float, "Expected type."
+    assert h.rad == math.pi/2, "Expected value."
+    assert type(h.rad) == float, "Expected type."
     
-    h.current = -90
-    assert h.current == 270., "Expected value."
-    assert type(h.current) == float, "Expected type."
-    assert h.current_rad == math.pi*3/2, "Expected value."
-    assert type(h.current_rad) == float, "Expected type."
+    h.deg = -90
+    assert h.deg == 270., "Expected value."
+    assert type(h.deg) == float, "Expected type."
+    assert h.rad == math.pi*3/2, "Expected value."
+    assert type(h.rad) == float, "Expected type."
     
-    h.current = 360
-    assert h.current == 0., "Expected value."
-    assert type(h.current) == float, "Expected type."
-    assert h.current_rad == 0., "Expected value."
-    assert type(h.current_rad) == float, "Expected type."
+    h.deg = 360
+    assert h.deg == 0., "Expected value."
+    assert type(h.deg) == float, "Expected type."
+    assert h.rad == 0., "Expected value."
+    assert type(h.rad) == float, "Expected type."
 
-    h.current = 0.
-    h.current += 45.
-    assert h.current == 45., "Expected value."
-    assert type(h.current) == float, "Expected type."
-    assert h.current_rad == math.pi/4, "Expected value."
-    assert type(h.current_rad) == float, "Expected type."
+    h.deg = 0.
+    h.deg += 45.
+    assert h.deg == 45., "Expected value."
+    assert type(h.deg) == float, "Expected type."
+    assert h.rad == math.pi/4, "Expected value."
+    assert type(h.rad) == float, "Expected type."
 
-    h.current_rad = math.pi/2
-    assert h.current == 90., "Expected value."
-    assert type(h.current) == float, "Expected type."
-    assert h.current_rad == math.pi/2, "Expected value."
-    assert type(h.current_rad) == float, "Expected type."
+    h.rad = math.pi/2
+    assert h.deg == 90., "Expected value."
+    assert type(h.deg) == float, "Expected type."
+    assert h.rad == math.pi/2, "Expected value."
+    assert type(h.rad) == float, "Expected type."
     
-    h.current = 0
+    h.deg = 0
     h += 45
-    assert h.current == 45., "Expected value."
-    assert type(h.current) == float, "Expected type."
-    assert h.current_rad == math.pi/4, "Expected value."
-    assert type(h.current_rad) == float, "Expected type."
+    assert h.deg == 45., "Expected value."
+    assert type(h.deg) == float, "Expected type."
+    assert h.rad == math.pi/4, "Expected value."
+    assert type(h.rad) == float, "Expected type."
 
-    h.current = 0
+    h.deg = 0
     h -= 90
-    assert h.current == 270., "Expected value."
-    assert type(h.current) == float, "Expected type."
-    assert h.current_rad == 3*math.pi/2, "Expected value."
-    assert type(h.current_rad) == float, "Expected type."
+    assert h.deg == 270., "Expected value."
+    assert type(h.deg) == float, "Expected type."
+    assert h.rad == 3*math.pi/2, "Expected value."
+    assert type(h.rad) == float, "Expected type."
 
     h2 = Heading(45.)
     h3 = Heading(45.)

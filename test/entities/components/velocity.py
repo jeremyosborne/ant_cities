@@ -1,5 +1,6 @@
 from src.entities.components.velocity import Velocity
 from nose.tools import assert_almost_equal 
+from src.commonmath import Heading
 import math
 
 def test_heading():
@@ -7,10 +8,10 @@ def test_heading():
     
     v.speed = 0
     v.course = 90
+    
     assert v.speed == 0., "expected value"
     assert type(v.speed) == float, "expected type"
-    assert v.course == 90., "expected value"
-    assert type(v.course) == float, "expected type"
+    assert v.course == Heading(90.), "expected value"
     assert v.x == 0., "expected value"
     assert type(v.x) == float, "expected type"
     assert v.y == 0., "expected value"
@@ -20,8 +21,7 @@ def test_heading():
     v.course = 45
     assert v.speed == 1., "expected value"
     assert type(v.speed) == float, "expected type"
-    assert v.course == 45., "expected value"
-    assert type(v.course) == float, "expected type"
+    assert v.course == Heading(45.), "expected value"
     # Unit circle values, and we're dealing with floating point.
     # Right is positive for x, left is negative.
     assert_almost_equal(v.x, math.sqrt(1-math.sin(math.pi/4)**2), 
@@ -34,8 +34,7 @@ def test_heading():
     v.course = 135
     assert v.speed == 2., "expected value"
     assert type(v.speed) == float, "expected type"
-    assert v.course == 135., "expected value"
-    assert type(v.course) == float, "expected type"
+    assert v.course == Heading(135.), "expected value"
     # Unit circle values, and we're dealing with floating point.
     # Right is positive for x, left is negative.
     assert_almost_equal(v.x, 2*math.sqrt(1-math.sin(math.pi/4)**2), 

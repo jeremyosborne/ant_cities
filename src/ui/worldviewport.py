@@ -285,21 +285,16 @@ class WorldViewport(viewport.Viewport):
         # Common settings.
         width = 25
         height = 4
-        empty = (255, 0, 0)
+        empty_color = (255, 0, 0)
         bar = pygame.surface.Surface((width, height)).convert()
         
         # Energy.
-        full = (230, 100, 230)
-        bar.fill(empty)
-        component = entity.components["energy"]
-        bar.fill(full, (0, 0, component.current/float(component.max)*width, height))
-        surface.blit(bar, (0, 0))
-        # Health.
-        full = (0, 255, 0)
-        bar.fill(empty)
-        component = entity.components["health"]
-        bar.fill(full, (0, 0, component.current/float(component.max)*width, height))
-        surface.blit(bar, (0, height+1))
+        comps_to_draw = [(entity.components["energy"], (230, 100, 230)),
+                         (entity.components["health"], (0, 255, 0))]
+        for component, full_color in comps_to_draw:
+            bar.fill(empty_color)
+            bar.fill(full_color, (0, 0, component.val/float(component.max)*width, height))
+            surface.blit(bar, (0, 0))
         return surface
 
     def render_scaling(self, surface):
@@ -335,20 +330,20 @@ class WorldViewport(viewport.Viewport):
             # Do special things to the dummy.
 #             if __debug__:
 #                 if entity.name == "dummy":
-#                     image = pygame.transform.rotate(image, entity.components["facing"].current*-1.)
+#                     image = pygame.transform.rotate(image, entity.components["facing"].deg*-1.)
             
             # Deal with ants. (Blech, this is gross right now, but trying
             # to isolate view code, view specific logic, and will then
             # normalize so that we simply do things to objects and need
             # no or few entity specific code paths).            
             if entity.name == "ant":
-                image = pygame.transform.rotate(image, entity.components["facing"].current*-1.)
+                image = pygame.transform.rotate(image, entity.components["facing"].deg*-1.)
                 # Inventory display.
                 if self.current_zoom_level < self.strategic_zoom_level:
                     # If it's carrying a leaf, let's draw that too.
                     if entity.inventory:
                         inventory_image = entity_images(entity.inventory)
-                        image = pygame.transform.rotate(inventory_image, entity.components["facing"].current*-1.)
+                        image = pygame.transform.rotate(inventory_image, entity.components["facing"].deg*-1.)
 
                 if self.current_zoom_level < self.strategic_zoom_level:
                     # Energy/health bar display.

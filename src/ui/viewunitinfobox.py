@@ -16,7 +16,6 @@ class ViewUnitInfoBox(viewport.Viewport):
         viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)
 
         self.font = pygame.font.SysFont("arial", 16)
-        self.small_font = pygame.font.SysFont("arial", 13)
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
 
@@ -76,8 +75,8 @@ class ViewUnitInfoBox(viewport.Viewport):
         output = ["Location: (%d, %d)" % tuple(ent.location)]
 
         if self.watching_entity.name == "ant":
-            output.append("Energy: %s" % ent.components["energy"].current)
-            output.append("Health: %s" % ent.components["health"].current)
+            output.append("Energy: %s" % ent.components["energy"].val)
+            output.append("Health: %s" % ent.components["health"].val)
             output.append("Brain state: %s" % ent.brain.active_state.name)
             output.append("Speed: %d" % ent.components["velocity"].speed)
             if ent.components["destination"].location:

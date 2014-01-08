@@ -11,7 +11,7 @@ class Base(Entity):
         Entity.__init__(self, world)
 
         self.add_component("team", id=team_id, name=team_name)
-        self.add_component("energy", current=0)
+        self.add_component("energy", val=0)
         
         self.leaves = 0
         
@@ -29,7 +29,7 @@ class Base(Entity):
         # TODO: Allow spending of resources.
         if self.leaves > 20:
             self.leaves -= 20
-            self.components["energy"].current += 100
+            self.components["energy"].val += 100
             
     def increment_leaf(self):
         self.leaves += 1

@@ -46,16 +46,21 @@ Key
 
 - Entities
     * Data types and components
-        * Change Heading component to Facing. It's too confusing with two
-          headings running around, even if Facing will be a Heading subclass.
-        * Refactor attr "current" into "val".
+        * Refactor attr "current" into "val"
+            * On "facing" and "heading" and in tests.
+        * Combine velocityengine and velocity together. It's more complex
+          keeping these things separate than just combining them. Things that
+          should just have a constant velocity (bullets, sharks with lazers,
+          small children with magnifying glasses) should just not augment
+          the engine component of velocity. Outside forces (gravity, etc.)
+          should apply additional force to our entities through separate
+          means.
     * Ants
         * Ants are always moving and should manage their velocity engine and
           movement in the ant process, not the brain process.
           In particular move the chunk in the ant brains to the ant entity.
           UNLESS the brains should make a decision about the course or the
           speed.
-        * Sync the velocity course and the heading during the process.
     * Destination component.
         * Destination component has some niceties to handle entities and places
           in the world problematically.

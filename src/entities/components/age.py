@@ -14,7 +14,7 @@ class Age(Component):
         be?
         """
         # Always count relative to ourselves.
-        self.current = 0
+        self.val = 0
         
         # How long should we live?
         # Not called max because implementations might treat lifespan differently.
@@ -22,11 +22,11 @@ class Age(Component):
 
     def process(self, time_passed):
         # Only age when the game runs.
-        self.current += time_passed
+        self.val += time_passed
 
     @property
     def old(self):
         """Have we passed the expected lifespan?
         """
-        return True if self.current >= self.lifespan else False
+        return True if self.val >= self.lifespan else False
     

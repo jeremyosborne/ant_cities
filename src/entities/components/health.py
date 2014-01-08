@@ -8,24 +8,29 @@ class Health(Component):
     
     _cname = "health"
     
+    # Default value for property computation.
+    _val = 0
+    
     def __init__(self, maximum=100):
         """Set up initial health of the entity.
+        
+        maximum {number} Sets the current and maximum health value.
         """
         self.max = maximum
-        self._current = maximum
         self.min = 0
+        self.val = maximum
 
     @property
-    def current(self):
-        return self._current
+    def val(self):
+        return self._val
 
-    @current.setter
-    def current(self, value):
+    @val.setter
+    def val(self, value):
         # Boundary check.
-        self._current = mmval(self.max, self._current+value, self.min)
+        self._val = mmval(self.max, self._val+value, self.min)
 
     @property
     def dead(self):
         """Are we dead according to our health?
         """
-        return True if self.current <= self.min else False
+        return True if self.val <= self.min else False

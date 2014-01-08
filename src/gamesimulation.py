@@ -62,7 +62,7 @@ class GameSimulation():
                                                  ("# Ants Born:", lambda: str(self.world.base_2.components["team"].stats["ant-added"])),
                                                  ("# Ants Died:", lambda: str(self.world.base_2.components["team"].stats["ant-removed"])),
                                                  ("# Ants Net:", lambda: str(self.world.base_2.components["team"].stats["ant"])),
-                                                 ("Energy:", lambda: str(self.world.base_1.components["energy"].current)),
+                                                 ("Energy:", lambda: str(self.world.base_1.components["energy"].val)),
                                                  ("Leaf Storage:", lambda: str(self.world.base_1.leaves)),
                                                 ])
         self.base_display_2 = DataColumnDisplay(201, globaldata.SCREEN_SIZE[1]-170, 
@@ -72,7 +72,7 @@ class GameSimulation():
                                                  ("# Ants Born:", lambda: str(self.world.base_2.components["team"].stats["ant-added"])),
                                                  ("# Ants Died:", lambda: str(self.world.base_2.components["team"].stats["ant-removed"])),
                                                  ("# Ants Net:", lambda: str(self.world.base_2.components["team"].stats["ant"])),
-                                                 ("Energy:", lambda: str(self.world.base_2.components["energy"].current)),
+                                                 ("Energy:", lambda: str(self.world.base_2.components["energy"].val)),
                                                  ("Leaf Storage:", lambda: str(self.world.base_2.leaves)),
                                                 ])
         # World Info Display
