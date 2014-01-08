@@ -46,8 +46,6 @@ Key
 
 - Entities
     * Data types and components
-        * Refactor attr "current" into "val"
-            * On "facing" and "heading" and in tests.
         * Combine velocityengine and velocity together. It's more complex
           keeping these things separate than just combining them. Things that
           should just have a constant velocity (bullets, sharks with lazers,
