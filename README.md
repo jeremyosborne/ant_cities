@@ -44,11 +44,6 @@ Key
 * In process
 - Not Started or on hold.
 
-- Entities
-    * Ants
-        * In particular move the chunk in the ant brains to the ant entity.
-          UNLESS the brains should make a decision about the course or the
-          speed.
 - Spatial Index:
     - Keep the seeding of the expected index, but allow dynamic creation of cells
     outside of the world area if/when an entity travels outside the boundaries.

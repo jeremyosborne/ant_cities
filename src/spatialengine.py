@@ -4,25 +4,22 @@ Created on Oct 20, 2013
 @author: john
 '''
 
-from collections import deque
-
 
 
 class SpatialEngine(object):
-    '''Coarser spatial storage for entities using 2d points for location.
-    '''
+    """Coarser spatial storage for entities using 2d points for location.
+    """
     def __init__(self, world_size_x, world_size_y):
-        '''Constructor.
+        """Constructor.
         
         world_size_x {int} number of pixels wide the world is.
         world_size_y {int} number of pixels hight he world is.
-        '''
-        # Size for X and Y for a cell.  Turns out the code is not generalized
-        # to suppport anything but 100x100 cell size.  So, if you want to change this, then
-        #you have to generalize the code associated with cells.
+        """
+        # Edge size of a cell (width or height). 
+        # Code is not generalized to suppport anything but 100x100 cell size.  
         self.cell_size = 100
         
-        #Create the dictionary.
+        # Spatial index keyed with 
         self.spatial_index = {}
         # key == entity.id, value = cell containing entity
         self.entity_index = {}
@@ -62,7 +59,7 @@ class SpatialEngine(object):
             del self.entity_index[entity.id]
     
     def update(self, entity):
-        """ Update an entity's location within the spatial index.
+        """Update an entity's location within the spatial index.
         
         entity {entity} Must provide a .id and .location interface to the 2d location
         of the entity.
@@ -71,27 +68,27 @@ class SpatialEngine(object):
         self._insert(entity)
 
     def which_cell(self, point):
-        '''Identifies which cell a coordinate belongs to.
+        """Identifies which cell a coordinate belongs to.
 
         point {tuple} Unpackable 2d coordinate in the form of (x, y).
         
         return {tuple} Cell identifier.
-        '''
+        """
         x = int(point[0] / self.cell_size)
         y = int(point[1] / self.cell_size)
         return (x, y)
     
     def which_cells_in_range(self, point, the_range):
-        '''Given a point and a search radius, return the list of
+        """Given a point and a search radius, return the list of
         cells that should be considered.
         
         point {tuple} Unpackable 2d coordinate in the form of (x, y).
         the_range {number} How many pixels radius in which to search.
         
         return {list} List of identifiers in the form of.
-        '''
+        """
         x, y = point
-        #Determine the area we should be looking at.
+        # Determine the area we should be looking at.
         # TODO: If we pass too large a the_range in, limit to max size of grid.
         x1 = int((x + the_range) / self.cell_size)
         x2 = int((x - the_range) / self.cell_size)
@@ -109,18 +106,16 @@ class SpatialEngine(object):
         return cell_list
 
     def find_all_in_range(self, point, the_range=1, validate=None):
-        '''Returns list of all entities in range.
+        """Returns list of all entities in range.
 
         point {Vec2d} Location to search from.
         [tolerance=5.0] {float} Number of pixels radius to allow for a match.
         [validate] {function} If included, filters out possible results.
 
-        return {deque} any entities in range, or an empty deque.
-        '''
+        return {Entity[]} any entities in range, or an empty list.
+        """
         cell_list = self.which_cells_in_range(point, the_range)
-        # should timeit this... I think deques are faster than lists for how we
-        # use them.
-        entities = deque()
+        entities = []
         for cell in cell_list:
             for entity in self.spatial_index[cell]:
                 distance = entity.location.get_distance(point)
@@ -132,7 +127,7 @@ class SpatialEngine(object):
         return entities
 
     def find_closest(self, point, the_range=1, validate=None):
-        """ Find the closest entity.
+        """Find the closest entity.
         
         point {Vec2d} Where to search from.
         [the_range] {int} Number of pixels radius in which to search.
