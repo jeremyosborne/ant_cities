@@ -14,7 +14,7 @@ class Exploring(BrainState):
     leaf_search_period = 17
 
     # What is the search radius for finding leaves?
-    leaf_in_eyesight = 200.
+    leaf_in_eyesight = 500.
     
     def __init__(self):
         BrainState.__init__(self, "exploring")
@@ -26,7 +26,7 @@ class Exploring(BrainState):
     def set_random_destination(self):
         p = (randint(0, self.entity.world.width), randint(0, self.entity.world.height))
         self.entity.components["destination"].set(p)
- 
+        
     def process(self, time_passed):
         # Requires a destination component
         destination = self.entity.components["destination"]
@@ -45,13 +45,11 @@ class Exploring(BrainState):
         
         # Move
         v = self.entity.components["velocity"]
-        if not destination.isvalid or destination.distanceto < self.close_enough:
+        if destination.isvalid == False or destination.distanceto < self.close_enough:
             # New course.
             self.set_random_destination()
         else:
             # Assume we have a valid destionation at this point.
-            # TODO: Move this part to the ant process. Brain just makes the
-            # decisions.
             v.fullspeedto(destination.courseto)
             
         # Increase frame counter.

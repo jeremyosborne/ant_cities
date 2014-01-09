@@ -11,10 +11,21 @@ def test_mmval():
     assert mmval(100, 110, -25) == 100, "Expected value."
 
 def test_courseto():
-    assert courseto((1, 1), (0, 0)) == 225, "Correct course."
-    assert courseto((0, 0), (1, 1)) == 45, "Correct course."
+    # NOTE: These results are different than Cartesian coordinates 
+    # due to inverted y signage (e.g. down and right is positive for both
+    # x and y).
+    assert courseto((0, 0), (0, -1)) == 0, "Correct screen coordinate course."
+    assert courseto((0, 0), (1, -1)) == 45, "Correct screen coordinate course."
+    assert courseto((0, 0), (1, 0)) == 90, "Correct screen coordinate course."
+    assert courseto((0, 0), (1, 1)) == 135, "Correct screen coordinate course."
+    assert courseto((0, 0), (0, 1)) == 180, "Correct screen coordinate course."
+    assert courseto((0, 0), (-1, 1)) == 225, "Correct screen coordinate course."
+    assert courseto((0, 0), (-1, 0)) == 270, "Correct screen coordinate course."
+    assert courseto((0, 0), (-1, -1)) == 315, "Correct screen coordinate course."
+
     # NOTE: This is a default value, weird as it is.
     assert courseto((0, 0), (0, 0)) == 90, "Expected but arbitrary value."
+
     
 def test_distanceto():
     assert distanceto((-1, 1), (1, 1)) == 2, "Expected distance."

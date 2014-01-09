@@ -75,7 +75,8 @@ class Destination(Component):
     def isentity(self):
         """{bool} Is the destination a valid entity?
         """
-        if isinstance(self._val, Entity) and self._val.inworld:
+        ent = self._val
+        if isinstance(ent, Entity) and ent.inworld:
             return True
         else:
             return False

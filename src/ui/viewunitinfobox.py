@@ -82,8 +82,7 @@ class ViewUnitInfoBox(viewport.Viewport):
             if ent.components["destination"].location:
                 output.append("Destination: (%s, %s)" % tuple(ent.components["destination"].location))
             if ent.components["destination"].isentity:
-                target = ent.components["destionation"].val.name
-                output.append("Target: (%s)" % ent.components["destionation"].val.name)
+                output.append("Target: (%s)" % ent.components["destination"].val.name)
             
         for i, line in enumerate(output):
             text = self.font.render(line, True, (255, 255, 255))

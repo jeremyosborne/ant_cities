@@ -105,21 +105,28 @@ def mmval(mx, val, mn=0):
 
 
 def courseto(from_p, to_p):
-    """Find a course from one point to another point in 2d.
+    """Find a course from one 2d screen coordinate point to another screen
+    coordinate point.
     
-    from_p {mixed} An object implementing a getitem interface that supports
+    Screen coordinates define top left as zero, zero.
+    x right is positive. x left is negative. (same as cartesian)
+    y down is positive. y up is negative. (opposite cartesian)
+
+    NOTE: It is the job of the caller to test for sameness of points. The value
+    returned is arbitrary (right now 90.0) when the points are the same, which
+    corresponds to how math.atan2 works.
+    
+    from_p {mixed} An object implementing __getitem__ that supports
     x as [0] and y as [1]. Represents the origin point.
-    to_p {mixed} An object implementing a getitem interface that supports
+    to_p {mixed} An object implementing __getitem__ that supports
     x as [0] and y as [1]. Represents the destination point.
     
     return {float} The course/heading (north = 0, east = 90, south = 180, west = 270)
-    from the origin point to the destination point.
-    
-    NOTE: It is the job of the caller to test for sameness of points. The value
-    returned is arbitrary (right now 90.0) when the points are the same, which
-    corresponds correctly to the math employed with math.atan2.
+    from the origin point to the destination point.    
     """
-    return (360. - math.degrees(math.atan2(to_p[0]-from_p[0], to_p[1]-from_p[1])) + 90) % 360.
+    # We flip the signage of y passed to math.atan2 to mirror the flip of
+    # y coordinates in the screen coordinate system.
+    return (360. - math.degrees(math.atan2(from_p[1]-to_p[1], to_p[0]-from_p[0])) + 90.) % 360.
 
 
 
