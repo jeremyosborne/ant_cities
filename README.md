@@ -44,11 +44,13 @@ Key
 * In process
 - Not Started or on hold.
 
-- Spatial Index:
-    - Keep the seeding of the expected index, but allow dynamic creation of cells
-    outside of the world area if/when an entity travels outside the boundaries.
-    - Add a togglable warning mechanism when entities travel outside of the
-    boundaries.
+* BUG
+    * Ants are stupid again and aren't looking for leaves. Fix.
+* Food as economy:
+    * feed existing ants
+    - new ants
+    - evolutionary advancements
+    - New food types
 - User Interface
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
@@ -70,11 +72,6 @@ Key
     - Health minded ants or self sacrifice?
     - Expansionn oriented or homebodies?
     - Conversion or kill?
-- Food as economy:
-    - feed existing ants
-    - new ants
-    - evolutionary advancements
-    - New food types
 - Evolutionary advancements
     - vision increase (see food and enemies better)
     - conversion capability
@@ -82,6 +79,12 @@ Key
     - The Swarm
 - Game World
     - Procedural world generation.
+- Spatial Index:
+    - Keep the seeding of the expected index, but allow dynamic creation of cells
+    outside of the world area if/when an entity travels outside the boundaries.
+        - Note: The spatial index also needs to keep an extent of max boundaries
+        so that if a large search value is placed in, only possible cells are searched
+        through.
 
 
 

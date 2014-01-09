@@ -4,7 +4,7 @@ Created on Oct 20, 2013
 @author: john
 '''
 
-
+import math
 
 class SpatialEngine(object):
     """Coarser spatial storage for entities using 2d points for location.
@@ -24,11 +24,11 @@ class SpatialEngine(object):
         # key == entity.id, value = cell containing entity
         self.entity_index = {}
         
-        #Initialize the dictionary and create the empty lists.
-        #It's possible for a unit to go over the edge of the world when turning, so there is
-        #padding cells, hence the -4 and +5 below.
-        for i in range (-4, world_size_x / self.cell_size+5):
-            for j in range (-4, world_size_y / self.cell_size+5):
+        # Seed the spatial index to fit our world. Errs larger than needed.
+        width = int(math.ceil(world_size_x/float(self.cell_size))+1)
+        height = int(math.ceil(world_size_y/float(self.cell_size))+1)
+        for i in range(width):
+            for j in range(height):
                 self.spatial_index[i,j] = []
 
     def _insert(self, entity):

@@ -7,7 +7,7 @@ Created on Jun 19, 2013
 import time
 from collections import Counter
 from random import randint
-from commonmath import random_radial_offset
+from commonmath import random_radial_offset, mmval
 from entities.base import Base
 from entities.leaf import Leaf
 from entities.dummy import Dummy
@@ -77,6 +77,24 @@ class World(object):
         # Gross vs. net.
         self.stats[entity.name] -= 1
         self.stats[entity.name+"-removed"] += 1
+
+    def validate_entity_location(self, entity):
+        """Entities should call when they change their own location.
+        
+        Has a side effect of correcting entity locations at the boundaries,
+        something entities shouldn't have to know about, as well as updating
+        spatial indexes (something entities also shouldn't have to know about).
+        
+        This is experimental. This makes me want to rethink how objects are
+        managed in the world and how movement occurs.
+        
+        entity {Entity} An entity with a location.
+        """
+        # Operate to speed up the writing.
+        entity.location[0] = mmval(self.width, entity.location[0])
+        entity.location[1] = mmval(self.height, entity.location[1])
+        
+        self.spatial_index.update(entity)
 
     def generate_id(self):
         """Returns an identifier unique in this world.

@@ -47,7 +47,7 @@ class Entity(object):
         self._location.x = value[0]
         self._location.y = value[1]
         
-        self.world.spatial_index.update(self)
+        self.world.validate_entity_location(self)
             
     @property
     def team_id(self):
