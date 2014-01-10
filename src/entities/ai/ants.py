@@ -1,5 +1,4 @@
 from random import randint
-from commonmath import courseto
 from entities.ai.brains import BrainState
 
 class Exploring(BrainState):
@@ -13,8 +12,8 @@ class Exploring(BrainState):
     # How many ticks between when we search for leaves?
     leaf_search_period = 17
 
-    # What is the search radius for finding leaves?
-    leaf_in_eyesight = 500.
+    # What is the search radius for finding things?
+    sight = 500.
     
     def __init__(self):
         BrainState.__init__(self, "exploring")
@@ -33,7 +32,7 @@ class Exploring(BrainState):
         
         # Search for leaves periodically.
         if self.tick_counter % self.leaf_search_period == 0:
-            leaf, _ = self.entity.find_closest_entity(self.leaf_in_eyesight, "leaf")        
+            leaf, _ = self.entity.find_closest_entity(self.sight, "leaf")
             if leaf is not None:
                 destination.set(leaf)
                 return "seeking"
@@ -42,7 +41,7 @@ class Exploring(BrainState):
         energy = self.entity.components["energy"]
         if energy.val < self.energy_depleted*energy.max:
             return "energy depleted"
-        
+                
         # Move
         v = self.entity.components["velocity"]
         if destination.isvalid == False or destination.distanceto < self.close_enough:
@@ -50,7 +49,7 @@ class Exploring(BrainState):
             self.set_random_destination()
         else:
             # Assume we have a valid destionation at this point.
-            v.fullspeedto(destination.courseto)
+            v.fullspeedto(destination)
             
         # Increase frame counter.
         self.tick_counter += 1
@@ -68,8 +67,12 @@ class Seeking(BrainState):
     def __init__(self):
         BrainState.__init__(self, "seeking")
 
+        # Should be reset on enter. This is just a place holder.
+        self.tick_counter = 0
+
     def process(self, time_passed):
         destination = self.entity.components["destination"]
+        v = self.entity.components["velocity"]
 
         if destination.isentity == False:
             return "exploring"
@@ -77,10 +80,13 @@ class Seeking(BrainState):
             self.entity.carry(destination.val)
             return "delivering"
         else:
-            # TODO: Possible course correction if for some reason we can't
-            # reach a leaf.
-            pass
+            # Head to the leaf.
+            v.fullspeedto(destination)
 
+        self.tick_counter += 1
+
+    def entry_actions(self):
+        self.tick_counter = 0
 
 
 class Delivering(BrainState):
@@ -89,11 +95,16 @@ class Delivering(BrainState):
         
     def process(self, time_passed):
         destination = self.entity.components["destination"]
+        v = self.entity.components["velocity"]
+        
         # TODO: This should be a collision test.
         if destination.distanceto < self.entity.base.size:
             # Assumes leaf right now.
             self.entity.drop()
             return "exploring"
+        else:
+            # Head to base.
+            v.fullspeedto(destination)
         
     def entry_actions(self):
         self.entity.components["destination"].set(self.entity.base)
@@ -106,18 +117,17 @@ class EnergyDepleted(BrainState):
         
     def process(self, time_passed):
         destination = self.entity.components["destination"]
+        v = self.entity.components["velocity"]
         # TODO: This should be a collision test.
         # Did we make it back to base to eat yet?
         if destination.distanceto < self.entity.base.size:
             # Time to eat.
             return "powering up"
+        else:
+            v.fullspeedto(destination)
     
     def entry_actions(self):
-        destination = self.entity.components["destination"]
-        v = self.entity.components["velocity"]
-        
-        destination.set(self.entity.base)
-        v.fullspeedto(destination.courseto)
+        self.entity.components["destination"].set(self.entity.base)
         
 
 

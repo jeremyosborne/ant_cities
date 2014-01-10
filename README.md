@@ -44,8 +44,8 @@ Key
 * In process
 - Not Started or on hold.
 
-* BUG
-    * Ants are stupid again and aren't looking for leaves. Fix.
+* Improvement
+    * Headings need a closest angle to make the sharpest steering possible.
 * Food as economy:
     * feed existing ants
     - new ants

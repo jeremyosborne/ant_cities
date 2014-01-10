@@ -1,5 +1,5 @@
 from entities.components.component import Component
-from commonmath import mmval, Heading
+from commonmath import mmval, Heading, courseto
 import math
 
 class Velocity(Component):
@@ -18,10 +18,8 @@ class Velocity(Component):
         rotation_speed {float} Max degrees rotation change per second.
         """
         # Set defaults so our caching of properties works.
-        self._speed = speed
-        self._course = Heading(course)
-        # Update cached x/y values.
-        self._reset_xy()
+        self.speed = speed
+        self.course = Heading(course)
 
         self.acceleration = acceleration
         self.max_speed = max_speed
@@ -32,14 +30,6 @@ class Velocity(Component):
         # {Heading|None}
         self.target_course = None
 
-    def _reset_xy(self):
-        """Resets the xy values. Call when setting speed or course.
-        """
-        # We assume we have more reads than writes.
-        deltas = self._course.screenxy
-        self._x = deltas[0] * self.speed
-        self._y = deltas[1] * self.speed
-
     @property
     def speed(self):
         """ {float} Magnitude of our course.
@@ -49,7 +39,6 @@ class Velocity(Component):
     @speed.setter
     def speed(self, value):
         self._speed = abs(float(value))
-        self._reset_xy()
 
     @property
     def course(self):
@@ -62,7 +51,6 @@ class Velocity(Component):
         """ {number} set in degrees.
         """
         self._course = Heading(value)
-        self._reset_xy()
 
     @property
     def acceleration(self):
@@ -108,39 +96,25 @@ class Velocity(Component):
             self._target_course = None
 
     @property
-    def x(self):
-        """The magnitude of velocity in the x direction.
-        
-        positive x is assumed right (east), negative is assumed west (left).
+    def deltaxy(self):
+        """{tuple} A screen coordinate friendly (upper left is left, positive
+        x is right, positive y is down) velocity vector in one unit time.
         """
-        return self._x
-    
-    @property
-    def y(self):
-        """The magnitude of velocity in the y direction.
-        
-        positive y is assumed up (north), negative y is assumed south (down).
-        """
-        return self._y
+        deltas = self._course.screenxy
+        return (deltas[0]*self.speed, deltas[1]*self.speed)
 
-    def update(self, speed=None, course=None):
-        """Set a new speed and course target.
+    def fullspeedto(self, locimp_or_course):
+        """Aims target velocity toward an entity or along a course.
         
-        speed {float} New speed.
-        course {float} New course (in degrees).
+        locimp_or_course {mixed} Either an object that implements the location
+        interface defined in this game, or a generic heading object representing
+        course (numbers are okay, they are converted to Headings).
         """
-        self.target_speed = speed
-        self.target_course = course
-
-    def fullspeedto(self, course):
         self.target_speed = self.max_speed
-        self.target_course = course
-        
-    def coast(self):
-        """Stop modifying speed and course.
-        """
-        self.target_speed = None
-        self.target_course = None
+        if (hasattr(locimp_or_course, "location")):
+            self.target_course = courseto(self.entity.location, locimp_or_course.location)
+        else:
+            self.target_course = locimp_or_course
     
     def stop(self):
         """Keep same course, bring speed to 0.
@@ -160,14 +134,15 @@ class Velocity(Component):
         if self.target_course != None and self.target_course != self.course:
             direction = 1 if self.target_course > self.course else -1
             delta = time_passed * self.rotation_speed
-            course = self.course + math.copysign(delta, direction)
-            if (direction == 1 and course > self.target_course) or \
-                (direction == -1 and course < self.target_course):
-                self.course.set(self.target_course)
-                # Force a reset.
-                self._reset_xy()
+            # We want the uncorrected rotational number here for the check since 
+            # courses correct themselves at the 0 heading (like a numeric 
+            # cyclic queue).
+            if (direction == 1 and (self.course.deg + delta) >= self.target_course) or \
+                (direction == -1 and (self.course.deg - delta) <= self.target_course):
+                self.course = self.target_course
             else:
-                self.course = course
+                self.course += delta
                 
         loc = self.entity.location
-        self.entity.location = loc[0]+self.x*time_passed, loc[1]+self.y*time_passed
+        dx, dy = self.deltaxy
+        self.entity.location = loc[0]+dx*time_passed, loc[1]+dy*time_passed
