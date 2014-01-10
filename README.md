@@ -45,7 +45,6 @@ Key
 - Not Started or on hold.
 
 * Food as economy:
-    * feed existing ants
     - new ants
     - evolutionary advancements
     - New food types

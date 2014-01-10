@@ -52,11 +52,6 @@ class World(object):
         self.base_2.location = globaldata.NEST_POSITION_2
         self.add_entity(self.base_2)
 
-        # DEBUG
-#         startxy = random_radial_offset(100)
-#         ant = self.base_1.create_entity("ant", startxy)
-#         self.add_entity(ant)
-        
         # Generate ants.
         for _ in xrange(globaldata.ANT_COUNT):
             # Randomize starting position.
@@ -155,15 +150,7 @@ class World(object):
         
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
-            
-            # DEBUG
-#             if __debug__ and entity.name == "ant":
-#                 print "(%s) Loc: %s, Dest: %s, distto: %s, courseto: %s" % (entity.brain.active_state.name,
-#                                                               entity.location,
-#                                                               entity.components["destination"].location,
-#                                                               entity.components["destination"].distanceto,
-#                                                               entity.components["destination"].courseto)
-            
+
 #         if __debug__:
 #             # Do some processing on dummy.
 #             dummy, _ = self.find_closest((self.width/2,self.height/2), 10000, validation=lambda e: e.name == "dummy")

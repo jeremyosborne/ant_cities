@@ -11,7 +11,7 @@ class Base(Entity):
         Entity.__init__(self, world)
 
         self.add_component("team", id=team_id, name=team_name)
-        self.add_component("energy", val=0)
+        self.add_component("energy", maximum=1000, val=0)
         
         self.leaves = 0
         
@@ -26,14 +26,30 @@ class Base(Entity):
         return self.components["team"].id
     
     def process(self, time_passed):
-        # TODO: Allow spending of resources.
-        if self.leaves > 20:
-            self.leaves -= 20
-            self.components["energy"].val += 100
+        # Process resources.
+        if self.leaves:
+            self.leaves -= 1
+            self.components["energy"].val += 5
+    
+    def add_resource(self, resource):
+        """Add a resource to this base.
+        
+        resource {Entity} Resource to be added.
+        """
+        if resource.name == "leaf":
+            self.leaves += 1
+            self.components["team"].stats["leaves-returned"] += 1
+
+    def remove_resource(self, resource_name, amount=1):
+        """Removes a resource from the base.
+        """
+        if resource_name == "energy":
+            r = min(self.components["energy"].val, amount)
+            self.components["energy"].val -= amount
+            return r
+        else:
+            assert "Could not remove resource of name:", resource_name
             
-    def increment_leaf(self):
-        self.leaves += 1
-        self.components["team"].stats["leaves-returned"] += 1
 
     def create_entity(self, name, placement_offset=(0, 0)):
         """Create an entity and place it under our control.

@@ -18,10 +18,10 @@ class Ant(Entity):
         self.brain.set_state("exploring")
         
         self.add_component("health")
-        self.add_component("energy", burn_rate=1.)
+        self.add_component("energy", burn_rate=10.)
         
         self.add_component("facing")
-        self.add_component("velocity", max_speed=120., acceleration=30., rotation_speed=720.)
+        self.add_component("velocity", max_speed=120., acceleration=30., rotation_speed=360.)
         self.add_component("destination")
 
         # {Entity} What is our home base.
@@ -50,9 +50,8 @@ class Ant(Entity):
         """Drop a particular item, assumed to only be called at the base.
         """
         if self.inventory:
+            self.base.add_resource(self.inventory)
             self.inventory = None
-            # Assume right now that the ant is carrying a leaf.
-            self.base.increment_leaf()
         
     def process(self, time_passed):
         Entity.process(self, time_passed)

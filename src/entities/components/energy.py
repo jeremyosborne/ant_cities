@@ -40,7 +40,5 @@ class Energy(Component):
     def process(self, time_passed):
         """It is assumed that just being alive costs energy.
         """
-        print "Before:", self.val
         self.val -= self.burn_rate*time_passed
-        print "After:", self.val
         

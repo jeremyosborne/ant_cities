@@ -291,10 +291,11 @@ class WorldViewport(viewport.Viewport):
         # Energy.
         comps_to_draw = [(entity.components["energy"], (230, 100, 230)),
                          (entity.components["health"], (0, 255, 0))]
-        for component, full_color in comps_to_draw:
+        for i, v in enumerate(comps_to_draw):
+            component, full_color = v
             bar.fill(empty_color)
             bar.fill(full_color, (0, 0, component.val/float(component.max)*width, height))
-            surface.blit(bar, (0, 0))
+            surface.blit(bar, (0, height*i))
         return surface
 
     def render_scaling(self, surface):
