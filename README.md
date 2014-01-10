@@ -45,7 +45,8 @@ Key
 - Not Started or on hold.
 
 * Collision Detection:
-    * Everything is a rectangle, start with simple collisions (between ant and base).
+    * Add a simple collide interface to the destination component that will
+      happily handle points or entities.
 - Food as economy:
     - new ants
     - evolutionary advancements

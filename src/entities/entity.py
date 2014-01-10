@@ -1,3 +1,4 @@
+from pygame import Rect
 from pymunk.vec2d import Vec2d
 
 from entities.components import get_component
@@ -59,23 +60,32 @@ class Entity(object):
     # Generic name for this entity. Subclass must set this class property or
     # override in constructor.
     name = "entity"
+    
+    # Width and height of the body of this entity. Used in collision tests.
+    # Override in subclasses to change the size.
+    body_size = 25
 
     def __init__(self, world):
 
-        #a way for an entity to get at attributes about the world.
+        # Reference to world entity is in.
         self.world = world
         
+        # Logic handled in the brain of an entity.
         self.brain = Brain(self)
+        
+        # Physical space taken up by this entity (always rectangle).
+        # Treat as read only.
+        self.body = Rect(0, 0, self.body_size, self.body_size)
+
+        # Where we are currently located.
+        self._location = Vec2d(0, 0)
         
         # Entity promises to have a unique id.
         self.id = world.generate_id()
         
         # Component interface.
         self.c = Components(self)
-        
-        # Where we are currently located.
-        self._location = Vec2d(0, 0)
-        
+                
         # A flag flipped when this entity has been deleted. For lazy cleanup.
         self.deleted = False
         
@@ -89,9 +99,10 @@ class Entity(object):
     def location(self, value):
         """{Vec2d}
         """
-        # We assume that location 
-        self._location.x = value[0]
-        self._location.y = value[1]
+        # Move both body and location.
+        # Rects don't like floats, only ints, so location is still valuable.
+        self.body.centerx = self._location.x = value[0]
+        self.body.centery = self._location.y = value[1]
         
         self.world.validate_entity_location(self)
             

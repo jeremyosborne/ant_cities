@@ -43,13 +43,12 @@ class Exploring(BrainState):
             return "energy depleted"
                 
         # Move
-        v = self.entity.c["velocity"]
         if destination.isvalid == False or destination.distanceto < self.close_enough:
             # New course.
             self.set_random_destination()
         else:
             # Assume we have a valid destionation at this point.
-            v.fullspeedto(destination)
+            self.entity.c["velocity"].fullspeedto(destination)
             
         # Increase frame counter.
         self.tick_counter += 1
@@ -61,9 +60,6 @@ class Exploring(BrainState):
 
 class Seeking(BrainState):
     
-    # How close do we have to be to get the leaf?
-    close_enough = 2.0
-    
     def __init__(self):
         BrainState.__init__(self, "seeking")
 
@@ -71,17 +67,16 @@ class Seeking(BrainState):
         self.tick_counter = 0
 
     def process(self, time_passed):
-        destination = self.entity.c["destination"]
-        v = self.entity.c["velocity"]
+        dest = self.entity.c["destination"]
 
-        if destination.isentity == False:
+        if dest.isentity == False:
             return "exploring"
-        elif destination.distanceto < self.close_enough:
-            self.entity.carry(destination.val)
+        elif dest.isentity and dest.val.body.collidepoint(*self.entity.location):
+            self.entity.carry(dest.val)
             return "delivering"
         else:
             # Head to the leaf.
-            v.fullspeedto(destination)
+            self.entity.c["velocity"].fullspeedto(dest)
 
         self.tick_counter += 1
 
@@ -94,17 +89,16 @@ class Delivering(BrainState):
         BrainState.__init__(self, "delivering")
         
     def process(self, time_passed):
-        destination = self.entity.c["destination"]
-        v = self.entity.c["velocity"]
+        dest = self.entity.c["destination"]
         
-        # TODO: This should be a collision test.
-        if destination.distanceto < self.entity.base.size:
+        # There shouldn't be any option for this to be anything other than a base.
+        if dest.isentity and dest.val.body.collidepoint(*self.entity.location):
             # Assumes leaf right now.
             self.entity.drop()
             return "exploring"
         else:
             # Head to base.
-            v.fullspeedto(destination)
+            self.entity.c["velocity"].fullspeedto(dest)
         
     def entry_actions(self):
         self.entity.c["destination"].set(self.entity.base)
@@ -116,15 +110,14 @@ class EnergyDepleted(BrainState):
         BrainState.__init__(self, "energy depleted")
         
     def process(self, time_passed):
-        destination = self.entity.c["destination"]
-        v = self.entity.c["velocity"]
+        dest = self.entity.c["destination"]
         # TODO: This should be a collision test.
         # Did we make it back to base to eat yet?
-        if destination.distanceto < self.entity.base.size:
+        if dest.isentity and dest.val.body.collidepoint(*self.entity.location):
             # Time to eat.
             return "powering up"
         else:
-            v.fullspeedto(destination)
+            self.entity.c["velocity"].fullspeedto(dest)
     
     def entry_actions(self):
         self.entity.c["destination"].set(self.entity.base)

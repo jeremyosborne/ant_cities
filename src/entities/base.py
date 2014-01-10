@@ -6,6 +6,8 @@ class Base(Entity):
     
     name = "base"
     
+    body_size = 50.
+    
     def __init__(self, world, team_id, team_name):
         
         Entity.__init__(self, world)
@@ -14,10 +16,6 @@ class Base(Entity):
         self.c.add("energy", maximum=1000, val=0)
         
         self.leaves = 0
-        
-        # Radial size of the nest from location attribute.
-        # Hackish: allows ants to drop things back at the base.
-        self.size = 5.
     
     @property
     def team_id(self):
