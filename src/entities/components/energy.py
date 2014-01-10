@@ -8,15 +8,15 @@ class Energy(Component):
     _cname = "energy"
 
     # Default value for property computation.
-    _val = 0
+    _val = 0.
     
-    def __init__(self, maximum=1000, val=None, burn_rate=0):
+    def __init__(self, maximum=100., val=None, burn_rate=0.):
         """Set up initial health of the entity.
         """
         # Total amount of energy we can have.
         self.max = maximum
         # Minimum amount of energy before we're considered empty?
-        self.min = 0
+        self.min = 0.
         # Default is maximum unless val is set to something other than None.
         self.val = val if val != None else maximum
         # Delta per second.
@@ -29,7 +29,7 @@ class Energy(Component):
     @val.setter
     def val(self, value):
         # Boundary check.
-        self._val = mmval(self.max, self._val+value, self.min)
+        self._val = mmval(self.max, value, self.min)
         
     @property
     def empty(self):
@@ -40,4 +40,7 @@ class Energy(Component):
     def process(self, time_passed):
         """It is assumed that just being alive costs energy.
         """
+        print "Before:", self.val
         self.val -= self.burn_rate*time_passed
+        print "After:", self.val
+        

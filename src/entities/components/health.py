@@ -27,7 +27,7 @@ class Health(Component):
     @val.setter
     def val(self, value):
         # Boundary check.
-        self._val = mmval(self.max, self._val+value, self.min)
+        self._val = mmval(self.max, value, self.min)
 
     @property
     def dead(self):

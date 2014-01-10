@@ -18,7 +18,7 @@ class Ant(Entity):
         self.brain.set_state("exploring")
         
         self.add_component("health")
-        self.add_component("energy", burn_rate=10)
+        self.add_component("energy", burn_rate=1.)
         
         self.add_component("facing")
         self.add_component("velocity", max_speed=120., acceleration=30., rotation_speed=720.)
