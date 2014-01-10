@@ -114,3 +114,7 @@ def test_heading():
     assert h8 == h9, "Now equal."
     assert h9 == 180, "Now equal."
     
+    assert Heading(0).angleto(359) == -1, "Shortest angle."
+    assert Heading(359).angleto(0) == 1, "Shortest angle."
+    assert Heading(1).angleto(2) == 1, "Shortest angle."
+    assert Heading(0).angleto(181) == -179, "Shortest angle."

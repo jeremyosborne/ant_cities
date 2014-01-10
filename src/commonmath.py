@@ -336,6 +336,32 @@ class Heading(object):
         else:
             # Assume number
             self.deg = val
+    
+    def angleto(self, val):
+        """Return the shortest heading angle delta to another heading.
+        
+        val {Heading|number} Heading or number representing a heading.
+        """
+        initial = self.deg
+        try:
+            target = val.deg
+        except AttributeError:
+            target = Heading(val).deg
+        
+        delta = target - initial
+        
+        if abs(delta) < 180:
+            return delta
+        
+        # Correct boundary condition around heading 0
+        if initial < target:
+            initial += 360 
+        else:
+            target += 360
+        
+        # Try again.
+        return target - initial
+
             
             
         

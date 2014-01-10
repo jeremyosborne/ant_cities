@@ -44,8 +44,6 @@ Key
 * In process
 - Not Started or on hold.
 
-* Improvement
-    * Headings need a closest angle to make the sharpest steering possible.
 * Food as economy:
     * feed existing ants
     - new ants
