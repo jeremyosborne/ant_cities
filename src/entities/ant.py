@@ -17,12 +17,12 @@ class Ant(Entity):
         # Default state.
         self.brain.set_state("exploring")
         
-        self.add_component("health")
-        self.add_component("energy", burn_rate=10.)
+        self.c.add("health")
+        self.c.add("energy", burn_rate=10.)
         
-        self.add_component("facing")
-        self.add_component("velocity", max_speed=120., acceleration=30., rotation_speed=360.)
-        self.add_component("destination")
+        self.c.add("facing")
+        self.c.add("velocity", max_speed=120., acceleration=30., rotation_speed=360.)
+        self.c.add("destination")
 
         # {Entity} What is our home base.
         self.base = base
@@ -34,7 +34,7 @@ class Ant(Entity):
     def team_id(self):
         """What team are we on?
         """
-        return self.base.components["team"].id
+        return self.base.c["team"].id
 
     def carry(self, entity):
         """Ant picks up the entity and takes possession of it.
@@ -56,8 +56,8 @@ class Ant(Entity):
     def process(self, time_passed):
         Entity.process(self, time_passed)
 
-        energy = self.components["energy"]
-        health = self.components["health"]
+        energy = self.c["energy"]
+        health = self.c["health"]
         
         # Is ant energy so low that we need to dump health into energy?
         if energy.empty:
@@ -65,7 +65,7 @@ class Ant(Entity):
             health.val -= 10
         
         # Heading matches course of velocity.
-        self.components["facing"].set(self.components["velocity"].course)
+        self.c["facing"].set(self.c["velocity"].course)
         
         # Should the ant die?
         if health.dead:
@@ -74,5 +74,5 @@ class Ant(Entity):
     def delete(self):
         # Update team stats.
         Entity.delete(self)
-        self.base.components["team"].stats[self.name] -= 1
-        self.base.components["team"].stats[self.name+"-removed"] += 1
+        self.base.c["team"].stats[self.name] -= 1
+        self.base.c["team"].stats[self.name+"-removed"] += 1

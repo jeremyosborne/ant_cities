@@ -4,6 +4,54 @@ from entities.components import get_component
 from entities.ai.brains import Brain
 
 
+
+class Components(object):
+    """Component collection and management.
+    """
+    def __init__(self, entity):
+        # Components need to know who we are.
+        self.entity = entity
+        # Components are stored for easy iteration...
+        self._list = []
+        # ...and made available to the public via an index of named components.
+        self._index = {}
+
+    def __iter__(self):
+        # list provides faster iteration than a dict.
+        return self._list.__iter__()
+
+    def __getitem__(self, key):
+        # dict provides faster access than list.
+        return self._index[key]
+
+    def add(self, cname, **kwargs):
+        """Interface to adding a component to an entity.
+        
+        cname {str} Name of the component to add.
+        kwargs {kwargs} Labeled arguments to pass in to the instantiation
+        of the component.
+        """
+        # Load and immediately instantiate.
+        component = get_component(cname)(**kwargs)
+        # Part of the contract: we must add ourselves as an entity reference.
+        component.entity = self.entity
+        # Add for easy iteration as well as easy reference.
+        self._list.append(component)
+        self._index[component._cname] = component
+    
+    def remove(self, name):
+        """Remove a particular component from the component hash.
+        
+        name {str} Name of the component to remove.
+        """
+        # Remove index and location in list. This should be an uncommon operation.
+        component = self._index.pop(name)
+        self._list.remove(component)
+        # Part of the contract: call destroy on the component.
+        component.destroy()
+
+
+
 class Entity(object):
     """Abstract base entity.
     """
@@ -22,10 +70,8 @@ class Entity(object):
         # Entity promises to have a unique id.
         self.id = world.generate_id()
         
-        # Components are stored for easy iteration...
-        self._components_list = []
-        # ...and made available to the public via an index of named components.
-        self.components = {}
+        # Component interface.
+        self.c = Components(self)
         
         # Where we are currently located.
         self._location = Vec2d(0, 0)
@@ -88,32 +134,6 @@ class Entity(object):
 
         return self.world.find_closest(self.location, the_range, v)
     
-    def add_component(self, cname, **kwargs):
-        """Interface to adding a component to an entity.
-        
-        cname {str} Name of the component to add.
-        kwargs {kwargs} Labeled arguments to pass in to the instantiation
-        of the component.
-        """
-        # Load and immediately instantiate.
-        component = get_component(cname)(**kwargs)
-        # Part of the contract: we must add ourselves as an entity reference.
-        component.entity = self
-        # Add for easy iteration as well as easy reference.
-        self._components_list.append(component)
-        self.components[component._cname] = component
-    
-    def remove_component(self, name):
-        """Remove a particular component from the component hash.
-        
-        name {str} Name of the component to remove.
-        """
-        # Remove index and location in list. This should be an uncommon operation.
-        component = self.components.pop(name)
-        self._components_list.remove(component)
-        # Part of the contract: call destroy on the component.
-        component.destroy()
-
     def process(self, time_passed):
         """Update this entity.
         
@@ -124,7 +144,7 @@ class Entity(object):
         self.brain.process(time_passed)
 
         # Update components.
-        for component in self._components_list:
+        for component in self.c:
             component.process(time_passed)
     
     def delete(self):

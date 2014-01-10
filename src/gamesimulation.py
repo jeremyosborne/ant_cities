@@ -55,37 +55,41 @@ class GameSimulation():
         self.mouse_display = MouseDisplay(5, 25)
         
         # Base Information Displays
+        data_to_display = [
+            ("# Ants Born:", lambda: str(self.world.base_1.c["team"].stats["ant-added"])),
+            ("# Ants Died:", lambda: str(self.world.base_1.c["team"].stats["ant-removed"])),
+            ("# Ants Net:", lambda: str(self.world.base_1.c["team"].stats["ant"])),
+            ("Energy:", lambda: str(self.world.base_1.c["energy"].val)),
+            ("Leaf Storage:", lambda: str(self.world.base_1.leaves)),
+        ]
         self.base_display_1 = DataColumnDisplay(1, globaldata.SCREEN_SIZE[1]-170, 
                                                 200, 170,
-                                                str(self.world.base_1.components["team"]),
-                                                [
-                                                 ("# Ants Born:", lambda: str(self.world.base_2.components["team"].stats["ant-added"])),
-                                                 ("# Ants Died:", lambda: str(self.world.base_2.components["team"].stats["ant-removed"])),
-                                                 ("# Ants Net:", lambda: str(self.world.base_2.components["team"].stats["ant"])),
-                                                 ("Energy:", lambda: str(self.world.base_1.components["energy"].val)),
-                                                 ("Leaf Storage:", lambda: str(self.world.base_1.leaves)),
-                                                ])
+                                                str(self.world.base_1.c["team"]),
+                                                data_to_display)
+        
+        data_to_display = [
+            ("# Ants Born:", lambda: str(self.world.base_2.c["team"].stats["ant-added"])),
+            ("# Ants Died:", lambda: str(self.world.base_2.c["team"].stats["ant-removed"])),
+            ("# Ants Net:", lambda: str(self.world.base_2.c["team"].stats["ant"])),
+            ("Energy:", lambda: str(self.world.base_2.c["energy"].val)),
+            ("Leaf Storage:", lambda: str(self.world.base_2.leaves)),
+        ]        
         self.base_display_2 = DataColumnDisplay(201, globaldata.SCREEN_SIZE[1]-170, 
                                                 200, 170,
-                                                str(self.world.base_2.components["team"]),
-                                                [
-                                                 ("# Ants Born:", lambda: str(self.world.base_2.components["team"].stats["ant-added"])),
-                                                 ("# Ants Died:", lambda: str(self.world.base_2.components["team"].stats["ant-removed"])),
-                                                 ("# Ants Net:", lambda: str(self.world.base_2.components["team"].stats["ant"])),
-                                                 ("Energy:", lambda: str(self.world.base_2.components["energy"].val)),
-                                                 ("Leaf Storage:", lambda: str(self.world.base_2.leaves)),
-                                                ])
+                                                str(self.world.base_2.c["team"]),
+                                                data_to_display)
         # World Info Display
+        data_to_display = [
+            ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
+            ("Bases:", lambda: str(self.world.stats["base"])),
+            ("Leaves:", lambda: str(self.world.stats["leaf"])),
+            ("Leaves Added:", lambda: str(self.world.stats["leaf-added"])),
+            ("Leaves Removed:", lambda: str(self.world.stats["leaf-removed"])),
+        ]
         self.world_info_display = DataColumnDisplay(402, globaldata.SCREEN_SIZE[1]-170, 
                                               200, 170,
                                               "World Info",
-                                              [
-                                                ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
-                                                ("Bases:", lambda: str(self.world.stats["base"])),
-                                                ("Leaves:", lambda: str(self.world.stats["leaf"])),
-                                                ("Leaves Added:", lambda: str(self.world.stats["leaf-added"])),
-                                                ("Leaves Removed:", lambda: str(self.world.stats["leaf-removed"])),
-                                              ])
+                                              data_to_display)
 
     def process_game_loop(self):
 

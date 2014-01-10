@@ -289,8 +289,8 @@ class WorldViewport(viewport.Viewport):
         bar = pygame.surface.Surface((width, height)).convert()
         
         # Energy.
-        comps_to_draw = [(entity.components["energy"], (230, 100, 230)),
-                         (entity.components["health"], (0, 255, 0))]
+        comps_to_draw = [(entity.c["energy"], (230, 100, 230)),
+                         (entity.c["health"], (0, 255, 0))]
         for i, v in enumerate(comps_to_draw):
             component, full_color = v
             bar.fill(empty_color)
@@ -331,20 +331,20 @@ class WorldViewport(viewport.Viewport):
             # Do special things to the dummy.
 #             if __debug__:
 #                 if entity.name == "dummy":
-#                     image = pygame.transform.rotate(image, entity.components["facing"].deg*-1.)
+#                     image = pygame.transform.rotate(image, entity.c["facing"].deg*-1.)
             
             # Deal with ants. (Blech, this is gross right now, but trying
             # to isolate view code, view specific logic, and will then
             # normalize so that we simply do things to objects and need
             # no or few entity specific code paths).            
             if entity.name == "ant":
-                image = pygame.transform.rotate(image, entity.components["facing"].deg*-1.)
+                image = pygame.transform.rotate(image, entity.c["facing"].deg*-1.)
                 # Inventory display.
                 if self.current_zoom_level < self.strategic_zoom_level:
                     # If it's carrying a leaf, let's draw that too.
                     if entity.inventory:
                         inventory_image = entity_images(entity.inventory)
-                        image = pygame.transform.rotate(inventory_image, entity.components["facing"].deg*-1.)
+                        image = pygame.transform.rotate(inventory_image, entity.c["facing"].deg*-1.)
 
                 if self.current_zoom_level < self.strategic_zoom_level:
                     # Energy/health bar display.

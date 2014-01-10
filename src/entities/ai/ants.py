@@ -24,11 +24,11 @@ class Exploring(BrainState):
         
     def set_random_destination(self):
         p = (randint(0, self.entity.world.width), randint(0, self.entity.world.height))
-        self.entity.components["destination"].set(p)
+        self.entity.c["destination"].set(p)
         
     def process(self, time_passed):
         # Requires a destination component
-        destination = self.entity.components["destination"]
+        destination = self.entity.c["destination"]
         
         # Search for leaves periodically.
         if self.tick_counter % self.leaf_search_period == 0:
@@ -38,12 +38,12 @@ class Exploring(BrainState):
                 return "seeking"
         
         # Let's take care of the energy depleted state.
-        energy = self.entity.components["energy"]
-        if energy.val < self.energy_depleted*energy.max and self.entity.base.components["energy"].empty == False:
+        energy = self.entity.c["energy"]
+        if energy.val < self.energy_depleted*energy.max and self.entity.base.c["energy"].empty == False:
             return "energy depleted"
                 
         # Move
-        v = self.entity.components["velocity"]
+        v = self.entity.c["velocity"]
         if destination.isvalid == False or destination.distanceto < self.close_enough:
             # New course.
             self.set_random_destination()
@@ -71,8 +71,8 @@ class Seeking(BrainState):
         self.tick_counter = 0
 
     def process(self, time_passed):
-        destination = self.entity.components["destination"]
-        v = self.entity.components["velocity"]
+        destination = self.entity.c["destination"]
+        v = self.entity.c["velocity"]
 
         if destination.isentity == False:
             return "exploring"
@@ -94,8 +94,8 @@ class Delivering(BrainState):
         BrainState.__init__(self, "delivering")
         
     def process(self, time_passed):
-        destination = self.entity.components["destination"]
-        v = self.entity.components["velocity"]
+        destination = self.entity.c["destination"]
+        v = self.entity.c["velocity"]
         
         # TODO: This should be a collision test.
         if destination.distanceto < self.entity.base.size:
@@ -107,7 +107,7 @@ class Delivering(BrainState):
             v.fullspeedto(destination)
         
     def entry_actions(self):
-        self.entity.components["destination"].set(self.entity.base)
+        self.entity.c["destination"].set(self.entity.base)
 
 
 
@@ -116,8 +116,8 @@ class EnergyDepleted(BrainState):
         BrainState.__init__(self, "energy depleted")
         
     def process(self, time_passed):
-        destination = self.entity.components["destination"]
-        v = self.entity.components["velocity"]
+        destination = self.entity.c["destination"]
+        v = self.entity.c["velocity"]
         # TODO: This should be a collision test.
         # Did we make it back to base to eat yet?
         if destination.distanceto < self.entity.base.size:
@@ -127,7 +127,7 @@ class EnergyDepleted(BrainState):
             v.fullspeedto(destination)
     
     def entry_actions(self):
-        self.entity.components["destination"].set(self.entity.base)
+        self.entity.c["destination"].set(self.entity.base)
         
 
 
@@ -137,14 +137,14 @@ class PowerUp(BrainState):
         BrainState.__init__(self, "powering up")
         
     def process(self, time_passed):
-        energy = self.entity.components["energy"]
+        energy = self.entity.c["energy"]
         if energy.val < energy.max:
             energy.val += self.entity.base.remove_resource("energy")
 
-        if energy.val >= energy.max or self.entity.base.components["energy"].empty:
+        if energy.val >= energy.max or self.entity.base.c["energy"].empty:
             return "exploring"            
     
     def entry_actions(self):
-        self.entity.components["destination"].clear()
-        self.entity.components["velocity"].stop()
+        self.entity.c["destination"].clear()
+        self.entity.c["velocity"].stop()
         

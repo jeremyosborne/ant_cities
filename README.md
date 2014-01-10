@@ -44,7 +44,9 @@ Key
 * In process
 - Not Started or on hold.
 
-* Food as economy:
+* Collision Detection:
+    * Everything is a rectangle, start with simple collisions (between ant and base).
+- Food as economy:
     - new ants
     - evolutionary advancements
     - New food types

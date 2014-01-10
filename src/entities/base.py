@@ -10,8 +10,8 @@ class Base(Entity):
         
         Entity.__init__(self, world)
 
-        self.add_component("team", id=team_id, name=team_name)
-        self.add_component("energy", maximum=1000, val=0)
+        self.c.add("team", id=team_id, name=team_name)
+        self.c.add("energy", maximum=1000, val=0)
         
         self.leaves = 0
         
@@ -23,13 +23,13 @@ class Base(Entity):
     def team_id(self):
         """What team are we on?
         """
-        return self.components["team"].id
+        return self.c["team"].id
     
     def process(self, time_passed):
         # Process resources.
         if self.leaves:
             self.leaves -= 1
-            self.components["energy"].val += 5
+            self.c["energy"].val += 5
     
     def add_resource(self, resource):
         """Add a resource to this base.
@@ -38,14 +38,14 @@ class Base(Entity):
         """
         if resource.name == "leaf":
             self.leaves += 1
-            self.components["team"].stats["leaves-returned"] += 1
+            self.c["team"].stats["leaves-returned"] += 1
 
     def remove_resource(self, resource_name, amount=1):
         """Removes a resource from the base.
         """
         if resource_name == "energy":
-            r = min(self.components["energy"].val, amount)
-            self.components["energy"].val -= amount
+            r = min(self.c["energy"].val, amount)
+            self.c["energy"].val -= amount
             return r
         else:
             assert "Could not remove resource of name:", resource_name
@@ -59,7 +59,7 @@ class Base(Entity):
         
         returns the entity.
         """
-        team = self.components["team"]
+        team = self.c["team"]
         # Right now, we only create ants.
         entity = None
         if name == "ant":

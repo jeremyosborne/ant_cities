@@ -75,14 +75,14 @@ class ViewUnitInfoBox(viewport.Viewport):
         output = ["Location: (%d, %d)" % tuple(ent.location)]
 
         if self.watching_entity.name == "ant":
-            output.append("Energy: %s" % ent.components["energy"].val)
-            output.append("Health: %s" % ent.components["health"].val)
+            output.append("Energy: %s" % ent.c["energy"].val)
+            output.append("Health: %s" % ent.c["health"].val)
             output.append("Brain state: %s" % ent.brain.active_state.name)
-            output.append("Speed: %d" % ent.components["velocity"].speed)
-            if ent.components["destination"].location:
-                output.append("Destination: (%s, %s)" % tuple(ent.components["destination"].location))
-            if ent.components["destination"].isentity:
-                output.append("Target: (%s)" % ent.components["destination"].val.name)
+            output.append("Speed: %d" % ent.c["velocity"].speed)
+            if ent.c["destination"].location:
+                output.append("Destination: (%s, %s)" % tuple(ent.c["destination"].location))
+            if ent.c["destination"].isentity:
+                output.append("Target: (%s)" % ent.c["destination"].val.name)
             
         for i, line in enumerate(output):
             text = self.font.render(line, True, (255, 255, 255))
