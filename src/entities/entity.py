@@ -61,6 +61,9 @@ class Entity(object):
     # override in constructor.
     name = "entity"
     
+    # A simple flag to avoid the need for isinstance.
+    isentity = True
+    
     # Width and height of the body of this entity. Used in collision tests.
     # Override in subclasses to change the size.
     body_size = 25

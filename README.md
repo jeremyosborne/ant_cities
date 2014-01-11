@@ -44,9 +44,6 @@ Key
 * In process
 - Not Started or on hold.
 
-* Collision Detection:
-    * Add a simple collide interface to the destination component that will
-      happily handle points or entities.
 - Food as economy:
     - new ants
     - evolutionary advancements

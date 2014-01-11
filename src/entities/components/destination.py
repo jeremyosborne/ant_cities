@@ -1,7 +1,7 @@
 from entities.components.component import Component
-from entities.entity import Entity
 from commonmath import Heading, courseto, distanceto
-import math
+
+
 
 class Destination(Component):
     """Handles various destination types for an entity and makes sure things
@@ -43,17 +43,13 @@ class Destination(Component):
     def location(self):
         """Location coordinates (x,y) of where we are headed.
         """
-        if isinstance(self.val, Entity):
-            return self.val.location
-        else:
-            # Assume that we have a location.
-            return self.val
+        return self.val.location if hasattr(self.val, "location") else self.val
 
     @property
     def courseto(self):
         """{Heading|None} Straight line heading to destination.
         """
-        if isinstance(self.val, Entity):
+        if hasattr(self.val, "isentity"):
             return Heading(courseto(self.entity.location, self.val.location))
         elif self.ispoint:
             return Heading(courseto(self.entity.location, self.val))
@@ -75,11 +71,7 @@ class Destination(Component):
     def isentity(self):
         """{bool} Is the destination a valid entity?
         """
-        ent = self._val
-        if isinstance(ent, Entity) and ent.inworld:
-            return True
-        else:
-            return False
+        return True if hasattr(self._val, "isentity") and self._val.inworld else False
     
     @property
     def ispoint(self):
@@ -88,10 +80,7 @@ class Destination(Component):
         Does not confirm the validity of the point.
         """
         p = self._val
-        if hasattr(p, "__getitem__") and (p[0] is not None) and (p[1] is not None):
-            return True
-        else:
-            return False
+        return True if hasattr(p, "__getitem__") and (p[0] is not None) and (p[1] is not None) else False
     
     @property
     def isvalid(self):
@@ -101,6 +90,18 @@ class Destination(Component):
         in place.
         """
         return self.ispoint or self.isentity
+    
+    @property
+    def arrived(self):
+        """{bool} If we are at our destination via some form of collision
+        or touch test.
+        """
+        if self.isentity:
+            return self.entity.body.colliderect(self._val.body)
+        elif self.ispoint:
+            return self.entity.body.collidepoint(self._val)
+        else:
+            return False
     
     def set(self, val):
         """Convenience for setting the value of the destination.
