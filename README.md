@@ -45,7 +45,8 @@ Key
 - Not Started or on hold.
 
 * Components
-    * Add an inventory and trading component.
+    * Add a tagging system for entities. Use a Set.
+    * Add an inventory and iterentity trading component.
 - Food as economy:
     - new ants
     - evolutionary advancements
