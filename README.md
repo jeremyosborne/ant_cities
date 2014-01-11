@@ -44,10 +44,24 @@ Key
 * In process
 - Not Started or on hold.
 
+* Components
+    * Add an inventory and trading component.
 - Food as economy:
     - new ants
     - evolutionary advancements
     - New food types
+- Ant-god controls:
+    - Hostility level
+    - Friendly index
+    - Helpful level
+    - Health minded ants or self sacrifice?
+    - Expansionn oriented or homebodies?
+    - Conversion or kill?
+- Evolutionary advancements
+    - vision increase (see food and enemies better)
+    - conversion capability
+    - Different Ant types
+    - The Swarm
 - User Interface
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
@@ -62,18 +76,6 @@ Key
     - Add collision detection so that entities can not run over each other.
 - Multi-Process, Sim and Render Thread
 - Saving settings...
-- Ant-god controls:
-    - Hostility level
-    - Friendly index
-    - Helpful level
-    - Health minded ants or self sacrifice?
-    - Expansionn oriented or homebodies?
-    - Conversion or kill?
-- Evolutionary advancements
-    - vision increase (see food and enemies better)
-    - conversion capability
-    - Different Ant types
-    - The Swarm
 - Game World
     - Procedural world generation.
 - Spatial Index:

@@ -132,16 +132,13 @@ class Velocity(Component):
             self.speed = mmval(self.target_speed, speed)
         
         if self.target_course != None and self.target_course != self.course:
-            direction = self.target_course.angleto(self.course)
-            delta = time_passed * self.rotation_speed
-            # We want the uncorrected rotational number here for the check since 
-            # courses correct themselves at the 0 heading (like a numeric 
-            # cyclic queue).
-            if (direction > 0 and (self.course.deg + delta) >= self.target_course) or \
-                (direction < 0 and (self.course.deg - delta) <= self.target_course):
-                self.course = self.target_course
-            else:
+            angleto = self.course.angleto(self.target_course)
+            direction = -1 if angleto <= 0 else 1
+            delta = direction * time_passed * self.rotation_speed
+            if abs(delta) <= abs(angleto):
                 self.course += delta
+            else:
+                self.course = self.target_course
                 
         loc = self.entity.location
         dx, dy = self.deltaxy

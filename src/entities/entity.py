@@ -25,6 +25,9 @@ class Components(object):
         # dict provides faster access than list.
         return self._index[key]
 
+    def __contains__(self, key):
+        return key in self._index
+
     def add(self, cname, **kwargs):
         """Interface to adding a component to an entity.
         

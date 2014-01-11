@@ -18,10 +18,10 @@ class Ant(Entity):
         self.brain.set_state("exploring")
         
         self.c.add("health")
-        self.c.add("energy", burn_rate=10.)
+        self.c.add("energy", burn_rate=2.)
         
         self.c.add("facing")
-        self.c.add("velocity", max_speed=120., acceleration=30., rotation_speed=360.)
+        self.c.add("velocity", max_speed=120., acceleration=30., rotation_speed=180.)
         self.c.add("destination")
 
         # {Entity} What is our home base.
