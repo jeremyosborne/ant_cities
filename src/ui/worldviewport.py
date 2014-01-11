@@ -260,15 +260,15 @@ class WorldViewport(viewport.Viewport):
         # Using the spatial index to determine what to render,
         # except let's not use the index if we're completely zoomed out. 
         if self.zoom_area_width != world.width:
-            #Calculate the range.
+            # Calculate the range.
             if self.zoom_area_width > self.zoom_area_height:
                 the_range = self.zoom_area_width/2
             else:
                 the_range = self.zoom_area_height/2
             
-            entity_list_in_range = world.spatial_index.find_all_in_range((self.world_viewable_rect.centerx, self.world_viewable_rect.centery), the_range)
+            entity_list_in_range = world.find_all_in_range((self.world_viewable_rect.centerx, self.world_viewable_rect.centery), the_range)
     
-            #Render each entity onto the framebuffer.
+            # Render each entity onto the framebuffer.
             for entity in entity_list_in_range:
                 self.render_entity(entity[0])
         else:
@@ -371,7 +371,7 @@ class WorldViewport(viewport.Viewport):
             # Clicks outside of the view won't cancel the tracking.
             if ui_container.collidepoint(ui_click_point) == True:
                 game_world_point = self.screenpoint_to_gamepoint(*event.pos)
-                entity = game_simulation.world.spatial_index.find_closest(game_world_point, 150)[0]
+                entity, _ = game_simulation.world.find_closest(game_world_point, 150)
                 game_simulation.unit_information_display.set_unit(entity)
         
         if event.button == 4:  

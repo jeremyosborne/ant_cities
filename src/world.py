@@ -34,7 +34,7 @@ class World(object):
         self.stats = Counter()
         
         #-----------------------------------------------------------------------
-        #Setting up initial entity elements.
+        # Setting up initial entities.
         #-----------------------------------------------------------------------
 
 #         if __debug__:
@@ -113,7 +113,7 @@ class World(object):
         """
         return self.entities.get(entity_id)
 
-    def find_closest(self, location, the_range=100., validation=lambda e: True):
+    def find_closest(self, location, the_range=100., validation=None):
         """Find the closest entity to a point.
         
         In the event that there might be more than one entity that
@@ -132,7 +132,23 @@ class World(object):
         reference and distance is the distance in pixels from the initial
         location.
         """
-        return self.spatial_index.find_closest(location, the_range, validate=validation)
+        return self.spatial_index.find_closest(location, the_range, validation)
+    
+    def find_all_in_range(self, location, the_range=100., validation=None):
+        """Returns list of all entities in range.
+
+        location {tuple} A point object that expresses x,y world coordinates
+        as items 0,1.
+        [the_range] {number} Number of pixels from a location to search for
+        an entity. Value is constrained by default.
+        [validation] {function} A validation function that is used to filter()
+        the entities found. The validation function will be passed a single
+        argument which is a closest entity candidate. The function should return
+        True if the entity is a valid choice, false if not. 
+
+        return {Entity[]} any entities in range, or an empty list.
+        """
+        return self.spatial_index.find_all_in_range(location, the_range, validation)
     
     def process(self, time_passed):
         """Update the world.

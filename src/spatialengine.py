@@ -15,8 +15,7 @@ class SpatialEngine(object):
         world_size_x {int} number of pixels wide the world is.
         world_size_y {int} number of pixels hight he world is.
         """
-        # Edge size of a cell (width or height). 
-        # Code is not generalized to suppport anything but 100x100 cell size.  
+        # Edge length of a cell (width and height). Cells are square.
         self.cell_size = 100
         
         # Spatial index keyed with 
@@ -109,7 +108,7 @@ class SpatialEngine(object):
         """Returns list of all entities in range.
 
         point {Vec2d} Location to search from.
-        [tolerance=5.0] {float} Number of pixels radius to allow for a match.
+        [the_range=5.0] {float} Number of pixels radius to allow for a match.
         [validate] {function} If included, filters out possible results.
 
         return {Entity[]} any entities in range, or an empty list.
