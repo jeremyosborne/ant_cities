@@ -27,7 +27,8 @@ class World(object):
         # Dictionary of all the entities.
         self.entities = {}
 
-        self.time_born = time.time()
+        # The age of the world (real seconds of game time passed).
+        self.age = 0
         
         #-----------------------------------------------------------------------
         # Setting up initial entities.
@@ -151,6 +152,9 @@ class World(object):
         # The entities work in seconds.
         time_passed_seconds = time_passed / 1000.0
         
+        # Increase game time passed.
+        self.age += time_passed_seconds
+        
         # Here's our chance to throw in a new leaf.
         if randint(1, 20) == 1:
             leaf = Leaf(self)
@@ -159,12 +163,6 @@ class World(object):
         
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
-
-#         if __debug__:
-#             # Do some processing on dummy.
-#             dummy, _ = self.find_closest((self.width/2,self.height/2), 10000, validation=lambda e: e.name == "dummy")
-#             if dummy is not None:
-#                 print "I am dummy!", dummy
     
     def count(self, validation=None):
         """Retrieve current counts of entities in world.

@@ -44,14 +44,15 @@ class GameSimulation():
                                 globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1], 
                                 events)
 
-        #Unit information display.
+        # Unit information display.
         self.unit_information_display = ViewUnitInfoBox(globaldata.SCREEN_SIZE[0]-512, globaldata.SCREEN_SIZE[1]-170, 
                                                         256, 170,
                                                         events, imageassets)
           
-        # FPS Display
+        # Frames per second.
         self.fps_display = FPSDisplay(5, 5)
         
+        # Mouse coordinates.
         self.mouse_display = MouseDisplay(5, 25)
         
         # Base Information Displays
@@ -74,7 +75,7 @@ class GameSimulation():
                                                 data_to_display)
         # World Info Display
         data_to_display = [
-            ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
+            ("Game Time:", lambda: str(int(self.world.age))),
             ("Leaves:", lambda: str(len(filter(lambda e: e.name == "leaf", self.world.entities.itervalues())))),
         ]
         self.world_info_display = DataColumnDisplay(402, globaldata.SCREEN_SIZE[1]-170, 
