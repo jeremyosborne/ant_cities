@@ -23,35 +23,16 @@ class Ant(Entity):
         self.c.add("facing")
         self.c.add("velocity", max_speed=120., acceleration=30., rotation_speed=180.)
         self.c.add("destination")
+        self.c.add("inventory")
 
         # {Entity} What is our home base.
         self.base = base
         
-        # {Entity|None} Ants can carry a single entity (that is likely a leaf).
-        self.inventory = None
-
     @property
     def team_id(self):
         """What team are we on?
         """
         return self.base.c["team"].id
-
-    def carry(self, entity):
-        """Ant picks up the entity and takes possession of it.
-        """
-        # Remove the entity from the world.
-        # TODO: Should make this transactional and prevent attempting to
-        # remove things that don't exist in the world. (Perhaps remove_entity
-        # should remove the entity being removed, or return none?)
-        self.world.remove_entity(entity)
-        self.inventory = entity
-        
-    def drop(self):
-        """Drop a particular item, assumed to only be called at the base.
-        """
-        if self.inventory:
-            self.base.add_resource(self.inventory)
-            self.inventory = None
         
     def process(self, time_passed):
         Entity.process(self, time_passed)

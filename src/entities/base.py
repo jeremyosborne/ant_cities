@@ -3,7 +3,8 @@ from entities.ant import Ant
 
 
 class Base(Entity):
-    
+    """The anthill of our ants.
+    """
     name = "base"
     
     body_size = 50.
@@ -14,6 +15,7 @@ class Base(Entity):
 
         self.c.add("team", id=team_id, name=team_name)
         self.c.add("energy", maximum=1000, val=0)
+        self.c.add("inventory")
         
         self.leaves = 0
     
@@ -25,18 +27,13 @@ class Base(Entity):
     
     def process(self, time_passed):
         # Process resources.
-        if self.leaves:
-            self.leaves -= 1
-            self.c["energy"].val += 5
+        inv = self.c["inventory"].carried
+        if inv:
+            # One item at a time.
+            item = inv.pop()
+            if item.name == "leaf":
+                self.c["energy"].val += 5
     
-    def add_resource(self, resource):
-        """Add a resource to this base.
-        
-        resource {Entity} Resource to be added.
-        """
-        if resource.name == "leaf":
-            self.leaves += 1
-
     def remove_resource(self, resource_name, amount=1):
         """Removes a resource from the base.
         """

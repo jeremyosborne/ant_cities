@@ -49,7 +49,7 @@ class Destination(Component):
     def courseto(self):
         """{Heading|None} Straight line heading to destination.
         """
-        if hasattr(self.val, "isentity"):
+        if self.isentity:
             return Heading(courseto(self.entity.location, self.val.location))
         elif self.ispoint:
             return Heading(courseto(self.entity.location, self.val))

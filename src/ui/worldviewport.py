@@ -341,9 +341,9 @@ class WorldViewport(viewport.Viewport):
                 image = pygame.transform.rotate(image, entity.c["facing"].deg*-1.)
                 # Inventory display.
                 if self.current_zoom_level < self.strategic_zoom_level:
-                    # If it's carrying a leaf, let's draw that too.
-                    if entity.inventory:
-                        inventory_image = entity_images(entity.inventory)
+                    if entity.c["inventory"].carried:
+                        # We assume ants are only carrying a leaf.
+                        inventory_image = entity_images(entity.c["inventory"].carried[0])
                         image = pygame.transform.rotate(inventory_image, entity.c["facing"].deg*-1.)
 
                 if self.current_zoom_level < self.strategic_zoom_level:

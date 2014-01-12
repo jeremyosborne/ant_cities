@@ -44,26 +44,6 @@ Key
 * In process
 - Not Started or on hold.
 
-* Components
-    * Add an inventory and iterentity trading component.
-        * Removing and deleting (garbage collecting) entities should become
-          different steps.
-- Food as economy:
-    - new ants
-    - evolutionary advancements
-    - New food types
-- Ant-god controls:
-    - Hostility level
-    - Friendly index
-    - Helpful level
-    - Health minded ants or self sacrifice?
-    - Expansionn oriented or homebodies?
-    - Conversion or kill?
-- Evolutionary advancements
-    - vision increase (see food and enemies better)
-    - conversion capability
-    - Different Ant types
-    - The Swarm
 - User Interface
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
@@ -73,6 +53,18 @@ Key
       game sim (separation of concerns, future availability of multi-core
       support).
     - Allow preservation of aspect ratio and auto scaling.
+- Ant-god controls:
+    - Hostility level
+    - Friendly index
+    - Helpful level
+    - Health minded ants or self sacrifice?
+    - Expansion oriented or homebodies?
+    - Conversion or kill?
+- Evolutionary advancements
+    - vision increase (see food and enemies better)
+    - conversion capability
+    - Different Ant types
+    - The Swarm
 - Ant Entity
     - Adjust leaf carrying position from back to the mouth.
     - Add collision detection so that entities can not run over each other.
@@ -84,8 +76,8 @@ Key
     - Keep the seeding of the expected index, but allow dynamic creation of cells
     outside of the world area if/when an entity travels outside the boundaries.
         - Note: The spatial index also needs to keep an extent of max boundaries
-        so that if a large search value is placed in, only possible cells are searched
-        through.
+        so that if a large search value is placed in, only possible cells are
+        searched through.
 
 
 

@@ -15,6 +15,8 @@ class Leaf(Entity):
         # Leaves disappear after a certain number of seconds.
         self.c.add("age", lifespan=120)
         
+        self.c.add("inventory", can_be_taken=True)
+        
     def process(self, time_passed):
         Entity.process(self, time_passed)
         if self.c["age"].old:

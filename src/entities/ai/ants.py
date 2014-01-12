@@ -45,7 +45,7 @@ class Exploring(BrainState):
             # New course.
             self.set_random_destination()
         else:
-            # Assume we have a valid destionation at this point.
+            # Assume we have a valid destination at this point.
             self.entity.c["velocity"].fullspeedto(dest)
             
         # Increase frame counter.
@@ -70,7 +70,7 @@ class Seeking(BrainState):
         if dest.isentity == False:
             return "exploring"
         elif dest.isentity and dest.arrived:
-            self.entity.carry(dest.val)
+            self.entity.c["inventory"].pickup(dest.val)
             return "delivering"
         else:
             # Head to the leaf.
@@ -92,7 +92,7 @@ class Delivering(BrainState):
         # There shouldn't be any option for this to be anything other than a base.
         if dest.isentity and dest.arrived:
             # Assumes leaf right now.
-            self.entity.drop()
+            self.entity.c["inventory"].give("leaf", dest.val)
             return "exploring"
         else:
             # Head to base.
