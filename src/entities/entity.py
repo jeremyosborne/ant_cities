@@ -64,12 +64,24 @@ class Entity(object):
     # override in constructor.
     name = "entity"
     
-    # A simple flag to avoid the need for isinstance.
-    isentity = True
-    
     # Width and height of the body of this entity. Used in collision tests.
     # Override in subclasses to change the size.
     body_size = 25
+
+    # A simple flag to avoid the need for isinstance.
+    isentity = True
+
+    # Recognized official flags.
+    # Flags can be used for experimental states while a more robust system
+    # is developed.
+    FLAGS = {
+             # Entity should be garbage collected.
+             "destroyed",
+             # Entity is in play.
+             "in world",
+             # Entity is within an inventory and not part of the world.
+             "in inventory",
+             }
 
     def __init__(self, world):
 
@@ -91,9 +103,9 @@ class Entity(object):
         
         # Component interface.
         self.c = Components(self)
-                
-        # A flag flipped when this entity has been deleted. For lazy cleanup.
-        self.deleted = False
+        
+        # Flags indicating various states entity is in.
+        self.flags = set()
         
     @property
     def location(self):
@@ -170,4 +182,4 @@ class Entity(object):
         Intended to be augmented in subclasses, please call the super when
         overriding.
         """
-        self.deleted = True
+        self.flags.add("destroyed")

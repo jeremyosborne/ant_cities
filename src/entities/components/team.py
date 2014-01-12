@@ -3,7 +3,6 @@
 This should become a management abstract object and not a component.
 """
 
-from collections import Counter
 from entities.components.component import Component
 
 class Team(Component):
@@ -22,9 +21,6 @@ class Team(Component):
         """
         self.id = id
         self.name = name
-        # Various score counters. 
-        # Short term solution to cut down on counting variables.
-        self.stats = Counter()
 
     def __str__(self):
         return "Team (%s): %s" % (self.id, self.name)

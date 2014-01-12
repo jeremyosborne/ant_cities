@@ -5,7 +5,6 @@ Created on Jun 19, 2013
 '''
 
 import time
-from collections import Counter
 from random import randint
 from commonmath import random_radial_offset, mmval
 from entities.base import Base
@@ -29,9 +28,6 @@ class World(object):
         self.entities = {}
 
         self.time_born = time.time()
-        # Various score counters. 
-        # Short term solution to cut down on counting variables.
-        self.stats = Counter()
         
         #-----------------------------------------------------------------------
         # Setting up initial entities.
@@ -63,20 +59,17 @@ class World(object):
             ant = self.base_2.create_entity("ant", startxy)
             self.add_entity(ant)
         
-    def add_entity(self, entity):   #The entity is whatever game entity object is being passed in.        
+    def add_entity(self, entity):
+        """Place the entity in the world and into the update cycle.
+        """
         self.entities[entity.id] = entity
-        # Gross vs. net.
-        self.stats[entity.name] += 1
-        self.stats[entity.name+"-added"] += 1
-        
+
     def remove_entity(self, entity):
+        """Remove an entity from the world and from the update cycle.
+        """
         del self.entities[entity.id]
         entity.delete()
         self.spatial_index.remove(entity)
-
-        # Gross vs. net.
-        self.stats[entity.name] -= 1
-        self.stats[entity.name+"-removed"] += 1
 
     def validate_entity_location(self, entity):
         """Entities should call when they change their own location.

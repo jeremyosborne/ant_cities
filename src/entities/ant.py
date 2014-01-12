@@ -71,8 +71,3 @@ class Ant(Entity):
         if health.dead:
             self.world.remove_entity(self)
     
-    def delete(self):
-        # Update team stats.
-        Entity.delete(self)
-        self.base.c["team"].stats[self.name] -= 1
-        self.base.c["team"].stats[self.name+"-removed"] += 1

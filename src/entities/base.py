@@ -36,7 +36,6 @@ class Base(Entity):
         """
         if resource.name == "leaf":
             self.leaves += 1
-            self.c["team"].stats["leaves-returned"] += 1
 
     def remove_resource(self, resource_name, amount=1):
         """Removes a resource from the base.
@@ -57,13 +56,10 @@ class Base(Entity):
         
         returns the entity.
         """
-        team = self.c["team"]
         # Right now, we only create ants.
         entity = None
         if name == "ant":
             entity = Ant(self.world, self)
-            team.stats[entity.name] += 1
-            team.stats[entity.name+"-added"] += 1
             basex, basey = self.location
             offsetx, offsety = placement_offset
             entity.location = (basex+offsetx, basey+offsety)

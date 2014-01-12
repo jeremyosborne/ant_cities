@@ -56,11 +56,8 @@ class GameSimulation():
         
         # Base Information Displays
         data_to_display = [
-            ("# Ants Born:", lambda: str(self.world.base_1.c["team"].stats["ant-added"])),
-            ("# Ants Died:", lambda: str(self.world.base_1.c["team"].stats["ant-removed"])),
-            ("# Ants Net:", lambda: str(self.world.base_1.c["team"].stats["ant"])),
+            ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_1, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.base_1.c["energy"].val)),
-            ("Leaf Storage:", lambda: str(self.world.base_1.leaves)),
         ]
         self.base_display_1 = DataColumnDisplay(1, globaldata.SCREEN_SIZE[1]-170, 
                                                 200, 170,
@@ -68,11 +65,8 @@ class GameSimulation():
                                                 data_to_display)
         
         data_to_display = [
-            ("# Ants Born:", lambda: str(self.world.base_2.c["team"].stats["ant-added"])),
-            ("# Ants Died:", lambda: str(self.world.base_2.c["team"].stats["ant-removed"])),
-            ("# Ants Net:", lambda: str(self.world.base_2.c["team"].stats["ant"])),
+            ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_2, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.base_2.c["energy"].val)),
-            ("Leaf Storage:", lambda: str(self.world.base_2.leaves)),
         ]        
         self.base_display_2 = DataColumnDisplay(201, globaldata.SCREEN_SIZE[1]-170, 
                                                 200, 170,
@@ -81,10 +75,7 @@ class GameSimulation():
         # World Info Display
         data_to_display = [
             ("Game Time:", lambda: str(int(time.time() - self.world.time_born))),
-            ("Bases:", lambda: str(self.world.stats["base"])),
-            ("Leaves:", lambda: str(self.world.stats["leaf"])),
-            ("Leaves Added:", lambda: str(self.world.stats["leaf-added"])),
-            ("Leaves Removed:", lambda: str(self.world.stats["leaf-removed"])),
+            ("Leaves:", lambda: str(len(filter(lambda e: e.name == "leaf", self.world.entities.itervalues())))),
         ]
         self.world_info_display = DataColumnDisplay(402, globaldata.SCREEN_SIZE[1]-170, 
                                               200, 170,
