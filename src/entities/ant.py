@@ -69,5 +69,5 @@ class Ant(Entity):
         
         # Should the ant die?
         if health.dead:
-            self.world.remove_entity(self)
+            self.flags.add("dead")
     

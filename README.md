@@ -48,8 +48,6 @@ Key
     * Add an inventory and iterentity trading component.
         * Removing and deleting (garbage collecting) entities should become
           different steps.
-        * Remove the inworld check and replace with a check for "contained" for
-          leaves in the inventory.
 - Food as economy:
     - new ants
     - evolutionary advancements

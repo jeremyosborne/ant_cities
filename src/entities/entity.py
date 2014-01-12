@@ -75,6 +75,10 @@ class Entity(object):
     # Flags can be used for experimental states while a more robust system
     # is developed.
     FLAGS = {
+             # Entity is no longer participating in the game.
+             # Entity with this flag should sit in the world until the world
+             # garbage collects it, decays it, etc.
+             "dead",
              # Entity should be garbage collected.
              "destroyed",
              # Entity is in play.
@@ -82,6 +86,11 @@ class Entity(object):
              # Entity is within an inventory and not part of the world.
              "in inventory",
              }
+    
+    # If any of these flags are present, skip the default process loop.
+    # These are flags that could be present if the entity has not been
+    # removed from the world.
+    NO_PROCESS_FLAGS = set(["dead", "destroyed"])
 
     def __init__(self, world):
 
@@ -130,15 +139,6 @@ class Entity(object):
         """
         return None
     
-    @property
-    def inworld(self):
-        """{bool} In play or have we been removed from the world.
-        """
-        if self.world and self.world.find(self.id) == self:
-            return True
-        else:
-            return False
-    
     def find_closest_entity(self, the_range=100., name=None):
         """Finds an entity closest to self within given range.
         
@@ -169,14 +169,15 @@ class Entity(object):
         time_passed {float} how much time has passed since the last call in 
         seconds.
         """
-        # AI.
-        self.brain.process(time_passed)
-
-        # Update components.
-        for component in self.c:
-            component.process(time_passed)
+        if not (self.NO_PROCESS_FLAGS & self.flags):
+            # AI.
+            self.brain.process(time_passed)
     
-    def delete(self):
+            # Update components.
+            for component in self.c:
+                component.process(time_passed)
+    
+    def destroy(self):
         """Called during the end of life removal of an entity from the world.
         
         Intended to be augmented in subclasses, please call the super when

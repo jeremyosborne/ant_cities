@@ -71,7 +71,7 @@ class Destination(Component):
     def isentity(self):
         """{bool} Is the destination a valid entity?
         """
-        return True if hasattr(self._val, "isentity") and self._val.inworld else False
+        return True if hasattr(self._val, "isentity") and ("in world" in self._val.flags) else False
     
     @property
     def ispoint(self):

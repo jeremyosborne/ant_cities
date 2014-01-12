@@ -62,15 +62,35 @@ class World(object):
         
     def add_entity(self, entity):
         """Place the entity in the world and into the update cycle.
+
+        entity {Entity} An entity derived instance.
         """
         self.entities[entity.id] = entity
+        
+        # Update state.
+        entity.flags.add("in world")
 
     def remove_entity(self, entity):
-        """Remove an entity from the world and from the update cycle.
+        """Remove an entity from the world and from the update cycle but
+        do not mark the entity for deletion.
+        
+        entity {Entity} An entity derived instance.
         """
         del self.entities[entity.id]
-        entity.delete()
         self.spatial_index.remove(entity)
+        entity.flags.discard("in world")
+
+    def destroy_entity(self, entity):
+        """Remove an entity from the world, from the update cycle, and mark
+        for deletion.
+        
+        If the entity has already been removed from the world, or was never
+        placed within the world, the entity can just be destroyed.
+        
+        entity {Entity} An entity derived instance.
+        """
+        self.remove_entity(entity)
+        entity.destroy()
 
     def validate_entity_location(self, entity):
         """Entities should call when they change their own location.
@@ -163,6 +183,8 @@ class World(object):
         
         for entity in self.entities.values():
             entity.process(time_passed_seconds)
+            if "dead" in entity.flags:
+                self.destroy_entity(entity)
     
     def count(self, validation=None):
         """Retrieve current counts of entities in world.
