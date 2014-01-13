@@ -7,8 +7,8 @@ class FPSDisplay(viewport.Viewport):
         self.font = pygame.font.SysFont("arial", 16)
         self.background = pygame.surface.Surface((125, 20)).convert()
         self.background.fill((255, 255, 255))
-        #Make it such that when the surface is blitted on something else,
-        #the background is transparent.
+        # Make it such that when the surface is blitted on something else,
+        # the background is transparent.
         self.surface.set_colorkey((255, 255, 255))
         
         self.controller = controller
@@ -17,7 +17,7 @@ class FPSDisplay(viewport.Viewport):
         
         fps = self.controller.game_simulation.clock.get_fps()
 
-        #Clear the surface.
+        # Clear the surface.
         self.surface.blit(self.background, (0, 0))    
 
         label = self.font.render(str(fps), True, (0, 0, 0))

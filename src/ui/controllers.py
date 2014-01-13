@@ -33,6 +33,8 @@ class GameUIController(UIController):
     
     # {Entity} What entity or entities are selected?
     entity_selection = None
+    # {bool} Should we track the entity?
+    entity_selection_track = False
     
     def __init__(self, game_simulation):
         super(GameUIController, self).__init__()

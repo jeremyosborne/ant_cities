@@ -250,6 +250,12 @@ class WorldViewport(viewport.Viewport):
         elif (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
             self.scroll_viewport(y=self.scroll_speed)
 
+        # If we are tracking an entity...
+        if self.controller.entity_selection_track == True and self.controller.entity_selection:
+            # ...move the view.
+            self.move_viewport(*self.controller.entity_selection.location)
+
+
         # Using the spatial index to determine what to render,
         # except let's not use the index if we're completely zoomed out. 
         if self.zoom_area_width != world.width:

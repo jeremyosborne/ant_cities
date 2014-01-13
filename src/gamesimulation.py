@@ -38,7 +38,7 @@ class GameSimulation():
         #screen = pygame.display.set_mode(globaldata.SCREEN_SIZE, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
 
         # The current stack of ui elements.
-        self.ui = []
+        self.ui_views = []
 
         # Do we have a unit selected?
         self.ui_controller = GameUIController(self)
@@ -48,60 +48,54 @@ class GameSimulation():
         self.world_viewport = WorldViewport(globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1], 
                                       globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
                                       self.ui_controller)
-        self.ui.append(self.world_viewport)
+        self.ui_views.append(self.world_viewport)
         
         # Frames per second.
-        self.fps_display = FPSDisplay(5, 5, self.ui_controller)
-        self.ui.append(self.fps_display)
+        self.ui_views.append(FPSDisplay(5, 5, self.ui_controller))
         
         # Mouse coordinates.
-        self.mouse_display = MouseDisplay(5, 25, self.ui_controller)
-        self.ui.append(self.mouse_display)
+        self.ui_views.append(MouseDisplay(5, 25, self.ui_controller))
         
-        #Setup UI elements.
-        self.mini_map = MiniMap(globaldata.SCREEN_SIZE[0]-256, globaldata.SCREEN_SIZE[1]-170, 
+        # Mini map.
+        self.ui_views.append(MiniMap(globaldata.SCREEN_SIZE[0]-256, globaldata.SCREEN_SIZE[1]-170, 
                                 256, 170, 
                                 globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1], 
-                                self.ui_controller)
-        self.ui.append(self.mini_map)
+                                self.ui_controller))
 
         # Unit information display.
-        self.unit_info_box = UnitInfoBox(globaldata.SCREEN_SIZE[0]-512, globaldata.SCREEN_SIZE[1]-170, 
-                                         256, 170,
-                                         self.ui_controller, imageassets)
-        self.ui.append(self.unit_info_box)
+        self.ui_views.append(UnitInfoBox(globaldata.SCREEN_SIZE[0]-512, globaldata.SCREEN_SIZE[1]-170, 
+                                 256, 170,
+                                 self.ui_controller, imageassets))
         
-        # Base Information Displays
+        # Base 1 Display
         data_to_display = [
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_1, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.base_1.c["energy"].val)),
         ]
-        self.base_display_1 = DataColumnDisplay(1, globaldata.SCREEN_SIZE[1]-170, 
-                                                200, 170,
-                                                str(self.world.base_1.c["team"]),
-                                                data_to_display)
-        self.ui.append(self.base_display_1)
-        
+        self.ui_views.append(DataColumnDisplay(1, globaldata.SCREEN_SIZE[1]-170, 
+                                        200, 170,
+                                        str(self.world.base_1.c["team"]),
+                                        data_to_display))
+
+        # Base 2 Display        
         data_to_display = [
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_2, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.base_2.c["energy"].val)),
         ]        
-        self.base_display_2 = DataColumnDisplay(201, globaldata.SCREEN_SIZE[1]-170, 
-                                                200, 170,
-                                                str(self.world.base_2.c["team"]),
-                                                data_to_display)
-        self.ui.append(self.base_display_2)
-        
+        self.ui_views.append(DataColumnDisplay(201, globaldata.SCREEN_SIZE[1]-170, 
+                                        200, 170,
+                                        str(self.world.base_2.c["team"]),
+                                        data_to_display))
+
         # World Info Display
         data_to_display = [
             ("Game Time:", lambda: str(int(self.world.age))),
             ("Leaves:", lambda: str(len(filter(lambda e: e.name == "leaf", self.world.entities.itervalues())))),
         ]
-        self.world_info_display = DataColumnDisplay(402, globaldata.SCREEN_SIZE[1]-170, 
+        self.ui_views.append(DataColumnDisplay(402, globaldata.SCREEN_SIZE[1]-170, 
                                               200, 170,
                                               "World Info",
-                                              data_to_display)
-        self.ui.append(self.world_info_display)
+                                              data_to_display))
 
     def process(self):
 
@@ -112,7 +106,7 @@ class GameSimulation():
         self.world.process(time_passed)
 
         # Update UI.
-        for v in self.ui:
+        for v in self.ui_views:
             v.update()
             v.render(self.screen)
 

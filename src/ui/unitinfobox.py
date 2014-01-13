@@ -46,25 +46,23 @@ class UnitInfoBox(viewport.Viewport):
         
         gamesimulation {GameSimulation} The reference to the GameSimulation.
         """
-        world_viewport = self.controller.game_simulation.world_viewport
         ent = self.controller.entity_selection
         
         self.surface.blit(self.background, (0, 0))
         
+        # If we have not selected an entity.
         if not ent:
             self.surface.blit(self.background, (0, 0))
             self.track = False
             return
 
-        # else...
-        if self.track == True:
-            # Track the unit visually and show toggle off.
-            world_viewport.move_viewport(*ent.location)
+        # If we do have an entity selected, give the option to track.
+        if self.controller.entity_selection_track == True:
             self.surface.blit(self.Start_Tracking_Button, (self.width - 30, 0))            
         else:
             self.surface.blit(self.Stop_Tracking_Button, (self.width -30, 0))
             
-        # Unit details.
+        # And provide details about the unit.
         unit_text = self.font.render(ent.name, True, (255, 255, 255))
         w, _ = unit_text.get_size()
         self.surface.blit(unit_text, ((self.width / 2) - w / 2, 15))
