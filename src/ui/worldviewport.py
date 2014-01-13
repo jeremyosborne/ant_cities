@@ -250,6 +250,10 @@ class WorldViewport(viewport.Viewport):
         elif (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
             self.scroll_viewport(y=self.scroll_speed)
 
+        # Every round, publish an update of where the mouse is at relative to
+        # the game world.
+        self.controller.mouse_worldxy = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
+
         # If we are tracking an entity...
         if self.controller.entity_selection_track == True and self.controller.entity_selection:
             # ...move the view.

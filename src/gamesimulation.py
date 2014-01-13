@@ -37,11 +37,11 @@ class GameSimulation():
         # Full screen mode.
         #screen = pygame.display.set_mode(globaldata.SCREEN_SIZE, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
 
-        # The current stack of ui elements.
-        self.ui_views = []
-
         # Do we have a unit selected?
         self.ui_controller = GameUIController(self)
+
+        # The current stack of ui elements.
+        self.ui_views = []
 
         # viewport is the screen entity that contains the view of the game world.
         # The minus 170 below is the y size of the UI elements.

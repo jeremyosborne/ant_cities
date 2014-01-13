@@ -1,7 +1,8 @@
-from events import EventPublisher, EventSubscriber
 import pygame
 from pygame import KEYDOWN, K_ESCAPE, K_TAB, K_q, K_m,\
                     MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
+from events import EventPublisher, EventSubscriber
+
 
 
 class UIController(EventPublisher, EventSubscriber):
@@ -35,6 +36,9 @@ class GameUIController(UIController):
     entity_selection = None
     # {bool} Should we track the entity?
     entity_selection_track = False
+
+    # {tuple} (x,y) Mouse coordinates translated to game world coordinates.
+    mouse_worldxy = (0, 0)
     
     def __init__(self, game_simulation):
         super(GameUIController, self).__init__()
@@ -54,3 +58,11 @@ class GameUIController(UIController):
             self.pub("MOUSEBUTTONUP", ev=event)
         elif event.type == MOUSEMOTION:
             self.pub("MOUSEMOTION", ev=event)
+
+    @property
+    def fps(self):
+        """{float} What is the current calculated fps?
+        """
+        return round(self.game_simulation.clock.get_fps(), 1)
+    
+        
