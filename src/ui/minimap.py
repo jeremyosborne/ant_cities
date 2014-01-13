@@ -71,19 +71,11 @@ class MiniMap(viewport.Viewport):
             print "minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
             print "minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height        
 
-    def update(self, **kwargs):
-        """Update the mini view of the game world.
-        
-        Accepts kwargs, but expects the following labeled arguments:
-        
-        gamesimulation {GameSimulation} The reference to the GameSimulation.
+    def update(self):
+        """Update the mini view of the game world.        
         """
-        world = kwargs["gamesimulation"].world
-        world_viewport = kwargs["gamesimulation"].world_viewport
-        draw = kwargs["gamesimulation"].globaldata.render_minimap
-        
-        if not draw:
-            return
+        world = self.controller.game_simulation.world
+        world_viewport = self.controller.game_simulation.world_viewport
 
         # Clear the mini map.
         self.minimap_surface.blit(self.minimap_background, (0, 0))

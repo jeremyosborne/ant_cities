@@ -21,10 +21,8 @@ class Viewport(pygame.Surface):
         # Rectangle area matching the actual screen area this viewport maps to.
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
     
-    def update(self, **kwargs):
-        """Each view will be asked to update prior to rendering.
-        
-        Views must accept all arguments, even the ones they don't want.
+    def update(self):
+        """Each view will be asked to update prior to rendering.        
         """
         pass
         

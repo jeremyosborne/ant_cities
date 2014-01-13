@@ -16,7 +16,7 @@ class MouseDisplay(viewport.Viewport):
         
         self.controller = controller
         
-    def update(self, **kwargs):
+    def update(self):
         
         world_viewport = self.controller.game_simulation.world_viewport
 

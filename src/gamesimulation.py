@@ -113,7 +113,7 @@ class GameSimulation():
 
         # Update UI.
         for v in self.ui:
-            v.update(gamesimulation=self)
+            v.update()
             v.render(self.screen)
 
         pygame.display.flip()

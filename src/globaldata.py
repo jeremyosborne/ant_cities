@@ -19,6 +19,3 @@ WORLD_SIZE = (1200*6, 530*6)
 NEST_POSITION = (WORLD_SIZE[0] - 256, WORLD_SIZE[1]/2)
 NEST_POSITION_2 = (256, WORLD_SIZE[1]/2)
 
-# Control settings.
-render_world = True
-render_minimap = True

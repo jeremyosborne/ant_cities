@@ -46,12 +46,6 @@ class GameUIController(UIController):
             if event.key == K_TAB:
                 # Grab the mouse
                 pygame.event.set_grab(not pygame.event.get_grab())
-            if event.key == K_q: 
-                # Toggle rendering of the game world.
-                self.gamesimulation.globaldata.render_world = not self.gamesimulation.globaldata.render_world
-            if event.key == K_m: 
-                # Toggle rendering of the mini-map.
-                self.gamesimulation.globaldata.render_minimap = not self.gamesimulation.globaldata.render_minimap
         elif event.type == MOUSEBUTTONDOWN:
             self.pub("MOUSEBUTTONDOWN", ev=event)
         elif event.type == MOUSEBUTTONUP:

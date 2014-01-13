@@ -60,7 +60,7 @@ class DataColumnDisplay(viewport.Viewport):
             self.max_data_label_width = max(data_label.get_size()[0]+self.padding["left"], self.max_data_label_width)
             self.background.blit(data_label, (self.padding["left"], self.font.get_linesize()*(1+i)))
 
-    def update(self, **kwargs):
+    def update(self):
         # Erase previous display with static surface.
         self.surface.blit(self.background, (0, 0))
         

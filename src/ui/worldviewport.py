@@ -231,19 +231,11 @@ class WorldViewport(viewport.Viewport):
         
         return Vec2d(x, y)
 
-    def update(self, **kwargs):
+    def update(self):
         """Update the main view of the game world.
-        
-        Accepts kwargs, but expects the following labeled arguments:
-        
-        gamesimulation {GameSimulation} The reference to the GameSimulation.
         """
-        world = kwargs["gamesimulation"].world
-        draw = kwargs["gamesimulation"].globaldata.render_world
+        world = self.controller.game_simulation.world
         
-        if not draw:
-            return
-
         # Clear.
         self.surface.blit(self.background, (0, 0))
 

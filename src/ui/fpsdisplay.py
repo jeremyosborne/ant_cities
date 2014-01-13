@@ -13,7 +13,7 @@ class FPSDisplay(viewport.Viewport):
         
         self.controller = controller
         
-    def update(self, **kwargs):
+    def update(self):
         
         fps = self.controller.game_simulation.clock.get_fps()
 
