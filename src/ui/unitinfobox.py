@@ -1,10 +1,10 @@
 import pygame
 import ui.viewport as viewport
 
-class ViewUnitInfoBox(viewport.Viewport):
+class UnitInfoBox(viewport.Viewport):
     """Traditional area that displays information about a single unit a user has clicked on.
     """
-    def __init__(self, x_right=0, y_down=0, width=256, height=256, 
+    def __init__(self, x=0, y=0, width=256, height=256, 
                  controller=None, imageassets=None):
         """Arguments not inherited from viewport.
         
@@ -13,7 +13,7 @@ class ViewUnitInfoBox(viewport.Viewport):
         imageassets {AssetCache} Image cache.
         """
 
-        viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)
+        viewport.Viewport.__init__(self, x, y, width, height)
 
         self.font = pygame.font.SysFont("arial", 16)
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
@@ -28,11 +28,7 @@ class ViewUnitInfoBox(viewport.Viewport):
         
         self.surface.blit(self.background, (0, 0))
 
-        #The unit we're watching.
-        self.watching_entity = None
-        # Image to show which leaf is being watched.
-        #self.watched_leaf_image = imageassets.get("leaf2")
-        #Toggle for tracking the entity on screen.
+        # Toggle for tracking the entity on screen.
         self.track = False
         
         #Load Button Icons
@@ -40,26 +36,27 @@ class ViewUnitInfoBox(viewport.Viewport):
         self.Stop_Tracking_Button = imageassets.load("track-disable")
                 
         # Register event listeners.
-        if controller is not None:
-            controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
-        elif __debug__:
-            print "WARNING: controller was not defined, no event listening will be happening in", self
-
-    
-    def set_unit(self, entity):
-        self.watching_entity = entity
+        self.controller = controller
+        controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
         
-    def update(self, world_viewport):
+    def update(self, **kwargs):
+        """Display information about a selected unit, if there is one.
+        
+        Accepts labeled arguments and expects:
+        
+        gamesimulation {GameSimulation} The reference to the GameSimulation.
+        """
+        world_viewport = self.controller.game_simulation.world_viewport
+        ent = self.controller.entity_selection
+        
         self.surface.blit(self.background, (0, 0))
         
-        if not self.watching_entity:
+        if not ent:
             self.surface.blit(self.background, (0, 0))
             self.track = False
             return
 
-        # else... cut down on indenting.
-        ent = self.watching_entity
-        
+        # else...
         if self.track == True:
             # Track the unit visually and show toggle off.
             world_viewport.move_viewport(*ent.location)
@@ -74,7 +71,7 @@ class ViewUnitInfoBox(viewport.Viewport):
         
         output = ["Location: (%d, %d)" % tuple(ent.location)]
 
-        if self.watching_entity.name == "ant":
+        if ent.name == "ant":
             output.append("Energy: %s" % ent.c["energy"].val)
             output.append("Health: %s" % ent.c["health"].val)
             output.append("Brain state: %s" % ent.brain.active_state.name)

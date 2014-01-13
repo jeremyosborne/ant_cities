@@ -73,32 +73,32 @@ class PositionableMixin(object):
             bufx = bufy = buf
         
         if x == "left":
-            self.x = 0 + buf
+            self.x = 0 + bufx
         elif x == "right":
-            self.x = parent.width - self.width - buf
+            self.x = parent.width - self.width - bufx
         elif x == "center":
             # Buffer, if applied, pushes in positive direction.
-            self.x = parent.center[0] - self.width/2 + buf
+            self.x = parent.center[0] - self.width/2 + bufx
         elif type(x) == int and x < 0:
             # Because this number is negative, we need to reverse signage.
-            self.x = parent.width - self.width + x - buf
+            self.x = parent.width - self.width + x - bufx
         elif type(x) == int and x >= 0:
-            self.x = x + buf
+            self.x = x + bufx
         elif x:
             raise ValueError("Unexpected value for x: %s" % x)
         
         if y == "top":
-            self.y = 0 + buf
+            self.y = 0 + bufy
         elif y == "bottom":
-            self.y = parent.height - self.height - buf
+            self.y = parent.height - self.height - bufy
         elif y == "center":
             # Buffer, if applied, pushes in positive direction.
-            self.y = parent.center[1] - self.height/2 + buf
+            self.y = parent.center[1] - self.height/2 + bufy
         elif type(y) == int and y < 0:
             # Because this number is negative, we need to reverse signage.
-            self.y = parent.height - self.height + y - buf
+            self.y = parent.height - self.height + y - bufy
         elif type(y) == int and y > 0:
-            self.y = y + buf
+            self.y = y + bufy
         elif y:
             raise ValueError("Unexpected value for y: %s" % y)
 
@@ -134,7 +134,7 @@ class ScalableMixin(object):
 
 
 class View(object):
-    def __init__(self, x=0, y=0, width=0, height=0, zindex=0, controller=None, **kwargs):
+    def __init__(self, x=0, y=0, width=0, height=0, z=0, controller=None, **kwargs):
         """Initialize an instance.
         
         Position of view should be relative to parent.
@@ -143,7 +143,7 @@ class View(object):
         y {Number} Number of pixels offset from top (towards bottom if possitive).
         width {Number} Number of wide.
         height {Number} Number of pixels tall.
-        zindex {int} Higher number, the later the UI is drawn.
+        z {int} Higher number, the later the UI is drawn.
         controller {EventPublisher} An object that should implement a pubsub
         interface, as well as any other methods for handling communication to
         and from the UI.
@@ -153,17 +153,20 @@ class View(object):
         self.y = y
         self.width = width
         self.height = height
-        # Higher zindex, closer to the user (drawing happens later).
-        self.zindex = zindex
-
-        # For each View a surface.
-        # RESERVED for setting within the subclass_init.
-        self.surface = None
+        # Higher z, closer to the user (drawing happens later).
+        self.z = z
 
         # If None than this view has no parent.
         self.parentView = None
         # Child views within this view hierarchy.
         self.childviews = []
+        
+        # Access to our controller.
+        self.controller = controller
+
+        # For each View a surface.
+        # RESERVED and assumed to be set in the subclass_init.
+        self.surface = None
 
         # Assumes mixins don't want arguments. This might be a bad assumption.
         super(View, self).__init__()
@@ -266,11 +269,11 @@ class View(object):
     def sort_childviews(self):
         """Sort the existing childviews.
         
-        Default is sorting by zindex of childviews in ascending order (higher
-        zindex rendered last/closer to user.) Keeping all childviews with
+        Default is sorting by z of childviews in ascending order (higher
+        z rendered last/closer to user.) Keeping all childviews with
         the same index will enforce the rendering in the roder added.
         """
-        self.childviews = sorted(self.childviews, key=lambda cv: cv.zindex)
+        self.childviews = sorted(self.childviews, key=lambda cv: cv.z)
 
     def remove_childview(self, view):
         """Remove a view from this view hierarchy.

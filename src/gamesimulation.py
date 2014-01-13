@@ -6,54 +6,70 @@ import ui.viewport as viewport
 import time
 from world import World
 from ui.minimap import MiniMap
-from ui.viewunitinfobox import ViewUnitInfoBox
+from ui.unitinfobox import UnitInfoBox
 from ui.fpsdisplay import FPSDisplay
 from ui.datacolumndisplay import DataColumnDisplay
 from ui.worldviewport import WorldViewport
 from ui.mousedisplay import MouseDisplay
+from ui.controllers import GameUIController
 
 class GameSimulation():
        
-    def __init__(self, events, imageassets):
+    def __init__(self, imageassets):
         """Initialize game simulation.
         
-        events {EventPublisher} Central event publisher.
         imageassets {AssetCache} Image cache.
         """
-
+        
+        # Reference to the globaldata for our application.
+        self.globaldata = globaldata
+        
+        # Reference to the game clock for handling framerate.
         self.clock = pygame.time.Clock()
-
-        # Display needs to be set before any graphics calls.
-        #Normal pygame window mode.
-        self.screen = pygame.display.set_mode(globaldata.SCREEN_SIZE, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
-        #Normal pygame full screen mode.
-        #screen = pygame.display.set_mode(globaldata.SCREEN_SIZE, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
-        #Set up game world
-
-        #The minus 170 below is the y size of the UI elements.  
+        
         self.world = World(globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1])
 
+        # -------------------------------------------- UI
+
+        # Display needs to be set before any graphics calls.
+        # Window mode.
+        self.screen = pygame.display.set_mode(globaldata.SCREEN_SIZE, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
+        # Full screen mode.
+        #screen = pygame.display.set_mode(globaldata.SCREEN_SIZE, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
+
+        # The current stack of ui elements.
+        self.ui = []
+
+        # Do we have a unit selected?
+        self.ui_controller = GameUIController(self)
+
         # viewport is the screen entity that contains the view of the game world.
+        # The minus 170 below is the y size of the UI elements.
         self.world_viewport = WorldViewport(globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1], 
                                       globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
-                                      events)
+                                      self.ui_controller)
+        self.ui.append(self.world_viewport)
+        
+        # Frames per second.
+        self.fps_display = FPSDisplay(5, 5, self.ui_controller)
+        self.ui.append(self.fps_display)
+        
+        # Mouse coordinates.
+        self.mouse_display = MouseDisplay(5, 25, self.ui_controller)
+        self.ui.append(self.mouse_display)
         
         #Setup UI elements.
         self.mini_map = MiniMap(globaldata.SCREEN_SIZE[0]-256, globaldata.SCREEN_SIZE[1]-170, 
                                 256, 170, 
                                 globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1], 
-                                events)
+                                self.ui_controller)
+        self.ui.append(self.mini_map)
 
         # Unit information display.
-        self.unit_information_display = ViewUnitInfoBox(globaldata.SCREEN_SIZE[0]-512, globaldata.SCREEN_SIZE[1]-170, 
-                                                        256, 170,
-                                                        events, imageassets)
-          
-        # Frames per second.
-        self.fps_display = FPSDisplay(5, 5)
-        
-        # Mouse coordinates.
-        self.mouse_display = MouseDisplay(5, 25)
+        self.unit_info_box = UnitInfoBox(globaldata.SCREEN_SIZE[0]-512, globaldata.SCREEN_SIZE[1]-170, 
+                                         256, 170,
+                                         self.ui_controller, imageassets)
+        self.ui.append(self.unit_info_box)
         
         # Base Information Displays
         data_to_display = [
@@ -64,6 +80,7 @@ class GameSimulation():
                                                 200, 170,
                                                 str(self.world.base_1.c["team"]),
                                                 data_to_display)
+        self.ui.append(self.base_display_1)
         
         data_to_display = [
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_2, self.world.entities.itervalues())))),
@@ -73,6 +90,8 @@ class GameSimulation():
                                                 200, 170,
                                                 str(self.world.base_2.c["team"]),
                                                 data_to_display)
+        self.ui.append(self.base_display_2)
+        
         # World Info Display
         data_to_display = [
             ("Game Time:", lambda: str(int(self.world.age))),
@@ -82,25 +101,19 @@ class GameSimulation():
                                               200, 170,
                                               "World Info",
                                               data_to_display)
+        self.ui.append(self.world_info_display)
 
-    def process_game_loop(self):
+    def process(self):
 
         # Time_passed is in milliseconds.
         time_passed = self.clock.tick(60)
-
+        
+        # Update logic.
         self.world.process(time_passed)
 
-        self.world_viewport.update(self.world, draw=globaldata.render_world)
-        self.mini_map.update(self.world, self.world_viewport, draw=globaldata.render_minimap)
-        self.unit_information_display.update(self.world_viewport)  
-        self.base_display_1.update()
-        self.base_display_2.update()
-        self.world_info_display.update()
-        # Dev/debug.
-        self.fps_display.update(self.clock)
-        self.mouse_display.update(self.world_viewport)
+        # Update UI.
+        for v in self.ui:
+            v.update(gamesimulation=self)
+            v.render(self.screen)
 
-        # Call the method that renders all the viewport layers in the proper sequence.
-        viewport.Viewport.render_viewports(self.screen)
-        
         pygame.display.flip()

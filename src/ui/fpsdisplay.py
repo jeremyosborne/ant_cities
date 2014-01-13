@@ -2,8 +2,8 @@ import pygame
 import ui.viewport as viewport
 
 class FPSDisplay(viewport.Viewport):
-    def __init__(self, x_right=5, y_down=5):
-        viewport.Viewport.__init__(self, x_right, y_down, 125, 20, 1, 10, True)
+    def __init__(self, x, y, controller):
+        viewport.Viewport.__init__(self, x, y, 125, 20)
         self.font = pygame.font.SysFont("arial", 16)
         self.background = pygame.surface.Surface((125, 20)).convert()
         self.background.fill((255, 255, 255))
@@ -11,8 +11,11 @@ class FPSDisplay(viewport.Viewport):
         #the background is transparent.
         self.surface.set_colorkey((255, 255, 255))
         
-    def update(self, clock):
-        fps = clock.get_fps()
+        self.controller = controller
+        
+    def update(self, **kwargs):
+        
+        fps = self.controller.game_simulation.clock.get_fps()
 
         #Clear the surface.
         self.surface.blit(self.background, (0, 0))    

@@ -89,13 +89,13 @@ def test_view_contained_screenxy():
     
 
 
-def test_view_zindex_sorting():
+def test_view_z_sorting():
     """Views should be sorted by zindex when they are childviews.
     """
-    v = View(zindex=5)
-    v2 = View(zindex=2)
-    v3 = View(zindex=-1)
-    v4 = View(zindex=3)
+    v = View(z=5)
+    v2 = View(z=2)
+    v3 = View(z=-1)
+    v4 = View(z=3)
     
     vparent = View()
     

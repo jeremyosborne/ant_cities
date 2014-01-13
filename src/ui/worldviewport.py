@@ -1,23 +1,19 @@
 import pygame
 from pymunk.vec2d import Vec2d
 import ui.viewport as viewport
-from commonmath import fdiv
 from ui.assets.colors import entity_colors
 from ui.assets.images import entity_images
 
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
 #So it doesn't belong in the main viewport class.
 class WorldViewport(viewport.Viewport):
-    def __init__(self, world_width, world_height, 
-                 viewable_width, viewable_height, 
-                 controller):
+    def __init__(self, world_width, world_height, viewable_width, viewable_height, controller):
         """Arguments not inherited from viewport.
         
-        controller {EventPublisher} Provides a pipeline to events in the outside
-        world.
+        controller {GameUIController} Provides access to the outside world.
         """
         
-        viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height, 1, 0, True)
+        viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height)
         
         # Size of the game world.
         self.world_height = world_height
@@ -53,6 +49,8 @@ class WorldViewport(viewport.Viewport):
         
         # Call once to initialize the first view.
         self.move_viewport()
+        
+        self.controller = controller
         
         # Register event listeners.
         # TODO: Need a way to unsubscribe listeners.
@@ -233,13 +231,16 @@ class WorldViewport(viewport.Viewport):
         
         return Vec2d(x, y)
 
-    def update(self, world, draw=True):
-        """Update the view of the game world.
+    def update(self, **kwargs):
+        """Update the main view of the game world.
         
-        world {World} Gameworld reference.
-        [draw] {bool} Override to allow temporary non-drawing of minimap.
+        Accepts kwargs, but expects the following labeled arguments:
+        
+        gamesimulation {GameSimulation} The reference to the GameSimulation.
         """
-
+        world = kwargs["gamesimulation"].world
+        draw = kwargs["gamesimulation"].globaldata.render_world
+        
         if not draw:
             return
 
@@ -359,7 +360,7 @@ class WorldViewport(viewport.Viewport):
 
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
-        game_simulation = e.data["game_sim"]
+        game_simulation = self.controller.game_simulation
         
         if event.button == 1:
             # left click, attempt to select entity.
@@ -372,7 +373,7 @@ class WorldViewport(viewport.Viewport):
             if ui_container.collidepoint(ui_click_point) == True:
                 game_world_point = self.screenpoint_to_gamepoint(*event.pos)
                 entity, _ = game_simulation.world.find_closest(game_world_point, 150)
-                game_simulation.unit_information_display.set_unit(entity)
+                self.controller.entity_selection = entity
         
         if event.button == 4:  
             # Mouse Scroll Wheel Up == zoom in

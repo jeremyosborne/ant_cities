@@ -3,18 +3,18 @@ import ui.viewport as viewport
 from assets.colors import entity_colors
 
 class MiniMap(viewport.Viewport):
-    def __init__(self, x_right=0, y_down=0, width=256, height=256, 
+    def __init__(self, x=0, y=0, width=256, height=256, 
                  world_width=1024, world_height=768, controller=None):
         """Arguments not inherited from viewport.
         
-        controller {EventPublisher} Provides a pipeline to events in the outside
+        controller {GameUIController} Provides a pipeline to events in the outside
         world.
         """
         
-        viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 0, True)
+        viewport.Viewport.__init__(self, x, y, width, height)
 
-        self.border_size = 10  #Made it 10 to match the screen scrolling width.
-        self.border_color = (165,42,42)  #Brown
+        self.border_size = 10  # Made it 10 to match the screen scrolling width.
+        self.border_color = (165,42,42)  # Brown
 
         self.world_width = world_width
         self.world_height = world_height
@@ -60,12 +60,10 @@ class MiniMap(viewport.Viewport):
         self.panning_map = False
 
         # Register event listeners.
-        if controller is not None:
-            controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
-            controller.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
-            controller.sub("MOUSEMOTION", self.mousemotion_listener)
-        elif __debug__:
-            print "WARNING: controller was not defined, no event listening will be happening in", self
+        self.controller = controller
+        controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+        controller.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
+        controller.sub("MOUSEMOTION", self.mousemotion_listener)
 
         # For debugging
         if __debug__:
@@ -73,13 +71,17 @@ class MiniMap(viewport.Viewport):
             print "minimap_usable_width and height: ", self.minimap_usable_width, self.minimap_usable_height
             print "minimap_offset width and height: ", self.minimap_offset_width, self.minimap_offset_height        
 
-    def update(self, world, world_viewport, draw=True):
+    def update(self, **kwargs):
         """Update the mini view of the game world.
         
-        world {World} Gameworld reference.
-        world_viewport {WorldViewport} Gameworld viewable reference.
-        [draw] {bool} Override to allow temporary non-drawing of minimap.
+        Accepts kwargs, but expects the following labeled arguments:
+        
+        gamesimulation {GameSimulation} The reference to the GameSimulation.
         """
+        world = kwargs["gamesimulation"].world
+        world_viewport = kwargs["gamesimulation"].world_viewport
+        draw = kwargs["gamesimulation"].globaldata.render_minimap
+        
         if not draw:
             return
 
@@ -121,7 +123,7 @@ class MiniMap(viewport.Viewport):
     
     def mousemotion_listener(self, e):
         if self.panning_map == True:
-            game_simulation = e.data["game_sim"]
+            game_simulation = self.controller.game_simulation
             
             viewport_mouse_x, viewport_mouse_y = self.screenxy_to_relativexy(e.data["ev"].pos)
             

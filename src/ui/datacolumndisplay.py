@@ -10,9 +10,9 @@ class DataColumnDisplay(viewport.Viewport):
     that can be called and will return a str that will be used to display
     the updated data.
     """
-    def __init__(self, x_right=0, y_down=0, width=256, height=256,
+    def __init__(self, x=0, y=0, width=256, height=256,
                  title="Data Column Display", data=None):
-        viewport.Viewport.__init__(self, x_right, y_down, width, height, 1, 1, True)
+        viewport.Viewport.__init__(self, x, y, width, height)
 
         self.font_family = "arial"
         self.font_size = 16
@@ -46,7 +46,7 @@ class DataColumnDisplay(viewport.Viewport):
         self.background.fill(self.bgcolor)
 
         # Border.
-        pygame.draw.rect(self.background, self.bordercolor, pygame.Rect(0, 0, self._width, self._height), 1)
+        pygame.draw.rect(self.background, self.bordercolor, pygame.Rect(0, 0, self.width, self.height), 1)
 
         # Title.
         title_surface = self.font.render(self.title, True, self.fgcolor)
@@ -60,7 +60,7 @@ class DataColumnDisplay(viewport.Viewport):
             self.max_data_label_width = max(data_label.get_size()[0]+self.padding["left"], self.max_data_label_width)
             self.background.blit(data_label, (self.padding["left"], self.font.get_linesize()*(1+i)))
 
-    def update(self):
+    def update(self, **kwargs):
         # Erase previous display with static surface.
         self.surface.blit(self.background, (0, 0))
         

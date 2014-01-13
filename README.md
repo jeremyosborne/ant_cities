@@ -44,15 +44,20 @@ Key
 * In process
 - Not Started or on hold.
 
-- User Interface
-    - Separate visual UI from logic simulation. Next step on path to multiprocess
-      capable game (UI in one process, game in another).
-        - Views should have: dirty rects and view entities (for tracking
-        objects that are viewable).
-    - Views should implement a View/Controller relationship between the UI and the
+* User Interface
+    * Move the information stored in world_viewport and shared in minimap into
+      the GameUIController.
+    * Views should implement a View/Controller relationship between the UI and the
       game sim (separation of concerns, future availability of multi-core
       support).
+    * Separate visual UI from logic simulation. Next step on path to multiprocess
+      capable game (UI in one process, game in another).
+    - Views implement EventSubscriber.
+    - Views go ahead and add pygame surface support.
+    - Views should have dirty rect capability (see pygame.display.update function
+      for interface for passing in changed list of rects that need redrawing).
     - Allow preservation of aspect ratio and auto scaling.
+
 - Ant-god controls:
     - Hostility level
     - Friendly index

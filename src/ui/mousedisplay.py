@@ -4,8 +4,8 @@ import ui.viewport as viewport
 class MouseDisplay(viewport.Viewport):
     """Display the mouse coordinates on the screen.
     """
-    def __init__(self, x_right=5, y_down=5):
-        viewport.Viewport.__init__(self, x_right, y_down, 250, 20, 1, 10, True)
+    def __init__(self, x, y, controller):
+        viewport.Viewport.__init__(self, x, y, 250, 20)
 
         self.font = pygame.font.SysFont("arial", 16)
         self.background = pygame.surface.Surface((250, 20)).convert()
@@ -14,13 +14,17 @@ class MouseDisplay(viewport.Viewport):
         # the background is transparent.
         self.surface.set_colorkey((255, 255, 255))
         
-    def update(self, worldviewport):
+        self.controller = controller
+        
+    def update(self, **kwargs):
+        
+        world_viewport = self.controller.game_simulation.world_viewport
+
         # Clear the surface.
         self.surface.blit(self.background, (0, 0))    
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        if worldviewport.rect.collidepoint(mouse_x, mouse_y) == True:
-            game_world_x, game_world_y = worldviewport.screenpoint_to_gamepoint(mouse_x, mouse_y)
-            text = "Mouse coords: (%d, %d)" % (game_world_x, game_world_y)
-            font = self.font.render(text, True, (0, 0, 0))
-            self.surface.blit(font, (0, 0))
+        game_world_x, game_world_y = world_viewport.screenpoint_to_gamepoint(mouse_x, mouse_y)
+        text = "Mouse coords: (%d, %d)" % (game_world_x, game_world_y)
+        font = self.font.render(text, True, (0, 0, 0))
+        self.surface.blit(font, (0, 0))
