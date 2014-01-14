@@ -226,57 +226,10 @@ class WorldViewport(viewport.Viewport):
         return {Vec2d} Converted (x, y) screen pixel corresponding to game world location.
         """
         
-        x = (gamex - self.world_viewable_rect.left) / self.zoom_area_width * self.width
-        y = (gamey - self.world_viewable_rect.top) / self.zoom_area_height * self.height
+        x = (gamex - self.world_viewable_rect.left) / float(self.zoom_area_width) * self.width
+        y = (gamey - self.world_viewable_rect.top) / float(self.zoom_area_height) * self.height
         
         return Vec2d(x, y)
-
-    def update(self):
-        """Update the main view of the game world.
-        """
-        world = self.controller.game_simulation.world
-        
-        # Clear.
-        self.surface.blit(self.background, (0, 0))
-
-        # Pan if mouse near border of game.
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if mouse_x >= 0 and mouse_x <= self.scroll_buffer:
-            self.scroll_viewport(x=-self.scroll_speed)
-        elif (mouse_x >= self.width-self.scroll_buffer) and mouse_x <= self.width:
-            self.scroll_viewport(x=self.scroll_speed)
-        if mouse_y >= 0 and mouse_y <= self.scroll_buffer:
-            self.scroll_viewport(y=-self.scroll_speed)
-        elif (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
-            self.scroll_viewport(y=self.scroll_speed)
-
-        # Every round, publish an update of where the mouse is at relative to
-        # the game world.
-        self.controller.mouse_worldxy = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
-
-        # If we are tracking an entity...
-        if self.controller.entity_selection_track == True and self.controller.entity_selection:
-            # ...move the view.
-            self.move_viewport(*self.controller.entity_selection.location)
-
-
-        # Using the spatial index to determine what to render,
-        # except let's not use the index if we're completely zoomed out. 
-        if self.zoom_area_width != world.width:
-            # Calculate the range.
-            if self.zoom_area_width > self.zoom_area_height:
-                the_range = self.zoom_area_width/2
-            else:
-                the_range = self.zoom_area_height/2
-            
-            entity_list_in_range = world.find_all_in_range((self.world_viewable_rect.centerx, self.world_viewable_rect.centery), the_range)
-    
-            # Render each entity onto the framebuffer.
-            for entity in entity_list_in_range:
-                self.render_entity(entity[0])
-        else:
-            for entity in world.entities.itervalues():
-                self.render_entity(entity)
 
     def render_entity_statusbars(self, entity, surface):
         """Display status bars for a particular entity.
@@ -360,6 +313,67 @@ class WorldViewport(viewport.Viewport):
             x, y = self.gamepoint_to_screenpoint(*entity.location)
             self.surface.blit(image, (x-w/2, y-h/2))
 
+    def update(self):
+        """Update the main view of the game world.
+        """
+        world = self.controller.game_simulation.world
+        
+        # Clear.
+        self.surface.blit(self.background, (0, 0))
+
+        # Pan if mouse near border of game.
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if mouse_x >= 0 and mouse_x <= self.scroll_buffer:
+            self.scroll_viewport(x=-self.scroll_speed)
+        elif (mouse_x >= self.width-self.scroll_buffer) and mouse_x <= self.width:
+            self.scroll_viewport(x=self.scroll_speed)
+        if mouse_y >= 0 and mouse_y <= self.scroll_buffer:
+            self.scroll_viewport(y=-self.scroll_speed)
+        elif (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
+            self.scroll_viewport(y=self.scroll_speed)
+
+        # Every round, publish an update of where the mouse is at relative to
+        # the game world.
+        self.controller.mouse_worldxy = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
+
+        # If we are tracking an entity...
+        if self.controller.entity_selection_track == True and self.controller.entity_selection:
+            # ...move the view.
+            self.move_viewport(*self.controller.entity_selection.location)
+
+        # Using the spatial index to determine what to render,
+        # except let's not use the index if we're completely zoomed out. 
+        if self.zoom_area_width != world.width:
+            # Calculate the range.
+            if self.zoom_area_width > self.zoom_area_height:
+                the_range = self.zoom_area_width/2
+            else:
+                the_range = self.zoom_area_height/2
+            
+            entity_list_in_range = world.find_all_in_range((self.world_viewable_rect.centerx, self.world_viewable_rect.centery), the_range)
+    
+            # Render each entity onto the framebuffer.
+            for entity in entity_list_in_range:
+                self.render_entity(entity[0])
+        else:
+            for entity in world.entities.itervalues():
+                self.render_entity(entity)
+    
+        # If an entity is selected...
+        if self.controller.entity_selection:
+            # ... and the entity has a destination, draw a line to the destination.
+            ent = self.controller.entity_selection
+            dest_loc = ent.c["destination"].location
+            if dest_loc:
+                entx, enty = self.gamepoint_to_screenpoint(*ent.location)
+                ent_loc = (int(entx), int(enty))
+                destx, desty = self.gamepoint_to_screenpoint(*dest_loc)
+                dest_loc = (int(destx), int(desty))
+                color = (0, 150, 150)
+                pygame.draw.line(self.surface, color, ent_loc, dest_loc)
+                pygame.draw.circle(self.surface, color, ent_loc, 5)
+                pygame.draw.circle(self.surface, color, dest_loc, 5)
+    
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
         game_simulation = self.controller.game_simulation

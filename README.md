@@ -45,12 +45,9 @@ Key
 - Not Started or on hold.
 
 * User Interface
-    * Move the information stored in world_viewport and shared in minimap into
-      the GameUIController.
-    * Views should implement a View/Controller relationship between the UI and the
-      game sim (separation of concerns, future availability of multi-core
-      support).
-    * Separate visual UI from logic simulation. Next step on path to multiprocess
+    * Move the information shared between the minimap and the world viewport
+      into the GameUIController:
+    - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
     - Views implement EventSubscriber.
     - Views go ahead and add pygame surface support.
