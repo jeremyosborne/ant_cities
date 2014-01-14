@@ -144,7 +144,7 @@ class Map(viewport.Viewport):
             x, y = self.gamepoint_to_screenpoint(*entity.location)
             self.surface.blit(image, (x-w/2, y-h/2))
 
-    def update(self):
+    def draw_view(self, surface):
         """Update the main view of the game world.
         """
         world = self.controller.world
@@ -208,7 +208,10 @@ class Map(viewport.Viewport):
                 pygame.draw.line(self.surface, color, ent_loc, dest_loc)
                 pygame.draw.circle(self.surface, color, ent_loc, 5)
                 pygame.draw.circle(self.surface, color, dest_loc, 5)
-    
+
+        # Blit to the main surface.
+        surface.blit(self.surface, ((self.x, self.y)))
+
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
         world = self.controller.world

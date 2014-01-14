@@ -65,7 +65,7 @@ class MiniMap(viewport.Viewport):
         controller.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
         controller.sub("MOUSEMOTION", self.mousemotion_listener)
 
-    def update(self):
+    def draw_view(self, surface):
         """Update the mini view of the game world.        
         """
         world = self.controller.game_simulation.world
@@ -91,6 +91,9 @@ class MiniMap(viewport.Viewport):
         pygame.draw.rect(self.minimap_surface, (255, 255, 0), scaled_world_viewport, 2)
         self.surface.fill((0, 0, 0))
         self.surface.blit(self.minimap_surface, ((self.minimap_offsetx, self.minimap_offsety)))
+
+        # Blit to the main surface.
+        surface.blit(self.surface, ((self.x, self.y)))
 
     def mousebuttondown_listener(self, e):
         if e.data["ev"].button == 1:

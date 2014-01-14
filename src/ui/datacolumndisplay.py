@@ -60,7 +60,7 @@ class DataColumnDisplay(viewport.Viewport):
             self.max_data_label_width = max(data_label.get_size()[0]+self.padding["left"], self.max_data_label_width)
             self.background.blit(data_label, (self.padding["left"], self.font.get_linesize()*(1+i)))
 
-    def update(self):
+    def draw_view(self, surface):
         # Erase previous display with static surface.
         self.surface.blit(self.background, (0, 0))
         
@@ -70,4 +70,6 @@ class DataColumnDisplay(viewport.Viewport):
             data = self.font.render(labeled_data[1](), True, self.fgcolor)
             self.surface.blit(data, (self.max_data_label_width+self.column_padding, self.font.get_linesize()*(1+i)))
 
+        # Blit to the main surface.
+        surface.blit(self.surface, ((self.x, self.y)))
 

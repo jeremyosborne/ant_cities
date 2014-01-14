@@ -39,12 +39,8 @@ class UnitInfoBox(viewport.Viewport):
         self.controller = controller
         controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
         
-    def update(self, **kwargs):
+    def draw_view(self, surface):
         """Display information about a selected unit, if there is one.
-        
-        Accepts labeled arguments and expects:
-        
-        gamesimulation {GameSimulation} The reference to the GameSimulation.
         """
         ent = self.controller.entity_selection
         
@@ -82,6 +78,9 @@ class UnitInfoBox(viewport.Viewport):
         for i, line in enumerate(output):
             text = self.font.render(line, True, (255, 255, 255))
             self.surface.blit(text, (10, 30 + i*15))
+        
+        # Blit to the main surface.
+        surface.blit(self.surface, ((self.x, self.y)))
         
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
