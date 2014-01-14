@@ -103,5 +103,3 @@ class GameSimulation():
 
         # Update UI.
         self.display.render()
-
-        pygame.display.flip()
