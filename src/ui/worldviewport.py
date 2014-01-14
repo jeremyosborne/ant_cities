@@ -3,6 +3,7 @@ from pymunk.vec2d import Vec2d
 import ui.viewport as viewport
 from ui.assets.colors import entity_colors
 from ui.assets.images import entity_images
+from commonmath import mmval
 
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
 #So it doesn't belong in the main viewport class.
@@ -18,9 +19,6 @@ class WorldViewport(viewport.Viewport):
         # Size of the game world.
         self.world_height = world_height
         self.world_width = world_width
-
-        self.background = pygame.surface.Surface((self.width, self.height)).convert()
-        self.background.fill((255, 255, 255))
 
         # zoom-in/out factor per zoom level.
         self.zoom_factor = 1.5
@@ -47,7 +45,8 @@ class WorldViewport(viewport.Viewport):
         # Initial values are set in the move_viewport call.
         self.world_viewable_rect = pygame.Rect(0, 0, 0, 0)
         
-        # Call once to initialize the first view.
+        # Initialize the first view.
+        self.change_zoom_level(0)
         self.move_viewport()
         
         self.controller = controller
@@ -73,31 +72,6 @@ class WorldViewport(viewport.Viewport):
         """Scroll speed of view (in pixels).
         """
         return (self.current_zoom_level+1)*self.zoom_factor*self.scroll_speed_multiplier
-
-    @property
-    def world_viewable_center_max_x(self):
-        """Maximum value allowed for center point x at this level.
-        """
-        return self.world_width - self.zoom_area_width/2
-
-    @property
-    def world_viewable_center_max_y(self):
-        """Maximum value allowed for center point y at this zoom level.
-        """
-        return self.world_height - self.zoom_area_height/2
-
-    @property
-    def world_viewable_center_min_x(self):
-        """Minimum value allowed for center point y at this zoom level.
-        """
-        return self.zoom_area_width/2
-
-    @property
-    def world_viewable_center_min_y(self): 
-        """Minimum value allowed for center point y at this zoom level.
-        """
-        return self.zoom_area_height/2
-
 
     def calculate_zoom_level_ranges(self):
         """Populates the zoom_level_ranges list.
@@ -157,49 +131,36 @@ class WorldViewport(viewport.Viewport):
         # Test to see if viewport center is out of range after the the zoom, 
         # if so, fix'um up.  This can happen if you're at the edge of the 
         # screen and then zoom out - the center will be close to the edge.
-        if x > self.world_viewable_center_max_x:
-            x = self.world_viewable_center_max_x
-        elif x < self.world_viewable_center_min_x:
-            x = self.world_viewable_center_min_x
-        if y > self.world_viewable_center_max_y:
-            y = self.world_viewable_center_max_y
-        elif y < self.world_viewable_center_min_y:
-            y = self.world_viewable_center_min_y 
+        x = mmval(self.world_width - self.zoom_area_width/2, x, self.zoom_area_width/2)
+        y = mmval(self.world_height - self.zoom_area_height/2, y, self.zoom_area_height/2)
 
         # Update the visible area.
-        self.world_viewable_rect.left = x - self.zoom_area_width/2
-        self.world_viewable_rect.top = y - self.zoom_area_height/2
-        self.world_viewable_rect.width = self.zoom_area_width
-        self.world_viewable_rect.height = self.zoom_area_height
+        self.world_viewable_rect.center = (x, y)
 
     def change_zoom_level(self, direction):
+        """Changes the zoom level and resizes the viewable area.
+        
+        direction {number} Relative change. Passing 0 will not change the
+        zoom level but will perform operations, like setting the size of
+        the viewable rectangle.
+        """
         new_zoom_level = self.current_zoom_level + direction
         # Boundary check.
         if new_zoom_level >= 0 and new_zoom_level < len(self.zoom_level_ranges):
             self.current_zoom_level = new_zoom_level
-            
-            # Re-center based on mouse location in the game world.
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            # Check to see if the mouse is above the game world viewport.
-            # Will need to do something else for if the mouse is over the minimap.
-            if self.rect.collidepoint(mouse_x, mouse_y) == True:
-                game_world_x, game_world_y = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
-            else:
-                game_world_x = self.world_viewable_rect.centerx
-                game_world_y = self.world_viewable_rect.centery
-                
-            self.move_viewport(game_world_x, game_world_y)
-            
-            if __debug__:
-                print "Change of zoom level requested"
-                print "zoom level == %s (requested change == %s)" % (self.current_zoom_level, direction)
-                print "zoom area width and height: ", self.zoom_area_width, self.zoom_area_height
-                print "world viewable rectangle:", self.world_viewable_rect
 
-        # Buggy. When zooming out near edge scrolls mouse outside of view.
-        #if self.rect.collidepoint(mouse_x, mouse_y) == True:
-            # Move the mouse to the center of the zoom.
-            #pygame.mouse.set_pos(self.gamepoint_to_screenpoint(game_world_x, game_world_y))
+            # Resize the viewable area.
+            self.world_viewable_rect.width = self.zoom_area_width
+            self.world_viewable_rect.height = self.zoom_area_height
+                        
+            # Correct the center point.
+            self.move_viewport(*self.world_viewable_rect.center)
+            
+#             if __debug__:
+#                 print "Change of zoom level requested"
+#                 print "zoom level == %s (requested change == %s)" % (self.current_zoom_level, direction)
+#                 print "zoom area width and height: ", self.zoom_area_width, self.zoom_area_height
+#                 print "world viewable rectangle:", self.world_viewable_rect
 
     def screenpoint_to_gamepoint(self, screenx, screeny):
         """Convert a screen coordinate to an equivalent game coordinate.
@@ -319,7 +280,7 @@ class WorldViewport(viewport.Viewport):
         world = self.controller.game_simulation.world
         
         # Clear.
-        self.surface.blit(self.background, (0, 0))
+        self.surface.fill((255, 255, 255))
 
         # Pan if mouse near border of game.
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -350,7 +311,7 @@ class WorldViewport(viewport.Viewport):
             else:
                 the_range = self.zoom_area_height/2
             
-            entity_list_in_range = world.find_all_in_range((self.world_viewable_rect.centerx, self.world_viewable_rect.centery), the_range)
+            entity_list_in_range = world.find_all_in_range(self.world_viewable_rect.center, the_range)
     
             # Render each entity onto the framebuffer.
             for entity in entity_list_in_range:
@@ -377,23 +338,33 @@ class WorldViewport(viewport.Viewport):
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]
         game_simulation = self.controller.game_simulation
+
+        # For determining if we are inside the ui.
+        ui_click_point = self.screenxy_to_relativexy(event.pos)
         
         if event.button == 1:
             # left click, attempt to select entity.
             
-            # Determine if we clicked within the viewable UI.
-            ui_click_point = self.screenxy_to_relativexy(event.pos)
-            ui_container = pygame.Rect(0, 0, self.width, self.height)
-
             # Clicks outside of the view won't cancel the tracking.
-            if ui_container.collidepoint(ui_click_point) == True:
+            if self.rect.collidepoint(ui_click_point) == True:
                 game_world_point = self.screenpoint_to_gamepoint(*event.pos)
                 entity, _ = game_simulation.world.find_closest(game_world_point, 150)
                 self.controller.entity_selection = entity
         
-        if event.button == 4:  
+        elif event.button == 4:  
             # Mouse Scroll Wheel Up == zoom in
             self.change_zoom_level(-1)
+            
+            # Check to see if the mouse is above the game world viewport.
+            if self.rect.collidepoint(ui_click_point) == True:
+                gamexy = self.screenpoint_to_gamepoint(*event.pos)
+                self.move_viewport(*gamexy)
+
         elif event.button == 5:  
             # Mouse Scroll Wheel Down == zoom out
             self.change_zoom_level(1)
+
+            # Check to see if the mouse is above the game world viewport.
+            if self.rect.collidepoint(ui_click_point) == True:
+                gamexy = self.screenpoint_to_gamepoint(*event.pos)
+                self.move_viewport(*gamexy)
