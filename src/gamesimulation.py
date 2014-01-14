@@ -2,8 +2,6 @@ import pygame
 from pygame.locals import *
 
 import globaldata
-import ui.viewport as viewport
-import time
 from world import World
 from ui.minimap import MiniMap
 from ui.unitinfobox import UnitInfoBox
@@ -46,8 +44,9 @@ class GameSimulation():
         self.ui_views = []
 
         # The minus 170 below is the y size of the UI elements.
-        self.ui_views.append(Map(globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
-                                self.ui_controller))
+        self.ui_views.append(Map(0, 0, 
+                                 globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
+                                 self.ui_controller))
         
         # Frames per second.
         self.ui_views.append(FPSDisplay(5, 5, self.ui_controller))
@@ -105,6 +104,6 @@ class GameSimulation():
 
         # Update UI.
         for v in self.ui_views:
-            v.draw_view(self.screen)
+            v.render(self.screen)
 
         pygame.display.flip()

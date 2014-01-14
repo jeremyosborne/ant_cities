@@ -1,8 +1,8 @@
 import pygame
-import ui.viewport as viewport
+from ui.pygameview import PygameView
 from assets.colors import entity_colors
 
-class MiniMap(viewport.Viewport):
+class MiniMap(PygameView):
     def __init__(self, x=0, y=0, width=256, height=256, controller=None):
         """Arguments not inherited from viewport.
         
@@ -10,9 +10,7 @@ class MiniMap(viewport.Viewport):
         world.
         """
         
-        viewport.Viewport.__init__(self, x, y, width, height)
-
-        self.controller = controller
+        PygameView.__init__(self, x, y, width, height, 0, controller)
 
         # for initialization
         # Total size of our view taking into account the border.

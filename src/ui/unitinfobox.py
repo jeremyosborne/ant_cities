@@ -1,7 +1,7 @@
 import pygame
-import ui.viewport as viewport
+from ui.pygameview import PygameView
 
-class UnitInfoBox(viewport.Viewport):
+class UnitInfoBox(PygameView):
     """Traditional area that displays information about a single unit a user has clicked on.
     """
     def __init__(self, x=0, y=0, width=256, height=256, 
@@ -13,7 +13,7 @@ class UnitInfoBox(viewport.Viewport):
         imageassets {AssetCache} Image cache.
         """
 
-        viewport.Viewport.__init__(self, x, y, width, height)
+        PygameView.__init__(self, x, y, width, height, 0, controller)
 
         self.font = pygame.font.SysFont("arial", 16)
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
@@ -36,7 +36,6 @@ class UnitInfoBox(viewport.Viewport):
         self.Stop_Tracking_Button = imageassets.load("track-disable")
                 
         # Register event listeners.
-        self.controller = controller
         controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
         
     def draw_view(self, surface):

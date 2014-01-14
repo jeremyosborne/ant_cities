@@ -1,7 +1,7 @@
 import pygame
-import ui.viewport as viewport
+from ui.pygameview import PygameView
 
-class DataColumnDisplay(viewport.Viewport):
+class DataColumnDisplay(PygameView):
     """Generic data display.
     
     Simple display of data with headers on left and title as first row.
@@ -12,7 +12,7 @@ class DataColumnDisplay(viewport.Viewport):
     """
     def __init__(self, x=0, y=0, width=256, height=256,
                  title="Data Column Display", data=None):
-        viewport.Viewport.__init__(self, x, y, width, height)
+        PygameView.__init__(self, x, y, width, height)
 
         self.font_family = "arial"
         self.font_size = 16

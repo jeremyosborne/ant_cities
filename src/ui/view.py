@@ -24,6 +24,10 @@ A View should not:
 controller.
 """
 
+import pygame
+
+
+
 class PositionableMixin(object):
     """Helpers used to position view.
     """
@@ -163,10 +167,6 @@ class View(object):
         
         # Access to our controller.
         self.controller = controller
-
-        # For each View a surface.
-        # RESERVED and assumed to be set in the subclass_init.
-        self.surface = None
 
         # Assumes mixins don't want arguments. This might be a bad assumption.
         super(View, self).__init__()
@@ -339,3 +339,4 @@ class View(object):
         x, y = self.screenxy_to_relativexy(coord)
         # Need just a width and height check.
         return (0 <= x and x <= self.width and 0 <= y and y <= self.height)
+

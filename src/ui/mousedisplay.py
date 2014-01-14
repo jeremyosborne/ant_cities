@@ -1,19 +1,17 @@
 import pygame
-import ui.viewport as viewport
+from ui.pygameview import PygameView
 
-class MouseDisplay(viewport.Viewport):
+class MouseDisplay(PygameView):
     """Display the translation of mouse device coordinates to mouse game world
     coordinates.
     """
     def __init__(self, x, y, controller):
-        viewport.Viewport.__init__(self, x, y, 250, 20)
+        PygameView.__init__(self, x, y, 250, 20, 0, controller)
 
         self.font = pygame.font.SysFont("arial", 16)
         
         # Set transparency color.
         self.surface.set_colorkey((255, 255, 255))
-        
-        self.controller = controller
         
     def draw_view(self, surface):
         

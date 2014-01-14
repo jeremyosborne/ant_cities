@@ -1,22 +1,18 @@
 import pygame
 from pymunk.vec2d import Vec2d
-import ui.viewport as viewport
+from ui.pygameview import PygameView
 from ui.assets.colors import entity_colors
 from ui.assets.images import entity_images
 
-class Map(viewport.Viewport):
-    """
-    """
-    def __init__(self, viewable_width, viewable_height, controller):
+class Map(PygameView):
+    def __init__(self, x, y, width, height, controller):
         """Arguments not inherited from viewport.
         
         controller {GameUIController} Provides access to the outside world.
         """
         
-        viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height)
+        PygameView.__init__(self, x, y, width, height, 0, controller)
         
-        self.controller = controller
-                
         # Number of pixel buffer from the edges of our view within we scroll.
         self.scroll_buffer = 20
         # How many visual pixels do we move per frame when scrolling?
