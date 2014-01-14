@@ -44,11 +44,9 @@ Key
 * In process
 - Not Started or on hold.
 
+* BUG:
+    * Can't click the track button again.
 * User Interface
-    * Move the information shared between the minimap and the world viewport
-      into the GameUIController:
-        * world width and height
-        * current center view point
     - Separate visual UI from logic simulation. Next step on path to multiprocess
       capable game (UI in one process, game in another).
     - Views implement EventSubscriber.

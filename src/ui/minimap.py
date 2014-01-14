@@ -69,7 +69,6 @@ class MiniMap(viewport.Viewport):
         """Update the mini view of the game world.        
         """
         world = self.controller.game_simulation.world
-        world_viewport = self.controller.game_simulation.world_viewport
 
         # Clear the mini map.
         self.minimap_surface.fill((0, 0, 0))
@@ -81,15 +80,15 @@ class MiniMap(viewport.Viewport):
             self.minimap_surface.fill(entity_colors(entity), (minimap_x, minimap_y, 2, 2))
             
         # Show visual area on the minimap.
-        visible_rect = world_viewport.world_viewable_rect.copy()
+        scaled_world_viewport = self.controller.world_viewport.rect.copy()
         # Scale to fit.
-        visible_rect.left = int(visible_rect.left * self.x_scale_factor)
-        visible_rect.top = int(visible_rect.top * self.y_scale_factor)
-        visible_rect.width = int(visible_rect.width * self.x_scale_factor)
-        visible_rect.height = int(visible_rect.height * self.y_scale_factor)
+        scaled_world_viewport.left = int(scaled_world_viewport.left * self.x_scale_factor)
+        scaled_world_viewport.top = int(scaled_world_viewport.top * self.y_scale_factor)
+        scaled_world_viewport.width = int(scaled_world_viewport.width * self.x_scale_factor)
+        scaled_world_viewport.height = int(scaled_world_viewport.height * self.y_scale_factor)
         
         # Draw the layers of the minimap.
-        pygame.draw.rect(self.minimap_surface, (255, 255, 0), visible_rect, 2)
+        pygame.draw.rect(self.minimap_surface, (255, 255, 0), scaled_world_viewport, 2)
         self.surface.fill((0, 0, 0))
         self.surface.blit(self.minimap_surface, ((self.minimap_offsetx, self.minimap_offsety)))
 
@@ -117,7 +116,7 @@ class MiniMap(viewport.Viewport):
                 gameworld_y = int(viewport_mouse_y / self.y_scale_factor)
 
                 # Change centerpoint of the map.
-                game_simulation.world_viewport.move_viewport(gameworld_x, gameworld_y)
+                self.controller.world_viewport.move_viewport(gameworld_x, gameworld_y)
 
     def mousebuttonup_listener(self, e):
         if e.data["ev"].button == 1:
