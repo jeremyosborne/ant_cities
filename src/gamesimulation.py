@@ -9,7 +9,7 @@ from ui.minimap import MiniMap
 from ui.unitinfobox import UnitInfoBox
 from ui.fpsdisplay import FPSDisplay
 from ui.datacolumndisplay import DataColumnDisplay
-from ui.worldviewport import WorldViewport
+from ui.map import Map
 from ui.mousedisplay import MouseDisplay
 from ui.controllers import GameUIController
 
@@ -45,11 +45,9 @@ class GameSimulation():
         # The current stack of ui elements.
         self.ui_views = []
 
-        # viewport is the screen entity that contains the view of the game world.
         # The minus 170 below is the y size of the UI elements.
-        self.world_viewport = WorldViewport(globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
-                                            self.ui_controller)
-        self.ui_views.append(self.world_viewport)
+        self.ui_views.append(Map(globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
+                                self.ui_controller))
         
         # Frames per second.
         self.ui_views.append(FPSDisplay(5, 5, self.ui_controller))

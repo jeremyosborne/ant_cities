@@ -4,9 +4,9 @@ import ui.viewport as viewport
 from ui.assets.colors import entity_colors
 from ui.assets.images import entity_images
 
-#This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
-#So it doesn't belong in the main viewport class.
-class WorldViewport(viewport.Viewport):
+class Map(viewport.Viewport):
+    """
+    """
     def __init__(self, viewable_width, viewable_height, controller):
         """Arguments not inherited from viewport.
         
