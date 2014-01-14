@@ -28,11 +28,8 @@ class UnitInfoBox(PygameView):
         pygame.draw.line(self.background, (255, 255, 255), (0, 0), (0, self.height), 10)
         
         self.surface.blit(self.background, (0, 0))
-
-        # Toggle for tracking the entity on screen.
-        self.track = False
         
-        #Load Button Icons
+        # Load Button Icons
         self.Start_Tracking_Button = self.controller.imageassets.load("track-enable")
         self.Stop_Tracking_Button = self.controller.imageassets.load("track-disable")
                 
@@ -49,7 +46,7 @@ class UnitInfoBox(PygameView):
         # If we have not selected an entity.
         if not ent:
             self.surface.blit(self.background, (0, 0))
-            self.track = False
+            self.controller.entity_selection_track = False
             return
 
         # If we do have an entity selected, give the option to track.
@@ -93,7 +90,7 @@ class UnitInfoBox(PygameView):
             track_rect = pygame.Rect(self.width - 30, 0, 30, 30)
             
             if track_rect.collidepoint(game_world_point) == True:
-                if self.track == True:
-                    self.track = False
+                if self.controller.entity_selection_track == True:
+                    self.controller.entity_selection_track = False
                 else:
-                    self.track = True
+                    self.controller.entity_selection_track = True

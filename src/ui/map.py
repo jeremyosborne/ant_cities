@@ -167,7 +167,7 @@ class Map(PygameView):
         # If we are tracking an entity...
         if self.controller.entity_selection_track == True and self.controller.entity_selection:
             # ...move the view.
-            self.move_viewport(*self.controller.entity_selection.location)
+            self.controller.world_viewport.move_viewport(*self.controller.entity_selection.location)
 
         # Clear.
         self.surface.fill((255, 255, 255))

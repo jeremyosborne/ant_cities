@@ -44,9 +44,8 @@ Key
 * In process
 - Not Started or on hold.
 
-* BUG:
-    * Can't click the track button again.
 * User Interface
+    - Nest Tracking button inside of the UnitInfoBox.
     - Allow view nesting and relative view sizing/positioning for easier
       layout.
     - Views should have dirty rect capability (see pygame.display.update function
