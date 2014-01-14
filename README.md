@@ -47,10 +47,8 @@ Key
 * BUG:
     * Can't click the track button again.
 * User Interface
-    - Separate visual UI from logic simulation. Next step on path to multiprocess
-      capable game (UI in one process, game in another).
-    - Views implement EventSubscriber.
-    - Views go ahead and add pygame surface support.
+    - Allow view nesting and relative view sizing/positioning for easier
+      layout.
     - Views should have dirty rect capability (see pygame.display.update function
       for interface for passing in changed list of rects that need redrawing).
     - Allow preservation of aspect ratio and auto scaling.

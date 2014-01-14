@@ -1,18 +1,19 @@
 import pygame
 from ui.pygameview import PygameView
 
+# class ToggleButton(PygameView):
+#     """Toggle button.
+#     
+#     Right now this is specific to the UnitInfoBox.
+#     """
+#     def __init__(self, x, y, width, height, controller):
+        
+
 class UnitInfoBox(PygameView):
     """Traditional area that displays information about a single unit a user has clicked on.
     """
     def __init__(self, x=0, y=0, width=256, height=256, 
-                 controller=None, imageassets=None):
-        """Arguments not inherited from viewport.
-        
-        controller {EventPublisher} Provides a pipeline to events in the outside
-        world.
-        imageassets {AssetCache} Image cache.
-        """
-
+                 controller=None):
         PygameView.__init__(self, x, y, width, height, 0, controller)
 
         self.font = pygame.font.SysFont("arial", 16)
@@ -32,8 +33,8 @@ class UnitInfoBox(PygameView):
         self.track = False
         
         #Load Button Icons
-        self.Start_Tracking_Button = imageassets.load("track-enable")
-        self.Stop_Tracking_Button = imageassets.load("track-disable")
+        self.Start_Tracking_Button = self.controller.imageassets.load("track-enable")
+        self.Stop_Tracking_Button = self.controller.imageassets.load("track-disable")
                 
         # Register event listeners.
         controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)

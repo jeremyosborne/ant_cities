@@ -178,6 +178,9 @@ class GameUIController(UIController):
         # The height and width of the world.
         self.world = game_simulation.world
         
+        # Reference to the main image cache.
+        self.imageassets = game_simulation.imageassets
+        
         # Defines the viewable portion of the entire world.
         # Keep the default dimensions the size of the map.
         # Max pixel size == max size of the world.

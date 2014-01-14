@@ -10,12 +10,13 @@ from ui.datacolumndisplay import DataColumnDisplay
 from ui.map import Map
 from ui.mousedisplay import MouseDisplay
 from ui.controllers import GameUIController
-
+from ui.assets.imageassets import ImageAssets
+from ui.pygameview import PygameDisplay
 
 
 class GameSimulation():
        
-    def __init__(self, imageassets):
+    def __init__(self):
         """Initialize game simulation.
         
         imageassets {AssetCache} Image cache.
@@ -30,46 +31,44 @@ class GameSimulation():
         self.world = World(globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1])
 
         # -------------------------------------------- UI
+        
+        # Cache of image assets.
+        self.imageassets = ImageAssets(globaldata.ASSETS_PATH)
 
-        # Display needs to be set before any graphics calls.
-        # Window mode.
-        self.screen = pygame.display.set_mode(globaldata.SCREEN_SIZE, pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
-        # Full screen mode.
-        #screen = pygame.display.set_mode(globaldata.SCREEN_SIZE, pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
-
-        # Do we have a unit selected?
+        # Controller for all UI elements.
         self.ui_controller = GameUIController(self)
 
-        # The current stack of ui elements.
-        self.ui_views = []
+        # The main display, which all other views should be nested with.
+        # Display needs to be set before any graphics calls.
+        self.display = PygameDisplay(0, 0, globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1], 0, self.ui_controller)
 
         # The minus 170 below is the y size of the UI elements.
-        self.ui_views.append(Map(0, 0, 
-                                 globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
+        self.display.add_childview(Map(self.display.x, self.display.y, 
+                                 self.display.width, self.display.height-170,
                                  self.ui_controller))
         
         # Frames per second.
-        self.ui_views.append(FPSDisplay(5, 5, self.ui_controller))
+        self.display.add_childview(FPSDisplay(5, 5, self.ui_controller))
         
         # Mouse coordinates.
-        self.ui_views.append(MouseDisplay(5, 25, self.ui_controller))
+        self.display.add_childview(MouseDisplay(5, 25, self.ui_controller))
         
         # Mini map.
-        self.ui_views.append(MiniMap(globaldata.SCREEN_SIZE[0]-256, globaldata.SCREEN_SIZE[1]-170, 
+        self.display.add_childview(MiniMap(self.display.width-256, self.display.height-170, 
                                 256, 170, 
                                 self.ui_controller))
 
         # Unit information display.
-        self.ui_views.append(UnitInfoBox(globaldata.SCREEN_SIZE[0]-512, globaldata.SCREEN_SIZE[1]-170, 
+        self.display.add_childview(UnitInfoBox(self.display.width-512, self.display.height-170, 
                                  256, 170,
-                                 self.ui_controller, imageassets))
+                                 self.ui_controller))
         
         # Base 1 Display
         data_to_display = [
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_1, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.base_1.c["energy"].val)),
         ]
-        self.ui_views.append(DataColumnDisplay(1, globaldata.SCREEN_SIZE[1]-170, 
+        self.display.add_childview(DataColumnDisplay(self.display.x, self.display.height-170, 
                                         200, 170,
                                         str(self.world.base_1.c["team"]),
                                         data_to_display))
@@ -79,7 +78,7 @@ class GameSimulation():
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_2, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.base_2.c["energy"].val)),
         ]        
-        self.ui_views.append(DataColumnDisplay(201, globaldata.SCREEN_SIZE[1]-170, 
+        self.display.add_childview(DataColumnDisplay(self.display.x+201, self.display.height-170, 
                                         200, 170,
                                         str(self.world.base_2.c["team"]),
                                         data_to_display))
@@ -89,7 +88,7 @@ class GameSimulation():
             ("Game Time:", lambda: str(int(self.world.age))),
             ("Leaves:", lambda: str(len(filter(lambda e: e.name == "leaf", self.world.entities.itervalues())))),
         ]
-        self.ui_views.append(DataColumnDisplay(402, globaldata.SCREEN_SIZE[1]-170, 
+        self.display.add_childview(DataColumnDisplay(self.display.x+402, self.display.height-170, 
                                               200, 170,
                                               "World Info",
                                               data_to_display))
@@ -103,7 +102,6 @@ class GameSimulation():
         self.world.process(time_passed)
 
         # Update UI.
-        for v in self.ui_views:
-            v.render(self.screen)
+        self.display.render()
 
         pygame.display.flip()

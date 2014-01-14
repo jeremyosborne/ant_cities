@@ -24,8 +24,6 @@ A View should not:
 controller.
 """
 
-import pygame
-
 
 
 class PositionableMixin(object):
@@ -138,6 +136,10 @@ class ScalableMixin(object):
 
 
 class View(object):
+    
+    # Reserved. Abstract surface to be implemented by instances or subclasses.
+    surface = None
+    
     def __init__(self, x=0, y=0, width=0, height=0, z=0, controller=None, **kwargs):
         """Initialize an instance.
         
@@ -292,14 +294,25 @@ class View(object):
         if self.parentView:
             self.parentView.remove_childview(self)
 
-    def render(self, surface):
+    def render(self, surface=None):
         """Begin the rendering process for this view and all child views.
         
         surface {Surface} on which to render this view and all child views.
         """
-        self.draw_view(surface)
+        self.clear_view()
         for v in self.childviews:
-            v.draw_view(surface)
+            # Child views draw themselves on our surface...
+            v.render(self.surface)
+        # ...and then we draw anything remaining for ourselves as well as
+        # draw ourselves on the provided surface.
+        self.draw_view(surface)
+    
+    def clear_view(self):
+        """Erase our own surface.
+        
+        Implement on subclasses.
+        """
+        pass
     
     def draw_view(self, surface):
         """Draw this specific view to the provided surface.

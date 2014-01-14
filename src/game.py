@@ -10,29 +10,19 @@ import pygame
 from pygame.locals import *
 import globaldata
 
-from ui.assets.imageassets import ImageAssets
 from gamesimulation import GameSimulation
-
-
-
-# Globals, to be initialized during run time.
-imageassets = None
-game_simulation = None
 
 
 
 def run():
     """Call to start the game.
     """
-    global game_simulation, imageassets
     
     pygame.init()
     pygame.display.set_caption(globaldata.GAME_TITLE)
-
-    imageassets = ImageAssets(globaldata.ASSETS_PATH)
     
     # Needs to be initialized after everything.
-    game_simulation = GameSimulation(imageassets)
+    game_simulation = GameSimulation()
     
     print pygame.display.Info()
 
