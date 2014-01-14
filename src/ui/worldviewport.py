@@ -8,7 +8,7 @@ from commonmath import mmval
 #This is our main game viewport.  It has a lot of custom code for this particular type of game, i.e. zooming and panning in a game world.
 #So it doesn't belong in the main viewport class.
 class WorldViewport(viewport.Viewport):
-    def __init__(self, world_width, world_height, viewable_width, viewable_height, controller):
+    def __init__(self, viewable_width, viewable_height, controller):
         """Arguments not inherited from viewport.
         
         controller {GameUIController} Provides access to the outside world.
@@ -16,10 +16,8 @@ class WorldViewport(viewport.Viewport):
         
         viewport.Viewport.__init__(self, 0, 0, viewable_width, viewable_height)
         
-        # Size of the game world.
-        self.world_height = world_height
-        self.world_width = world_width
-
+        self.controller = controller
+        
         # zoom-in/out factor per zoom level.
         self.zoom_factor = 1.5
         
@@ -48,8 +46,6 @@ class WorldViewport(viewport.Viewport):
         # Initialize the first view.
         self.change_zoom_level(0)
         self.move_viewport()
-        
-        self.controller = controller
         
         # Register event listeners.
         # TODO: Need a way to unsubscribe listeners.
@@ -93,12 +89,12 @@ class WorldViewport(viewport.Viewport):
             current_zoom_level = self.zoom_level_ranges[-1]
             next_zoom_level = (current_zoom_level[0]*self.zoom_factor, 
                                current_zoom_level[1]*self.zoom_factor)
-            if ((next_zoom_level[0] <= self.world_width) and (next_zoom_level[1] <= self.world_height)):
+            if ((next_zoom_level[0] <= self.controller.world.width) and (next_zoom_level[1] <= self.controller.world.height)):
                 self.zoom_level_ranges.append(next_zoom_level)
             else:
                 # Final zoom level. Make it match the size of the game world
                 # even if it's not full factor zoom.
-                self.zoom_level_ranges.append((self.world_width, self.world_height))
+                self.zoom_level_ranges.append((self.controller.world.width, self.controller.world.height))
                 break
 
         if __debug__:
@@ -125,14 +121,14 @@ class WorldViewport(viewport.Viewport):
         Needs to be called to to after zoom level changes, too.
         """
         
-        x = x if x != None else self.world_width/2
-        y = y if y != None else self.world_height/2
+        x = x if x != None else self.controller.world.width/2
+        y = y if y != None else self.controller.world.height/2
 
         # Test to see if viewport center is out of range after the the zoom, 
         # if so, fix'um up.  This can happen if you're at the edge of the 
         # screen and then zoom out - the center will be close to the edge.
-        x = mmval(self.world_width - self.zoom_area_width/2, x, self.zoom_area_width/2)
-        y = mmval(self.world_height - self.zoom_area_height/2, y, self.zoom_area_height/2)
+        x = mmval(self.controller.world.width - self.zoom_area_width/2, x, self.zoom_area_width/2)
+        y = mmval(self.controller.world.height - self.zoom_area_height/2, y, self.zoom_area_height/2)
 
         # Update the visible area.
         self.world_viewable_rect.center = (x, y)

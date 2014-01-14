@@ -42,7 +42,12 @@ class GameUIController(UIController):
     
     def __init__(self, game_simulation):
         super(GameUIController, self).__init__()
+        
+        # The global game_simulation.
         self.game_simulation = game_simulation
+        
+        # The height and width of the world.
+        self.world = game_simulation.world
         
     def handle_event(self, event):
         if event.type == KEYDOWN:

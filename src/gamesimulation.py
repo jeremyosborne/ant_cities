@@ -45,9 +45,8 @@ class GameSimulation():
 
         # viewport is the screen entity that contains the view of the game world.
         # The minus 170 below is the y size of the UI elements.
-        self.world_viewport = WorldViewport(globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1], 
-                                      globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
-                                      self.ui_controller)
+        self.world_viewport = WorldViewport(globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1]-170,
+                                            self.ui_controller)
         self.ui_views.append(self.world_viewport)
         
         # Frames per second.
@@ -59,7 +58,6 @@ class GameSimulation():
         # Mini map.
         self.ui_views.append(MiniMap(globaldata.SCREEN_SIZE[0]-256, globaldata.SCREEN_SIZE[1]-170, 
                                 256, 170, 
-                                globaldata.WORLD_SIZE[0], globaldata.WORLD_SIZE[1], 
                                 self.ui_controller))
 
         # Unit information display.
