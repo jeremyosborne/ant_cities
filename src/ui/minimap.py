@@ -99,8 +99,6 @@ class MiniMap(PygameView):
     
     def mousemotion_listener(self, e):
         if self.panning_map == True:
-            game_simulation = self.controller.game_simulation
-            
             viewport_mouse_x, viewport_mouse_y = self.screenxy_to_relativexy(e.data["ev"].pos)
             
             # Define a rect that matches the actual area on the viewport 
@@ -117,7 +115,7 @@ class MiniMap(PygameView):
                 gameworld_y = int(viewport_mouse_y / self.y_scale_factor)
 
                 # Change centerpoint of the map.
-                self.controller.world_viewport.move_viewport(gameworld_x, gameworld_y)
+                self.controller.world_viewport.move(gameworld_x, gameworld_y)
 
     def mousebuttonup_listener(self, e):
         if e.data["ev"].button == 1:

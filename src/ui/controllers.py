@@ -46,16 +46,32 @@ class ZoomableViewportController(object):
         # Calculate the zoom levels.
         self.create_zoom_level_dims(min_zoom_dims, maximum_zoom_dims)
 
-        # {int} Default zoom level (needs to be done after zoom level calculation).
-        self.zoom_level = len(self.zoom_level_dims)-1
-
         # The currently visible area.
         self.rect = pygame.Rect(0, 0, 0, 0)
+
+        # {int} Default zoom level (needs to be done after zoom level calculation).
+        self.zoom_level = len(self.zoom_level_dims)-1
         
-        # Initialize things.
-        self.change_zoom_level(0)
-        self.move_viewport()
+    @property
+    def zoom_level(self):
+        """{int} The current zoom level.
+        """
+        return self._zoom_level
+    
+    @zoom_level.setter
+    def zoom_level(self, value):
+        """{int}
+        """
+        # Boundary check.
+        self._zoom_level = mmval(len(self.zoom_level_dims)-1, value, 0)
+
+        # Resize the viewable area.
+        self.rect.width = self.zoom_area_width
+        self.rect.height = self.zoom_area_height
         
+        # Correct the center point.
+        self.move(*self.rect.center)
+    
     @property
     def zoom_area_width(self):
         """Width in pixels at the current zoom level.
@@ -102,17 +118,17 @@ class ZoomableViewportController(object):
             print "Zoom level ranges (%s total zoom levels)" % len(self.zoom_level_dims)
             print self.zoom_level_dims
 
-    def scroll_viewport(self, x=0, y=0):
+    def scroll(self, x=0, y=0):
         """Scrolls the viewport relative to its current position.
         
         (x, y) are offsets applied as a delta to the current position of the
         center.
         
         """
-        # Convenience method, handoff to move_viewport.
-        self.move_viewport(self.rect.centerx+x, self.rect.centery+y)
+        # Convenience method, handoff to move.
+        self.move(self.rect.centerx+x, self.rect.centery+y)
     
-    def move_viewport(self, x=None, y=None):
+    def move(self, x=None, y=None):
         """Moves the viewport and adjusts the dimensions of the bounding
         rectangle.
         
@@ -137,23 +153,6 @@ class ZoomableViewportController(object):
         # Update the visible area.
         self.rect.center = (x, y)
 
-    def change_zoom_level(self, direction):
-        """Changes the zoom level and resizes the viewable area.
-        
-        direction {number} Relative change. Passing 0 will not change the
-        zoom level but will perform operations, like setting the size of
-        the viewable rectangle.
-        """
-        # Boundary check.
-        self.zoom_level = mmval(len(self.zoom_level_dims)-1, self.zoom_level+direction, 0)
-
-        # Resize the viewable area.
-        self.rect.width = self.zoom_area_width
-        self.rect.height = self.zoom_area_height
-                    
-        # Correct the center point.
-        self.move_viewport(*self.rect.center)
-            
 
 
 class GameUIController(UIController):

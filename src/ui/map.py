@@ -152,13 +152,13 @@ class Map(PygameView):
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if mouse_x >= 0 and mouse_x <= self.scroll_buffer:
-            world_viewport.scroll_viewport(x=-scroll_speed)
+            world_viewport.scroll(x=-scroll_speed)
         elif (mouse_x >= self.width-self.scroll_buffer) and mouse_x <= self.width:
-            world_viewport.scroll_viewport(x=scroll_speed)
+            world_viewport.scroll(x=scroll_speed)
         if mouse_y >= 0 and mouse_y <= self.scroll_buffer:
-            world_viewport.scroll_viewport(y=-scroll_speed)
+            world_viewport.scroll(y=-scroll_speed)
         elif (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
-            world_viewport.scroll_viewport(y=scroll_speed)
+            world_viewport.scroll(y=scroll_speed)
 
         # Every round, publish an update of where the mouse is at relative to
         # the game world.
@@ -167,7 +167,7 @@ class Map(PygameView):
         # If we are tracking an entity...
         if self.controller.entity_selection_track == True and self.controller.entity_selection:
             # ...move the view.
-            self.controller.world_viewport.move_viewport(*self.controller.entity_selection.location)
+            self.controller.world_viewport.move(*self.controller.entity_selection.location)
 
         # Clear.
         self.surface.fill((255, 255, 255))
@@ -227,18 +227,18 @@ class Map(PygameView):
         
         elif event.button == 4:  
             # Mouse Scroll Wheel Up == zoom in
-            world_viewport.change_zoom_level(-1)
+            world_viewport.zoom_level += -1
             
             # Check to see if the mouse is above the game world viewport.
             if self.rect.collidepoint(ui_click_point) == True:
                 gamexy = self.screenpoint_to_gamepoint(*event.pos)
-                world_viewport.move_viewport(*gamexy)
+                world_viewport.move(*gamexy)
 
         elif event.button == 5:  
             # Mouse Scroll Wheel Down == zoom out
-            world_viewport.change_zoom_level(1)
+            world_viewport.zoom_level += 1
 
             # Check to see if the mouse is above the game world viewport.
             if self.rect.collidepoint(ui_click_point) == True:
                 gamexy = self.screenpoint_to_gamepoint(*event.pos)
-                world_viewport.move_viewport(*gamexy)
+                world_viewport.move(*gamexy)
