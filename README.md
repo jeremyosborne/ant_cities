@@ -48,10 +48,7 @@ Key
 - Not Started or on hold.
 
 * User Interface
-    - Make a GameAssets class that offers dev friendliness for finding things
-      that implement the entity interface, or that just want to find by
-      string. Should have an image and a color class.
-    - Add an event assignment and removal as separate functions that are
+    * Add an event assignment and removal as separate functions that are
       part of the lifecycle of something. (These go in the PygameView.)
         - This will likely also be part of preventing events from going through
           to other UI during a modal control.
