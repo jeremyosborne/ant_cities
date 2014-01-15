@@ -1,6 +1,5 @@
 import pygame
 from ui.pygameview import PygameView
-from assets.colors import entity_colors
 
 class MiniMap(PygameView):
     def subclass_init(self, **kwargs):
@@ -71,7 +70,7 @@ class MiniMap(PygameView):
             x_location, y_location = entity.location
             minimap_x = int(x_location * self.x_scale_factor)
             minimap_y = int(y_location * self.y_scale_factor)
-            self.minimap_surface.fill(entity_colors(entity), (minimap_x, minimap_y, 2, 2))
+            self.minimap_surface.fill(self.controller.game_assets.color(entity), (minimap_x, minimap_y, 2, 2))
             
         # Show visual area on the minimap.
         scaled_world_viewport = self.controller.world_viewport.rect.copy()

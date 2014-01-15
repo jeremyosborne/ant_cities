@@ -9,7 +9,7 @@ from ui.datacolumndisplay import DataColumnDisplay
 from ui.map import Map
 from ui.mousedisplay import MouseDisplay
 from ui.controllers import GameUIController
-from ui.assets.imageassets import ImageAssets
+from ui.assets.gameassets import GameAssets
 from ui.pygameview import PygameDisplay
 
 
@@ -18,11 +18,6 @@ class GameEngine():
     ui.
     """
     def __init__(self):
-        """Initialize game simulation.
-        
-        imageassets {AssetCache} Image cache.
-        """
-        
         # Reference to the globaldata for our application.
         self.globaldata = globaldata
         
@@ -34,7 +29,7 @@ class GameEngine():
         # -------------------------------------------- UI
         
         # Cache of image assets.
-        self.imageassets = ImageAssets(globaldata.ASSETS_PATH)
+        self.game_assets = GameAssets(globaldata.ASSETS_PATH)
 
         # Controller for all UI elements.
         self.ui_controller = GameUIController(self)

@@ -1,8 +1,6 @@
 import pygame
 from pymunk.vec2d import Vec2d
 from ui.pygameview import PygameView
-from ui.assets.colors import entity_colors
-from ui.assets.images import entity_images
 
 class Map(PygameView):
     def subclass_init(self, **kwargs):
@@ -87,7 +85,7 @@ class Map(PygameView):
     def render_entity_strategic_icon(self, entity):
         """Renders the entity as a strategic icon on the view surface.
         """
-        color = entity_colors(entity)
+        color = self.controller.game_assets.color(entity)
         # Transform entity world coordinates to viewable coordinates.
         x, y = self.gamepoint_to_screenpoint(*entity.location)
         self.surface.fill(color, (x-5, y-5, 10, 10))
@@ -101,7 +99,7 @@ class Map(PygameView):
             # Render as square.
             self.render_entity_strategic_icon(entity)
         else:
-            image = entity_images(entity)
+            image = self.controller.game_assets.image(entity)
             
             # Do special things to the dummy.
 #             if __debug__:
@@ -118,7 +116,7 @@ class Map(PygameView):
                 if zoom_level < self.strategic_zoom_level:
                     if entity.c["inventory"].carried:
                         # We assume ants are only carrying a leaf.
-                        inventory_image = entity_images(entity.c["inventory"].carried[0])
+                        inventory_image = self.controller.game_assets.image(entity.c["inventory"].carried[0])
                         image = pygame.transform.rotate(inventory_image, entity.c["facing"].deg*-1.)
 
                 if zoom_level < self.strategic_zoom_level:

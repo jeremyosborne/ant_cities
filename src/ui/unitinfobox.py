@@ -25,8 +25,8 @@ class UnitInfoBox(PygameView):
         pygame.draw.line(self.background, (255, 255, 255), (0, 0), (0, self.height), 10)
         
         # Load Button Icons
-        self.Start_Tracking_Button = self.controller.imageassets.load("track-enable")
-        self.Stop_Tracking_Button = self.controller.imageassets.load("track-disable")
+        self.track_enabled_button = self.controller.game_assets.image("track-enabled")
+        self.track_disabled_button = self.controller.game_assets.image("track-disabled")
                 
         # Register event listeners.
         self.controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
@@ -47,9 +47,9 @@ class UnitInfoBox(PygameView):
 
         # If we do have an entity selected, give the option to track.
         if self.controller.entity_selection_track == True:
-            self.surface.blit(self.Start_Tracking_Button, (self.width - 30, 0))            
+            self.surface.blit(self.track_enabled_button, (self.width - 30, 0))            
         else:
-            self.surface.blit(self.Stop_Tracking_Button, (self.width -30, 0))
+            self.surface.blit(self.track_disabled_button, (self.width -30, 0))
             
         # And provide details about the unit.
         unit_text = self.font.render("%s (id: %s)" % (ent.name, ent.id), True, (255, 255, 255))

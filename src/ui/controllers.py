@@ -181,7 +181,7 @@ class GameUIController(UIController):
         self.world = game_engine.world
         
         # Reference to the main image cache.
-        self.imageassets = game_engine.imageassets
+        self.game_assets = game_engine.game_assets
         
         # Defines the viewable portion of the entire world.
         # Keep the default dimensions the size of the map.
