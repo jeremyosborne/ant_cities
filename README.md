@@ -48,10 +48,6 @@ Key
 - Not Started or on hold.
 
 * User Interface
-    * Add an event assignment and removal as separate functions that are
-      part of the lifecycle of something. (These go in the PygameView.)
-        - This will likely also be part of preventing events from going through
-          to other UI during a modal control.
     - Tracking button as childview inside of the UnitInfoBox.
     - Control panel as a named view.
     - Views should have dirty rect capability (see pygame.display.update function

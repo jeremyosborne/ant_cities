@@ -12,8 +12,10 @@ class Map(PygameView):
         self.strategic_zoom_level = len(self.controller.world_viewport.zoom_level_dims)-3
         
         # Register event listeners.
-        # TODO: Need a way to unsubscribe listeners.
-        self.controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+        self.events_sub()
+    
+    def events_sub(self):
+        self.subto(self.controller, "MOUSEBUTTONDOWN", self.mousebuttondown_listener)        
         
     def screenpoint_to_gamepoint(self, screenx, screeny):
         """Convert a screen coordinate to an equivalent game coordinate.

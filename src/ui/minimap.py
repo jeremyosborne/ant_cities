@@ -51,9 +51,12 @@ class MiniMap(PygameView):
         self.panning_map = False
 
         # Register event listeners.
-        self.controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
-        self.controller.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
-        self.controller.sub("MOUSEMOTION", self.mousemotion_listener)
+        self.events_sub()
+
+    def events_sub(self):
+        self.subto(self.controller, "MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+        self.subto(self.controller, "MOUSEBUTTONUP", self.mousebuttonup_listener)
+        self.subto(self.controller, "MOUSEMOTION", self.mousemotion_listener)
 
     def clear(self):
         self.surface.fill((0, 0, 0))

@@ -27,10 +27,13 @@ class UnitInfoBox(PygameView):
         # Load Button Icons
         self.track_enabled_button = self.controller.game_assets.image("track-enabled")
         self.track_disabled_button = self.controller.game_assets.image("track-disabled")
-                
-        # Register event listeners.
-        self.controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
 
+        # Register event listeners.
+        self.events_sub()
+
+    def events_sub(self):
+        self.subto(self.controller, "MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+    
     def clear(self):
         self.surface.blit(self.background, (0, 0))
         

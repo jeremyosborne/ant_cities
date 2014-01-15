@@ -200,12 +200,15 @@ class EventSubscriber(object):
         """
         # Allow for one type of iteration loop.
         if event == None:
+            # All events.
             event_listeners = ((evname, subs) for evname, subs in self._event_subs.items())
         elif event in self._event_subs:
+            # All events of a particular name.
             event_listeners = ((event, self._event_subs[event]),)
         else:
             # No event, quit out.
             return
+        
         for evname, subs in event_listeners:
             while subs:
                 # Unsubscribe each event.

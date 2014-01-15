@@ -28,6 +28,14 @@ class PygameDisplay(View, EventSubscriber):
         """
         pygame.display.flip()
 
+    def events_sub(self):
+        # Not a PygameView subclass. Need to implement PygameView specific methods.
+        pass
+    
+    def events_unsub(self):
+        # Not a PygameView subclass. Need to implement PygameView specific methods.
+        pass
+    
 
 
 class PygameView(View, EventSubscriber, PositionableMixin, ScalableMixin):
@@ -43,3 +51,21 @@ class PygameView(View, EventSubscriber, PositionableMixin, ScalableMixin):
         # Initialize the view and call the subclass init.
         super(PygameView, self).__init__(x, y, width, height, z, controller, **kwargs)
 
+    def events_sub(self):
+        """Views should override and place all event subscriptions in this
+        method.
+        
+        Outside controllers may use this to (re)add events in the event that
+        their listeners need to be temporarily suspended.
+        """
+        pass
+    
+    def events_unsub(self):
+        """Views should override and place a uniform event unsub from this
+        method.
+        
+        Outside controllers may use this to remove events in the event that
+        their listeners need to be temporarily suspended.
+        """
+        self.unsubfrom()
+    
