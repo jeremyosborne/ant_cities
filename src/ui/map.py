@@ -5,14 +5,11 @@ from ui.assets.colors import entity_colors
 from ui.assets.images import entity_images
 
 class Map(PygameView):
-    def __init__(self, x, y, width, height, controller):
+    def subclass_init(self, **kwargs):
         """Arguments not inherited from viewport.
         
         controller {GameUIController} Provides access to the outside world.
         """
-        
-        PygameView.__init__(self, x, y, width, height, 0, controller)
-        
         # Number of pixel buffer from the edges of our view within we scroll.
         self.scroll_buffer = 20
         # How many visual pixels do we move per frame when scrolling?
@@ -23,7 +20,7 @@ class Map(PygameView):
         
         # Register event listeners.
         # TODO: Need a way to unsubscribe listeners.
-        controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+        self.controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
         
     def screenpoint_to_gamepoint(self, screenx, screeny):
         """Convert a screen coordinate to an equivalent game coordinate.

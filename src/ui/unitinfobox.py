@@ -12,10 +12,7 @@ from ui.pygameview import PygameView
 class UnitInfoBox(PygameView):
     """Traditional area that displays information about a single unit a user has clicked on.
     """
-    def __init__(self, x=0, y=0, width=256, height=256, 
-                 controller=None):
-        PygameView.__init__(self, x, y, width, height, 0, controller)
-
+    def subclass_init(self, **kwargs):
         self.font = pygame.font.SysFont("arial", 16)
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
@@ -27,14 +24,12 @@ class UnitInfoBox(PygameView):
         
         pygame.draw.line(self.background, (255, 255, 255), (0, 0), (0, self.height), 10)
         
-        self.surface.blit(self.background, (0, 0))
-        
         # Load Button Icons
         self.Start_Tracking_Button = self.controller.imageassets.load("track-enable")
         self.Stop_Tracking_Button = self.controller.imageassets.load("track-disable")
                 
         # Register event listeners.
-        controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+        self.controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
         
     def draw_view(self, surface):
         """Display information about a selected unit, if there is one.

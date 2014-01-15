@@ -4,9 +4,7 @@ from ui.pygameview import PygameView
 class FPSDisplay(PygameView):
     """Display frames per second.
     """
-    def __init__(self, x, y, controller):
-        PygameView.__init__(self, x, y, 125, 20, 0, controller)
-        
+    def subclass_init(self, **kwargs):
         self.font = pygame.font.SysFont("arial", 16)
 
         # Set transparency color.

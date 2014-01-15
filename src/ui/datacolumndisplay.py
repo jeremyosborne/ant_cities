@@ -10,10 +10,7 @@ class DataColumnDisplay(PygameView):
     that can be called and will return a str that will be used to display
     the updated data.
     """
-    def __init__(self, x=0, y=0, width=256, height=256,
-                 title="Data Column Display", data=None):
-        PygameView.__init__(self, x, y, width, height)
-
+    def subclass_init(self, title="Data Column Display", data=None):
         self.font_family = "arial"
         self.font_size = 16
         self.font = pygame.font.SysFont(self.font_family, self.font_size)

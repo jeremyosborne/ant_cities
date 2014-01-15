@@ -3,15 +3,8 @@ from ui.pygameview import PygameView
 from assets.colors import entity_colors
 
 class MiniMap(PygameView):
-    def __init__(self, x=0, y=0, width=256, height=256, controller=None):
-        """Arguments not inherited from viewport.
+    def subclass_init(self, **kwargs):
         
-        controller {GameUIController} Provides a pipeline to events in the outside
-        world.
-        """
-        
-        PygameView.__init__(self, x, y, width, height, 0, controller)
-
         # for initialization
         # Total size of our view taking into account the border.
         minimap_width = float(self.width)
@@ -59,9 +52,9 @@ class MiniMap(PygameView):
         self.panning_map = False
 
         # Register event listeners.
-        controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
-        controller.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
-        controller.sub("MOUSEMOTION", self.mousemotion_listener)
+        self.controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+        self.controller.sub("MOUSEBUTTONUP", self.mousebuttonup_listener)
+        self.controller.sub("MOUSEMOTION", self.mousemotion_listener)
 
     def draw_view(self, surface):
         """Update the mini view of the game world.        

@@ -5,9 +5,7 @@ class MouseDisplay(PygameView):
     """Display the translation of mouse device coordinates to mouse game world
     coordinates.
     """
-    def __init__(self, x, y, controller):
-        PygameView.__init__(self, x, y, 250, 20, 0, controller)
-
+    def subclass_init(self, **kwargs):
         self.font = pygame.font.SysFont("arial", 16)
         
         # Set transparency color.

@@ -44,23 +44,23 @@ class GameSimulation():
 
         # The minus 170 below is the y size of the UI elements.
         self.display.add_childview(Map(self.display.x, self.display.y, 
-                                 self.display.width, self.display.height-170,
+                                 self.display.width, self.display.height-170, 0,
                                  self.ui_controller))
         
         # Frames per second.
-        self.display.add_childview(FPSDisplay(5, 5, self.ui_controller))
+        self.display.add_childview(FPSDisplay(5, 5, 250, 20, 0, self.ui_controller))
         
         # Mouse coordinates.
-        self.display.add_childview(MouseDisplay(5, 25, self.ui_controller))
+        self.display.add_childview(MouseDisplay(5, 25, 250, 20, 0, self.ui_controller))
         
         # Mini map.
         self.display.add_childview(MiniMap(self.display.width-256, self.display.height-170, 
-                                256, 170, 
+                                256, 170, 0,
                                 self.ui_controller))
 
         # Unit information display.
         self.display.add_childview(UnitInfoBox(self.display.width-512, self.display.height-170, 
-                                 256, 170,
+                                 256, 170, 0,
                                  self.ui_controller))
         
         # Base 1 Display
@@ -70,8 +70,8 @@ class GameSimulation():
         ]
         self.display.add_childview(DataColumnDisplay(self.display.x, self.display.height-170, 
                                         200, 170,
-                                        str(self.world.base_1.c["team"]),
-                                        data_to_display))
+                                        title=str(self.world.base_1.c["team"]),
+                                        data=data_to_display))
 
         # Base 2 Display        
         data_to_display = [
@@ -80,8 +80,8 @@ class GameSimulation():
         ]        
         self.display.add_childview(DataColumnDisplay(self.display.x+201, self.display.height-170, 
                                         200, 170,
-                                        str(self.world.base_2.c["team"]),
-                                        data_to_display))
+                                        title=str(self.world.base_2.c["team"]),
+                                        data=data_to_display))
 
         # World Info Display
         data_to_display = [
