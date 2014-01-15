@@ -48,12 +48,18 @@ Key
 - Not Started or on hold.
 
 * User Interface
-    - Tracking button as childview inside of the UnitInfoBox.
-    - Control panel as a named view.
+    - Control panel as a named view that will contain all controls, allow relative
+      positioning and be resizable.
     - Views should have dirty rect capability (see pygame.display.update function
       for interface for passing in changed list of rects that need redrawing).
     - Allow preservation of aspect ratio and auto scaling.
 
+- Entities
+    - Combine simple statistics into attrs component.
+    - Allow components to be not-process (they can opt out).
+    - Adjust leaf carrying position from back to the mouth.
+    - Add sight (square first, than radial if we want to) and visual fog.
+    - Add collision detection so that entities can not run over each other.
 - Ant-god controls:
     - Hostility level
     - Friendly index
@@ -66,9 +72,6 @@ Key
     - conversion capability
     - Different Ant types
     - The Swarm
-- Ant Entity
-    - Adjust leaf carrying position from back to the mouth.
-    - Add collision detection so that entities can not run over each other.
 - Multi-Process, Sim and Render Thread
 - Saving settings...
 - Game World
