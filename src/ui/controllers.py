@@ -168,23 +168,23 @@ class GameUIController(UIController):
     # {tuple} (x,y) Mouse coordinates translated to game world coordinates.
     mouse_worldxy = (0, 0)
     
-    def __init__(self, game_simulation):
+    def __init__(self, game_engine):
         super(GameUIController, self).__init__()
         
-        # The global game_simulation.
-        self.game_simulation = game_simulation
+        # The global game_engine.
+        self.game_engine = game_engine
         
         # The height and width of the world.
-        self.world = game_simulation.world
+        self.world = game_engine.world
         
         # Reference to the main image cache.
-        self.imageassets = game_simulation.imageassets
+        self.imageassets = game_engine.imageassets
         
         # Defines the viewable portion of the entire world.
         # Keep the default dimensions the size of the map.
         # Max pixel size == max size of the world.
-        min_zoom_dims = game_simulation.globaldata.SCREEN_SIZE[0], game_simulation.globaldata.SCREEN_SIZE[1]-170
-        max_zoom_dims = game_simulation.world.width, game_simulation.world.height
+        min_zoom_dims = game_engine.globaldata.SCREEN_SIZE[0], game_engine.globaldata.SCREEN_SIZE[1]-170
+        max_zoom_dims = game_engine.world.width, game_engine.world.height
         self.world_viewport = ZoomableViewportController(min_zoom_dims, max_zoom_dims)
         
     def handle_event(self, event):
@@ -206,6 +206,6 @@ class GameUIController(UIController):
     def fps(self):
         """{float} What is the current calculated fps?
         """
-        return round(self.game_simulation.clock.get_fps(), 1)
+        return round(self.game_engine.clock.get_fps(), 1)
     
         

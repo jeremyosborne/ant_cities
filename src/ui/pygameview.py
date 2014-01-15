@@ -11,7 +11,7 @@ class PygameDisplay(View, EventSubscriber):
     """
     def __init__(self, x=0, y=0, width=0, height=0, z=0, controller=None, **kwargs):
         # Set the title.
-        pygame.display.set_caption(controller.game_simulation.globaldata.GAME_TITLE)
+        pygame.display.set_caption(controller.game_engine.globaldata.GAME_TITLE)
 
         # Windowed view.
         self.surface = pygame.display.set_mode((width, height), pygame.HWSURFACE|pygame.DOUBLEBUF, 32)

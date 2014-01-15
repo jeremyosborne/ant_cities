@@ -62,7 +62,7 @@ class MiniMap(PygameView):
     def draw(self, surface):
         """Update the mini view of the game world.        
         """
-        world = self.controller.game_simulation.world
+        world = self.controller.game_engine.world
 
         # Clear the mini map.
         self.minimap_surface.fill((0, 0, 0))

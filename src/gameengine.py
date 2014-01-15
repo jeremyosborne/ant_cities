@@ -14,8 +14,10 @@ from ui.assets.imageassets import ImageAssets
 from ui.pygameview import PygameDisplay
 
 
-class GameSimulation():
-       
+class GameEngine():
+    """The main game object, responsible for running the simulation and the
+    ui.
+    """
     def __init__(self):
         """Initialize game simulation.
         

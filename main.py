@@ -17,7 +17,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__),"src")))
 # http://python-notes.boredomandlaziness.org/en/latest/python_concepts/import_traps.html
 
 import pygame
-from gamesimulation import GameSimulation
+from gameengine import GameEngine
 
 
 
@@ -28,7 +28,7 @@ def run():
     pygame.init()
     
     # Needs to be initialized after everything.
-    game_simulation = GameSimulation()
+    game_engine = GameEngine()
 
     if __debug__:
         print pygame.display.Info()
@@ -39,9 +39,9 @@ def run():
             if event.type == pygame.QUIT:
                 return
             else:
-                game_simulation.ui_controller.handle_event(event)
+                game_engine.ui_controller.handle_event(event)
 
-        game_simulation.process()
+        game_engine.process()
 
 
 
