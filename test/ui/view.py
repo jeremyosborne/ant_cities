@@ -25,7 +25,7 @@ def test_view_centering():
     assert v.center_screenxy == (15, 25), "Correct center before nesting."
     assert v2.center_screenxy == (0, 55), "Correct center before nesting."
 
-    v2.add_childview(v)
+    v2.addchild(v)
     
     assert v.center == (5, 5), "Correct relative center after nesting."
     assert v.center_screenxy == (10, 75), "Correct screen center after nesting."
@@ -44,7 +44,7 @@ def test_view_screenxy_offset():
     assert v.offset_screenxy == (10, 20), "Assumes 0,0 as the default position from."
     assert v2.offset_screenxy == (-5, 50), "Assumes 0,0 as the default position from."
 
-    v2.add_childview(v)
+    v2.addchild(v)
     
     assert v.offset_screenxy == (5, 70), "Parental offset is included."
     assert v2.offset_screenxy == (-5, 50), "Children do not affect parent offset."
@@ -64,7 +64,7 @@ def test_view_screenxy_to_relativexy():
     assert v.screenxy_to_relativexy(point) == (0, -10), "Point relative to view."
     assert v2.screenxy_to_relativexy(point) == (15, -40), "Point relative to view."
 
-    v2.add_childview(v)
+    v2.addchild(v)
     
     assert v.screenxy_to_relativexy(point) == (5, -60), "Point relative to parent and self."
     assert v2.screenxy_to_relativexy(point) == (15, -40), "Point does not change with children."
@@ -82,7 +82,7 @@ def test_view_contained_screenxy():
     assert v.contained_screenxy(point) == True, "Point contained"
     assert v2.contained_screenxy(point) == False, "Point not contained."
 
-    v2.add_childview(v)
+    v2.addchild(v)
     
     assert v.contained_screenxy(point) == False, "Point not contained."
     assert v2.contained_screenxy(point) == False, "Point not contained."
@@ -99,21 +99,21 @@ def test_view_z_sorting():
     
     vparent = View()
     
-    vparent.add_childview(v)
-    vparent.add_childview(v2)
-    vparent.add_childview(v3)
-    vparent.add_childview(v4)
+    vparent.addchild(v)
+    vparent.addchild(v2)
+    vparent.addchild(v3)
+    vparent.addchild(v4)
     
     assert vparent.childviews[0] == v3, "Sorting is correct."
     assert vparent.childviews[1] == v2, "Sorting is correct."
     assert vparent.childviews[2] == v4, "Sorting is correct."
     assert vparent.childviews[3] == v, "Sorting is correct."
 
-    vparent.remove_childview(v)
+    vparent.removechild(v)
     
     assert len(vparent.childviews) == 3, "Childview correctly removed."
     
-    v4.remove_self()
+    v4.removeself()
     assert len(vparent.childviews) == 2, "Childview correctly removed."
 
 
@@ -124,7 +124,7 @@ def test_positionablemixin():
     
     cv = MockView(x=10, y=15, width=20, height=30)
     pv = MockView(x=5, y=5, width=100, height=200)
-    pv.add_childview(cv)
+    pv.addchild(cv)
     
     cv.position_relative_to_parent(x="left", y="top")
     assert cv.x == 0, "Correctly positioned."
@@ -177,7 +177,7 @@ def test_scalablemixin():
     
     cv = MockView(x=10, y=15, width=20, height=30)
     pv = MockView(x=5, y=5, width=100, height=200)
-    pv.add_childview(cv)
+    pv.addchild(cv)
     
     pv.scale_relative_to_parent(w=10, h=10)
     assert pv.width == 100, "Unchanged."

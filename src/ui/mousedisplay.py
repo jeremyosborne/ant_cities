@@ -10,12 +10,11 @@ class MouseDisplay(PygameView):
         
         # Set transparency color.
         self.surface.set_colorkey((255, 255, 255))
-        
-    def draw_view(self, surface):
-        
-        # Clear the surface.
+    
+    def clear(self):
         self.surface.fill((255, 255, 255))
-
+    
+    def draw(self, surface):
         game_world_x, game_world_y = self.controller.mouse_worldxy
         text = "Mouse coords: (%d, %d)" % (game_world_x, game_world_y)
         font = self.font.render(text, True, (0, 0, 0))

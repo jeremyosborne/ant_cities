@@ -43,55 +43,45 @@ class GameSimulation():
         self.display = PygameDisplay(0, 0, globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1], 0, self.ui_controller)
 
         # The minus 170 below is the y size of the UI elements.
-        self.display.add_childview(Map(self.display.x, self.display.y, 
+        self.display.addchild(Map(self.display.x, self.display.y, 
                                  self.display.width, self.display.height-170, 0,
                                  self.ui_controller))
         
         # Frames per second.
-        self.display.add_childview(FPSDisplay(5, 5, 250, 20, 0, self.ui_controller))
+        self.display.addchild(FPSDisplay(5, 5, 250, 20, 0, self.ui_controller))
         
         # Mouse coordinates.
-        self.display.add_childview(MouseDisplay(5, 25, 250, 20, 0, self.ui_controller))
+        self.display.addchild(MouseDisplay(5, 25, 250, 20, 0, self.ui_controller))
         
         # Mini map.
-        self.display.add_childview(MiniMap(self.display.width-256, self.display.height-170, 
+        self.display.addchild(MiniMap(self.display.width-256, self.display.height-170, 
                                 256, 170, 0,
                                 self.ui_controller))
 
         # Unit information display.
-        self.display.add_childview(UnitInfoBox(self.display.width-512, self.display.height-170, 
+        self.display.addchild(UnitInfoBox(self.display.width-512, self.display.height-170, 
                                  256, 170, 0,
                                  self.ui_controller))
         
-        # Base 1 Display
-        data_to_display = [
-            ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_1, self.world.entities.itervalues())))),
-            ("Energy:", lambda: str(self.world.base_1.c["energy"].val)),
-        ]
-        self.display.add_childview(DataColumnDisplay(self.display.x, self.display.height-170, 
-                                        200, 170,
-                                        title=str(self.world.base_1.c["team"]),
-                                        data=data_to_display))
-
-        # Base 2 Display        
+        # Player Base Information
         data_to_display = [
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_2, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.base_2.c["energy"].val)),
         ]        
-        self.display.add_childview(DataColumnDisplay(self.display.x+201, self.display.height-170, 
-                                        200, 170,
-                                        title=str(self.world.base_2.c["team"]),
-                                        data=data_to_display))
+        self.display.addchild(DataColumnDisplay(self.display.x, self.display.height-170, 
+                                                200, 170,
+                                                title=str(self.world.base_2.c["team"]),
+                                                data=data_to_display))
 
         # World Info Display
         data_to_display = [
             ("Game Time:", lambda: str(int(self.world.age))),
             ("Leaves:", lambda: str(len(filter(lambda e: e.name == "leaf", self.world.entities.itervalues())))),
         ]
-        self.display.add_childview(DataColumnDisplay(self.display.x+402, self.display.height-170, 
+        self.display.addchild(DataColumnDisplay(self.display.x+402, self.display.height-170, 
                                               200, 170,
-                                              "World Info",
-                                              data_to_display))
+                                              title="World Info",
+                                              data=data_to_display))
 
     def process(self):
 

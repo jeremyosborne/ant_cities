@@ -9,12 +9,11 @@ class FPSDisplay(PygameView):
 
         # Set transparency color.
         self.surface.set_colorkey((255, 255, 255))
-        
-    def draw_view(self, surface):
-        
-        # Clear the surface.
+    
+    def clear(self):
         self.surface.fill((255, 255, 255))    
-
+        
+    def draw(self, surface):
         label = self.font.render("fps: %s" % self.controller.fps, True, (0, 0, 0))
         self.surface.blit(label, (0, 0))
 

@@ -20,7 +20,7 @@ class PygameDisplay(View, EventSubscriber):
         # Initialize the view and call the subclass init.
         super(PygameDisplay, self).__init__(x, y, width, height, z, controller, **kwargs)
 
-    def draw_view(self, surface):
+    def draw(self, surface):
         """Refresh the view of the game.
         """
         pygame.display.flip()

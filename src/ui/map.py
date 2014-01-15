@@ -137,7 +137,10 @@ class Map(PygameView):
             x, y = self.gamepoint_to_screenpoint(*entity.location)
             self.surface.blit(image, (x-w/2, y-h/2))
 
-    def draw_view(self, surface):
+    def clear(self):
+        self.surface.fill((255, 255, 255))
+        
+    def draw(self, surface):
         """Update the main view of the game world.
         """
         world = self.controller.world
@@ -165,9 +168,6 @@ class Map(PygameView):
         if self.controller.entity_selection_track == True and self.controller.entity_selection:
             # ...move the view.
             self.controller.world_viewport.move(*self.controller.entity_selection.location)
-
-        # Clear.
-        self.surface.fill((255, 255, 255))
 
         # Using the spatial index to determine what to render,
         # except let's not use the index if we're completely zoomed out. 

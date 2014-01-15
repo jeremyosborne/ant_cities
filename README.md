@@ -45,9 +45,14 @@ Key
 - Not Started or on hold.
 
 * User Interface
-    - Nest Tracking button inside of the UnitInfoBox.
-    - Allow view nesting and relative view sizing/positioning for easier
-      layout.
+    - Add an event assignment and removal as separate functions that are
+      part of the lifecycle of something. (These go in the PygameView.)
+    - The controller should have an update, too, for anything logic based that
+      doesn't directly have anything to do with the view.
+        - The controller will track the mouse and make it available each tick.
+        - Remove the panning/scrolling from Map and place it in the controller.
+    - Tracking button as childview inside of the UnitInfoBox.
+    - Control panel as a named view.
     - Views should have dirty rect capability (see pygame.display.update function
       for interface for passing in changed list of rects that need redrawing).
     - Allow preservation of aspect ratio and auto scaling.

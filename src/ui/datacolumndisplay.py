@@ -27,9 +27,7 @@ class DataColumnDisplay(PygameView):
                         }
         # Additional whitespace between columns (pixels).
         self.column_padding = 5
-        
-        self.background = pygame.surface.Surface((self.width, self.height)).convert()
-        
+                
         # Displayed at the top of the panel.
         self.title = title
         # Dual column display. (header, dynamic-data-as-callable)
@@ -37,9 +35,10 @@ class DataColumnDisplay(PygameView):
         # Used to align data displayed.
         self.max_data_label_width = 0
 
-        self.draw_background()
+        self.background = pygame.surface.Surface((self.width, self.height)).convert()
+        self.init_background()
                 
-    def draw_background(self):
+    def init_background(self):
         self.background.fill(self.bgcolor)
 
         # Border.
@@ -47,7 +46,7 @@ class DataColumnDisplay(PygameView):
 
         # Title.
         title_surface = self.font.render(self.title, True, self.fgcolor)
-        w, h = title_surface.get_size()
+        w, _ = title_surface.get_size()
         self.background.blit(title_surface, (self.width/2 - w/2, 0))
         
         # Static info labels and determine width of label.
@@ -57,13 +56,13 @@ class DataColumnDisplay(PygameView):
             self.max_data_label_width = max(data_label.get_size()[0]+self.padding["left"], self.max_data_label_width)
             self.background.blit(data_label, (self.padding["left"], self.font.get_linesize()*(1+i)))
 
-    def draw_view(self, surface):
+    def clear(self):
         # Erase previous display with static surface.
         self.surface.blit(self.background, (0, 0))
-        
+
+    def draw(self, surface):
         # Update with dynamic data, defined by functions or callable objects.
         for i, labeled_data in enumerate(self.data):
-            # TODO: Allow multiple columns to be updated.
             data = self.font.render(labeled_data[1](), True, self.fgcolor)
             self.surface.blit(data, (self.max_data_label_width+self.column_padding, self.font.get_linesize()*(1+i)))
 

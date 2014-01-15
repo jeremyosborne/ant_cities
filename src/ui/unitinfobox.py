@@ -30,14 +30,15 @@ class UnitInfoBox(PygameView):
                 
         # Register event listeners.
         self.controller.sub("MOUSEBUTTONDOWN", self.mousebuttondown_listener)
+
+    def clear(self):
+        self.surface.blit(self.background, (0, 0))
         
-    def draw_view(self, surface):
+    def draw(self, surface):
         """Display information about a selected unit, if there is one.
         """
         ent = self.controller.entity_selection
-        
-        self.surface.blit(self.background, (0, 0))
-        
+
         # If we have not selected an entity.
         if not ent:
             self.surface.blit(self.background, (0, 0))

@@ -259,16 +259,16 @@ class View(object):
         """
         pass
     
-    def add_childview(self, view):
+    def addchild(self, view):
         """Delegate a view to this view hierarchy.
         
         view {View} to be added.
         """
         self.childviews.append(view)
-        self.sort_childviews()
+        self.sortchildren()
         view.parentView = self
 
-    def sort_childviews(self):
+    def sortchildren(self):
         """Sort the existing childviews.
         
         Default is sorting by z of childviews in ascending order (higher
@@ -277,7 +277,7 @@ class View(object):
         """
         self.childviews = sorted(self.childviews, key=lambda cv: cv.z)
 
-    def remove_childview(self, view):
+    def removechild(self, view):
         """Remove a view from this view hierarchy.
         
         view {View} to be removed.
@@ -286,35 +286,35 @@ class View(object):
         # No resorting, assumes removing does not change indexing.
         view.parentView = None
         
-    def remove_self(self):
+    def removeself(self):
         """Remove a view from its parent, if it has a parent.
         
         Convenience method.
         """
         if self.parentView:
-            self.parentView.remove_childview(self)
+            self.parentView.removechild(self)
 
     def render(self, surface=None):
         """Begin the rendering process for this view and all child views.
         
         surface {Surface} on which to render this view and all child views.
         """
-        self.clear_view()
+        self.clear()
         for v in self.childviews:
             # Child views draw themselves on our surface...
             v.render(self.surface)
         # ...and then we draw anything remaining for ourselves as well as
         # draw ourselves on the provided surface.
-        self.draw_view(surface)
+        self.draw(surface)
     
-    def clear_view(self):
+    def clear(self):
         """Erase our own surface.
         
         Implement on subclasses.
         """
         pass
     
-    def draw_view(self, surface):
+    def draw(self, surface):
         """Draw this specific view to the provided surface.
         
         Subclasses should override this to handle their specific drawing
