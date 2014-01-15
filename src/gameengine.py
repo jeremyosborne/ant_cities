@@ -1,5 +1,4 @@
 import pygame
-from pygame.locals import *
 
 import globaldata
 from world import World
@@ -92,6 +91,8 @@ class GameEngine():
         
         # Update logic.
         self.world.process(time_passed)
+        
+        self.ui_controller.process(time_passed)
 
         # Update UI.
         self.display.render()

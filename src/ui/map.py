@@ -10,11 +10,6 @@ class Map(PygameView):
         
         controller {GameUIController} Provides access to the outside world.
         """
-        # Number of pixel buffer from the edges of our view within we scroll.
-        self.scroll_buffer = 20
-        # How many visual pixels do we move per frame when scrolling?
-        self.scroll_speed_multiplier = 20
-        
         # Where do we switch to strategic view?
         self.strategic_zoom_level = len(self.controller.world_viewport.zoom_level_dims)-3
         
@@ -146,23 +141,9 @@ class Map(PygameView):
         world = self.controller.world
         world_viewport = self.controller.world_viewport
 
-        # Pan if mouse near border of game.
-        # Scroll speed of view (in pixels)
-        scroll_speed = (world_viewport.zoom_level+1)*world_viewport.zoom_factor*self.scroll_speed_multiplier
-
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if mouse_x >= 0 and mouse_x <= self.scroll_buffer:
-            world_viewport.scroll(x=-scroll_speed)
-        elif (mouse_x >= self.width-self.scroll_buffer) and mouse_x <= self.width:
-            world_viewport.scroll(x=scroll_speed)
-        if mouse_y >= 0 and mouse_y <= self.scroll_buffer:
-            world_viewport.scroll(y=-scroll_speed)
-        elif (mouse_y >= self.height-self.scroll_buffer) and mouse_y <= self.height:
-            world_viewport.scroll(y=scroll_speed)
-
         # Every round, publish an update of where the mouse is at relative to
         # the game world.
-        self.controller.mouse_worldxy = self.screenpoint_to_gamepoint(mouse_x, mouse_y)
+        self.controller.mouse_worldxy = self.screenpoint_to_gamepoint(*self.controller.mouse_screenxy)
 
         # If we are tracking an entity...
         if self.controller.entity_selection_track == True and self.controller.entity_selection:
@@ -203,7 +184,7 @@ class Map(PygameView):
                 pygame.draw.circle(self.surface, color, dest_loc, 5)
 
         # Blit to the main surface.
-        surface.blit(self.surface, ((self.x, self.y)))
+        surface.blit(self.surface, (self.x, self.y))
 
     def mousebuttondown_listener(self, e):
         event = e.data["ev"]

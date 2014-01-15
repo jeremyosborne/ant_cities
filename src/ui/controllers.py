@@ -165,6 +165,9 @@ class GameUIController(UIController):
     # {bool} Should we track the entity?
     entity_selection_track = False
 
+    # {tuple} (x,y) Mouse coordinates as device pixel coordinates.
+    mouse_screenxy = (0, 0)
+
     # {tuple} (x,y) Mouse coordinates translated to game world coordinates.
     mouse_worldxy = (0, 0)
     
@@ -186,8 +189,16 @@ class GameUIController(UIController):
         min_zoom_dims = game_engine.globaldata.SCREEN_SIZE[0], game_engine.globaldata.SCREEN_SIZE[1]-170
         max_zoom_dims = game_engine.world.width, game_engine.world.height
         self.world_viewport = ZoomableViewportController(min_zoom_dims, max_zoom_dims)
-        
+
+    @property
+    def fps(self):
+        """{float} What is the current calculated fps?
+        """
+        return round(self.game_engine.clock.get_fps(), 1)
+
     def handle_event(self, event):
+        """Passed all events from pygame.
+        """
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
                 # Quit.
@@ -202,10 +213,35 @@ class GameUIController(UIController):
         elif event.type == MOUSEMOTION:
             self.pub("MOUSEMOTION", ev=event)
 
-    @property
-    def fps(self):
-        """{float} What is the current calculated fps?
+    def process(self, time_passed):
+        """Called once per tick to update general UI things.
         """
-        return round(self.game_engine.clock.get_fps(), 1)
+        # Mouse coordinates right now.
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        
+        # Publish the screen coordinates each tick.
+        self.mouse_screenxy = (mouse_x, mouse_y)
+        
+        #----------------------------------------------------------------------
+        # Scroll the map if mouse is near the edge of the screen.
+        # Number of pixel buffer from the edges of the window in which we will scroll.
+        scroll_buffer = 20
+        # How many visual pixels do we move per frame when scrolling?
+        scroll_speed_multiplier = 20
+        # References to items.
+        world_viewport = self.world_viewport
+        display = self.game_engine.display
+        # Scroll speed of view (in pixels)
+        scroll_speed = (world_viewport.zoom_level+1)*world_viewport.zoom_factor*scroll_speed_multiplier
+        if mouse_x >= 0 and mouse_x <= scroll_buffer:
+            world_viewport.scroll(x=-scroll_speed)
+        elif (mouse_x >= display.width-scroll_buffer) and mouse_x <= display.width:
+            world_viewport.scroll(x=scroll_speed)
+        if mouse_y >= 0 and mouse_y <= scroll_buffer:
+            world_viewport.scroll(y=-scroll_speed)
+        elif (mouse_y >= display.height-scroll_buffer) and mouse_y <= display.height:
+            world_viewport.scroll(y=scroll_speed)
+        #----------------------------------------------------------------------
+
     
         
