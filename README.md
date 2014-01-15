@@ -1,8 +1,11 @@
 # Table of Contents
-1. Goals
-2. Task/Idea List
-3. Dev Notes
-4. Changelog
+
+    1. Goals
+    2. Task/Idea List
+    3. Dev Notes
+    4. Changelog
+    5. Credits
+
 
 
 ## Goals
@@ -120,7 +123,12 @@ A quick way to generate a changelog like format to standard out:
 
 
 
+## Credits
 
+anthill-1.jpg and anthill-2.jpg by Accretion Disc (found on a Creative Commons Search)
 
+link of original image:
+
+    http://www.flickr.com/photos/befuddledsenses/6126386168/sizes/l/
 
 

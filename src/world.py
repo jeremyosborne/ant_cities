@@ -4,10 +4,9 @@ Created on Jun 19, 2013
 @author: john
 '''
 
-import time
 from random import randint
 from commonmath import random_radial_offset, mmval
-from entities.base import Base
+from entities.anthill import Anthill
 from entities.leaf import Leaf
 from entities.dummy import Dummy
 import globaldata
@@ -41,23 +40,23 @@ class World(object):
 #             self.add_entity(dummy)
 
         # Generate bases.
-        self.base_1 = Base(self, 1, "Red Ants")
-        self.base_1.location = globaldata.NEST_POSITION
-        self.add_entity(self.base_1)
+        self.anthill_1 = Anthill(self, 1, "Blue Ants")
+        self.anthill_1.location = globaldata.NEST_POSITION
+        self.add_entity(self.anthill_1)
         
-        self.base_2 = Base(self, 2, "Blue Ants")
-        self.base_2.location = globaldata.NEST_POSITION_2
-        self.add_entity(self.base_2)
+        self.anthill_2 = Anthill(self, 2, "Red Ants")
+        self.anthill_2.location = globaldata.NEST_POSITION_2
+        self.add_entity(self.anthill_2)
 
         # Generate ants.
         for _ in xrange(globaldata.ANT_COUNT):
             # Randomize starting position.
             startxy = random_radial_offset(100)
             # Red team (Team 1)
-            ant = self.base_1.create_entity("ant", startxy)
+            ant = self.anthill_1.create_entity("ant", startxy)
             self.add_entity(ant)
             # Blue team (Team 2)
-            ant = self.base_2.create_entity("ant", startxy)
+            ant = self.anthill_2.create_entity("ant", startxy)
             self.add_entity(ant)
         
     def add_entity(self, entity):

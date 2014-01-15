@@ -65,12 +65,12 @@ class GameSimulation():
         
         # Player Base Information
         data_to_display = [
-            ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.base_2, self.world.entities.itervalues())))),
-            ("Energy:", lambda: str(self.world.base_2.c["energy"].val)),
-        ]        
+            ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.anthill_1, self.world.entities.itervalues())))),
+            ("Energy:", lambda: str(self.world.anthill_1.c["energy"].val)),
+        ]
         self.display.addchild(DataColumnDisplay(self.display.x, self.display.height-170, 
                                                 200, 170,
-                                                title=str(self.world.base_2.c["team"]),
+                                                title=str(self.world.anthill_1.c["team"]),
                                                 data=data_to_display))
 
         # World Info Display

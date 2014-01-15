@@ -6,10 +6,10 @@ default_color = (0, 0, 0)
 
 # Naming scheme is made up of entity duck typed name and the team id.
 colors = {
-    "ant-1": (255, 0, 0),
-    "ant-2": (0, 0, 255),
-    "base-1": (255, 170, 170),
-    "base-2": (170, 170, 255),
+    "ant-1": (0, 0, 255),
+    "ant-2": (255, 0, 0),
+    "anthill-1": (170, 170, 255),
+    "anthill-2": (255, 170, 170),
     "leaf": (0, 255, 0)
 }
 

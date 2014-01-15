@@ -188,9 +188,9 @@ class Map(PygameView):
                 self.render_entity(entity)
     
         # If an entity is selected...
-        if self.controller.entity_selection:
+        ent = self.controller.entity_selection
+        if ent and "destination" in ent.c:
             # ... and the entity has a destination, draw a line to the destination.
-            ent = self.controller.entity_selection
             dest_loc = ent.c["destination"].location
             if dest_loc:
                 entx, enty = self.gamepoint_to_screenpoint(*ent.location)

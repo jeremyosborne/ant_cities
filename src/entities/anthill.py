@@ -2,10 +2,10 @@ from entities.entity import Entity
 from entities.ant import Ant
 
 
-class Base(Entity):
+class Anthill(Entity):
     """The anthill of our ants.
     """
-    name = "base"
+    name = "anthill"
     
     body_size = 50.
     
@@ -17,8 +17,6 @@ class Base(Entity):
         self.c.add("energy", maximum=1000, val=0)
         self.c.add("inventory")
         
-        self.leaves = 0
-    
     @property
     def team_id(self):
         """What team are we on?
