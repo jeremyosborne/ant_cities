@@ -11,7 +11,17 @@ from entities.leaf import Leaf
 from entities.dummy import Dummy
 import globaldata
 import spatialengine
-import identifier
+
+
+
+def gen_id():
+    """Return a unique id for entities.
+    """
+    gen_id._next_id += 1
+    return gen_id._next_id
+
+gen_id._next_id = 0L
+
 
 
 class World(object):
@@ -41,11 +51,11 @@ class World(object):
 
         # Generate bases.
         self.anthill_1 = Anthill(self, 1, "Blue Ants")
-        self.anthill_1.location = globaldata.NEST_POSITION
+        self.anthill_1.location = globaldata.ANTHILL_POSITION
         self.add_entity(self.anthill_1)
         
         self.anthill_2 = Anthill(self, 2, "Red Ants")
-        self.anthill_2.location = globaldata.NEST_POSITION_2
+        self.anthill_2.location = globaldata.ANTHILL_POSITION_2
         self.add_entity(self.anthill_2)
 
         # Generate ants.
@@ -114,7 +124,7 @@ class World(object):
         
         Assumed usage with entities of this world.
         """
-        return identifier.gen()
+        return gen_id()
     
     def find(self, entity_id):
         """Retrieve an entity by id.
@@ -185,14 +195,3 @@ class World(object):
             if "dead" in entity.flags:
                 self.destroy_entity(entity)
     
-    def count(self, validation=None):
-        """Retrieve current counts of entities in world.
-        
-        [validation] {function} If included, will be used to filter entities
-        in the same way as the filter() builtin. Default will count all
-        entities in the world (as long as the entities report themselves as
-        non-zero).
-        
-        return {number} of entities found.
-        """
-        return len(validation, self.entities.itervalues())

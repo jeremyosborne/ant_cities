@@ -52,7 +52,7 @@ class UnitInfoBox(PygameView):
             self.surface.blit(self.Stop_Tracking_Button, (self.width -30, 0))
             
         # And provide details about the unit.
-        unit_text = self.font.render(ent.name, True, (255, 255, 255))
+        unit_text = self.font.render("%s (id: %s)" % (ent.name, ent.id), True, (255, 255, 255))
         w, _ = unit_text.get_size()
         self.surface.blit(unit_text, ((self.width / 2) - w / 2, 15))
         
