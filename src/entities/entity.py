@@ -32,7 +32,7 @@ class Components(object):
         """Interface to adding a component to an entity.
         
         cname {str} Name of the component to add.
-        kwargs {kwargs} Labeled arguments to pass in to the instantiation
+        kwargs {kwargs} Labeled arguments to pass in to the constructor
         of the component.
         """
         # Load and immediately instantiate.
@@ -40,8 +40,9 @@ class Components(object):
         # Part of the contract: we must add ourselves as an entity reference.
         component.entity = self.entity
         # Add for easy iteration as well as easy reference.
-        self._list.append(component)
         self._index[component._cname] = component
+        if component.doprocess:
+            self._list.append(component)
     
     def remove(self, name):
         """Remove a particular component from the component hash.
@@ -50,7 +51,8 @@ class Components(object):
         """
         # Remove index and location in list. This should be an uncommon operation.
         component = self._index.pop(name)
-        self._list.remove(component)
+        if component.doprocess:
+            self._list.remove(component)
         # Part of the contract: call destroy on the component.
         component.destroy()
 

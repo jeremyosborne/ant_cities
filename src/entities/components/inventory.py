@@ -9,6 +9,8 @@ class Inventory(Component):
     
     _cname = "inventory"
     
+    doprocess = False
+    
     def __init__(self, can_take=True, can_be_taken=False):
         """Constructor.
         

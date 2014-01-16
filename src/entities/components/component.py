@@ -15,14 +15,18 @@ class Component(object):
     """Components are an opt in interface.
     """
     
-    # Required: components must all have a unique name.
+    # {str} Required: components must all have a unique name.
     _cname = None
     
-    # Components receive a pointer to their owner entity when they are added.
+    # {Entity} Components receive a pointer to their owner entity when they are added.
     entity = None
     
-    # Components can have their own init, but the Component does not enforce
-    # it.
+    # Should components be added to process loop? This attribute should be set
+    # once on class construction and treated as read only.
+    doprocess = True
+    
+    # Components can have their own init, but the Component does not provide
+    # any recipe.
     
     def process(self, time_passed):
         """Called every round to perform rudimentary updates to the component.

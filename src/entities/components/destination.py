@@ -14,6 +14,8 @@ class Destination(Component):
     
     _cname = "destination"
     
+    doprocess = False
+    
     def __init__(self, val=None):
         """Constructor.
         

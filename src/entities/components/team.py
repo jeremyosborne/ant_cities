@@ -13,6 +13,8 @@ class Team(Component):
     
     _cname = "team"
     
+    doprocess = False
+    
     def __init__(self, id, name):
         """Setup team statistics.
         

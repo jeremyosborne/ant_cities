@@ -11,6 +11,8 @@ class Health(Component):
     # Default value for property computation.
     _val = 0
     
+    doprocess = False
+    
     def __init__(self, maximum=100):
         """Set up initial health of the entity.
         

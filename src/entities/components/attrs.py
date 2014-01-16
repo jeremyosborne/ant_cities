@@ -9,12 +9,12 @@ class Attribute(object):
     def __init__(self, name, val, mx=None, mn=0):
         # What is the name of this attribute?
         self.name = name
-        # What is the current value of the attribute.
-        self._val = val
-        # What is the maximu value of the attribute.
+        # What is the maximum value of the attribute.
         self.max = mx or val
         # What is the minimum value of the attribute.
         self.min = mn
+        # What is the current value of the attribute.
+        self.val = val
 
     @property
     def val(self):
@@ -31,6 +31,8 @@ class Attrs(Component):
     """
     
     _cname = "attrs"
+    
+    doprocess = False
     
     def __init__(self):
         # Cache of attributes.
