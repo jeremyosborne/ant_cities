@@ -17,8 +17,9 @@ class Ant(Entity):
         # Default state.
         self.brain.set_state("exploring")
         
-        self.c.add("health")
-        self.c.add("energy", burn_rate=2.)
+        self.c.add("attrs")
+        self.c["attrs"].create("energy", val=100)
+        self.c["attrs"].create("health", val=100)
         
         self.c.add("facing")
         self.c.add("velocity", max_speed=120., acceleration=30., rotation_speed=180.)
@@ -37,18 +38,22 @@ class Ant(Entity):
     def process(self, time_passed):
         Entity.process(self, time_passed)
 
-        energy = self.c["energy"]
-        health = self.c["health"]
-        
+        energy = self.c["attrs"].get("energy")
+        health = self.c["attrs"].get("health")
+
+        # Should the ant die?
+        if health.val <= 0:
+            self.flags.add("dead")
+            return
+
+        # Burn energy each turn.
+        energy.val -= 2.*time_passed
+
         # Is ant energy so low that we need to dump health into energy?
-        if energy.empty:
+        if energy.val == 0:
             energy.val += 100
             health.val -= 10
         
         # Heading matches course of velocity.
         self.c["facing"].set(self.c["velocity"].course)
         
-        # Should the ant die?
-        if health.dead:
-            self.flags.add("dead")
-    

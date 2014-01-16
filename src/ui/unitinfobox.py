@@ -90,8 +90,8 @@ class UnitInfoBox(PygameView):
         output = ["Location: (%d, %d)" % tuple(ent.location)]
 
         if ent.name == "ant":
-            output.append("Energy: %s" % ent.c["energy"].val)
-            output.append("Health: %s" % ent.c["health"].val)
+            output.append("Energy: %s" % ent.c["attrs"]["energy"])
+            output.append("Health: %s" % ent.c["attrs"]["health"])
             output.append("Brain state: %s" % ent.brain.active_state.name)
             output.append("Speed: %d" % ent.c["velocity"].speed)
             if ent.c["destination"].location:

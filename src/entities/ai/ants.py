@@ -36,8 +36,8 @@ class Exploring(BrainState):
                 return "seeking"
         
         # Let's take care of the energy depleted state.
-        energy = self.entity.c["energy"]
-        if energy.val < self.energy_depleted*energy.max and self.entity.base.c["energy"].empty == False:
+        energy = self.entity.c["attrs"].get("energy")
+        if energy.val < self.energy_depleted*energy.max and self.entity.base.c["attrs"]["energy"] > 0:
             return "energy depleted"
                 
         # Move
@@ -128,12 +128,12 @@ class PowerUp(BrainState):
         BrainState.__init__(self, "powering up")
         
     def process(self, time_passed):
-        energy = self.entity.c["energy"]
+        energy = self.entity.c["attrs"].get("energy")
         if energy.val < energy.max:
             energy.val += self.entity.base.remove_resource("energy")
 
-        if energy.val >= energy.max or self.entity.base.c["energy"].empty:
-            return "exploring"            
+        if energy.val >= energy.max or self.entity.base.c["attrs"]["energy"] == 0:
+            return "exploring"
     
     def entry_actions(self):
         self.entity.c["destination"].clear()

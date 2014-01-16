@@ -14,7 +14,8 @@ class Anthill(Entity):
         Entity.__init__(self, world)
 
         self.c.add("team", id=team_id, name=team_name)
-        self.c.add("energy", maximum=1000, val=0)
+        self.c.add("attrs")
+        self.c["attrs"].create("energy", val=0, mx=1000)
         self.c.add("inventory")
         
     @property
@@ -30,15 +31,13 @@ class Anthill(Entity):
             # One item at a time.
             item = inv.pop()
             if item.name == "leaf":
-                self.c["energy"].val += 5
+                self.c["attrs"]["energy"] += 5
     
     def remove_resource(self, resource_name, amount=1):
         """Removes a resource from the base.
         """
         if resource_name == "energy":
-            r = min(self.c["energy"].val, amount)
-            self.c["energy"].val -= amount
-            return r
+            return self.c["attrs"].delta("energy", amount)
         else:
             assert "Could not remove resource of name:", resource_name
             

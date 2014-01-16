@@ -62,8 +62,8 @@ class Map(PygameView):
         bar = pygame.surface.Surface((width, height)).convert()
         
         # Energy.
-        comps_to_draw = [(entity.c["energy"], (230, 100, 230)),
-                         (entity.c["health"], (0, 255, 0))]
+        comps_to_draw = [(entity.c["attrs"].get("energy"), (230, 100, 230)),
+                         (entity.c["attrs"].get("health"), (0, 255, 0))]
         for i, v in enumerate(comps_to_draw):
             component, full_color = v
             bar.fill(empty_color)

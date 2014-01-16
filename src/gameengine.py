@@ -63,7 +63,7 @@ class GameEngine():
         data_to_display = [
             ("Game Time:", lambda: str(int(self.world.age))),
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.anthill_1, self.world.entities.itervalues())))),
-            ("Energy:", lambda: str(self.world.anthill_1.c["energy"].val)),
+            ("Energy:", lambda: str(self.world.anthill_1.c["attrs"]["energy"])),
         ]
         self.display.addchild(DataColumnDisplay(self.display.x, self.display.height-170, 
                                                 200, 170,
