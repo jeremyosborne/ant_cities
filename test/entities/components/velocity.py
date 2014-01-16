@@ -3,7 +3,7 @@ from nose.tools import assert_almost_equal
 from src.commonmath import Heading
 import math
 
-def test_heading():
+def test_velocity():
     v = Velocity()
     
     v.speed = 0

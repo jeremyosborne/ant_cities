@@ -55,8 +55,8 @@ Key
     - Allow preservation of aspect ratio and auto scaling.
 
 - Entities
-    - Combine simple statistics into attrs component.
     - Allow components to be not-process (they can opt out).
+    - Combine simple statistics into the attrs component.
     - Adjust leaf carrying position from back to the mouth.
     - Add sight (square first, than radial if we want to) and visual fog.
     - Add collision detection so that entities can not run over each other.

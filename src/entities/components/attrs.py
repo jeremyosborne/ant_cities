@@ -10,7 +10,7 @@ class Attribute(object):
         # What is the name of this attribute?
         self.name = name
         # What is the current value of the attribute.
-        self.val = val
+        self._val = val
         # What is the maximu value of the attribute.
         self.max = mx or val
         # What is the minimum value of the attribute.
@@ -36,22 +36,24 @@ class Attrs(Component):
         # Cache of attributes.
         self.attributes = {}
     
-    def __contains__(self, attribute):
+    def __contains__(self, name):
         # Pass through to the underlying dict.
-        return attribute in self.attributes
+        return name in self.attributes
         
-    def __getitem__(self, attribute):
+    def __getitem__(self, name):
         # If someone is attempting to get an attribute from the outside world,
         # we assume they want the value.
-        if attribute in self.attributes:
-            return self.attributes[attribute].val
-        else:
-            return None
+        return self.attributes[name].val
     
-    def __setitem__(self, key, value):
+    def __setitem__(self, name, value):
         # Constrain value settings to the constraints supplied within the
         # attribute instance.
-        self.attributes[key].val = value
+        self.attributes[name].val = value
+    
+    def get(self, name):
+        """Get the underlying Attribute object.
+        """
+        return self.attributes[name]
     
     def create(self, name, val, mx=None, mn=0):
         """Create a new managed attribute.
