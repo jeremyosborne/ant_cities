@@ -16,7 +16,6 @@ class DataColumnDisplay(PygameView):
         self.font = pygame.font.SysFont(self.font_family, self.font_size)
         self.fgcolor = (255, 255, 255)
         self.bgcolor = (0, 0, 0)
-        self.bordercolor = (255, 255, 255)
         # Whitespace between edge of box and content (pixels).
         self.padding = {
                         #"top": 0,
@@ -40,9 +39,6 @@ class DataColumnDisplay(PygameView):
                 
     def init_background(self):
         self.background.fill(self.bgcolor)
-
-        # Border.
-        pygame.draw.rect(self.background, self.bordercolor, pygame.Rect(0, 0, self.width, self.height), 1)
 
         # Title.
         title_surface = self.font.render(self.title, True, self.fgcolor)

@@ -61,6 +61,7 @@ class GameEngine():
         
         # Player Base Information
         data_to_display = [
+            ("Game Time:", lambda: str(int(self.world.age))),
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.anthill_1, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.anthill_1.c["energy"].val)),
         ]
@@ -68,16 +69,6 @@ class GameEngine():
                                                 200, 170,
                                                 title=str(self.world.anthill_1.c["team"]),
                                                 data=data_to_display))
-
-        # World Info Display
-        data_to_display = [
-            ("Game Time:", lambda: str(int(self.world.age))),
-            ("Leaves:", lambda: str(len(filter(lambda e: e.name == "leaf", self.world.entities.itervalues())))),
-        ]
-        self.display.addchild(DataColumnDisplay(self.display.x+402, self.display.height-170, 
-                                              200, 170,
-                                              title="World Info",
-                                              data=data_to_display))
 
     def process(self):
 

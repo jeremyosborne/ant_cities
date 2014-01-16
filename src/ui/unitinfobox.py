@@ -54,7 +54,6 @@ class UnitInfoBox(PygameView):
         # Prepare the static background.
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
-        pygame.draw.line(self.background, (255, 255, 255), (0, 0), (0, self.height), 10)
         label = self.font.render("Unit Info", True, (255, 255, 255))
         w, _ = label.get_size()
         self.background.blit(label, ((self.width / 2) - w / 2, 0))

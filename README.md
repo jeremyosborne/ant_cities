@@ -48,7 +48,7 @@ Key
 - Not Started or on hold.
 
 * User Interface
-    - Control panel as a named view that will contain all controls, allow relative
+    * Control panel as a named view that will contain all controls, allow relative
       positioning and be resizable.
     - Views should have dirty rect capability (see pygame.display.update function
       for interface for passing in changed list of rects that need redrawing).
