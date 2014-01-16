@@ -24,9 +24,7 @@ class ToggleButton(PygameView):
     def events_sub(self):
         self.subto(self.controller, "MOUSEBUTTONDOWN", self.mousebuttondown_listener)
 
-    def position_after_add(self):
-        """This is a stupid function name.
-        """
+    def position(self):
         self.position_relative_to_parent(self.xpos, self.ypos, self.buf)
 
     def draw(self, surface):
@@ -64,9 +62,6 @@ class UnitInfoBox(PygameView):
                                    onsurface="track-enabled",
                                    offsurface="track-disabled")
         self.addchild(toggle_button)
-        # Ugg... probably need a positioning interface for when a view is
-        # added and _after_ it has acquired its parent for relative positioning.
-        toggle_button.position_after_add()
     
     def clear(self):
         self.surface.blit(self.background, (0, 0))

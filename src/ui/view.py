@@ -267,6 +267,14 @@ class View(object):
         self.childviews.append(view)
         self.sortchildren()
         view.parentView = self
+        # Allow an element to position itself relatively now that it knows
+        # its parent.
+        view.position()
+    
+    def position(self):
+        """Position the element with all known information.
+        """
+        pass
 
     def sortchildren(self):
         """Sort the existing childviews.
