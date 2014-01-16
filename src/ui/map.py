@@ -11,9 +11,6 @@ class Map(PygameView):
         # Where do we switch to strategic view?
         self.strategic_zoom_level = len(self.controller.world_viewport.zoom_level_dims)-3
         
-        # Register event listeners.
-        self.events_sub()
-    
     def events_sub(self):
         self.subto(self.controller, "MOUSEBUTTONDOWN", self.mousebuttondown_listener)        
         

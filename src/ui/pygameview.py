@@ -23,6 +23,9 @@ class PygameDisplay(View, EventSubscriber):
         # Initialize the view and call the subclass init.
         super(PygameDisplay, self).__init__(x, y, width, height, z, controller, **kwargs)
 
+        # mimic PygameView... just in case.
+        self.events_sub()
+
     def draw(self, surface):
         """Refresh the view of the game.
         """
@@ -46,10 +49,14 @@ class PygameView(View, EventSubscriber, PositionableMixin, ScalableMixin):
         self.surface = pygame.surface.Surface((width, height)).convert()
 
         # Pygame specific helper.
+        # TODO: I don't think this is needed. Shoul remove if not.
         self.rect = pygame.Rect(x, y, width, height)
         
         # Initialize the view and call the subclass init.
         super(PygameView, self).__init__(x, y, width, height, z, controller, **kwargs)
+        
+        # Also call events_sub() automatically.
+        self.events_sub()
 
     def events_sub(self):
         """Views should override and place all event subscriptions in this

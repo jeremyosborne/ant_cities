@@ -18,9 +18,6 @@ class ToggleButton(PygameView):
         offsurface = kwargs.get("offsurface", "track-disabled")
         self.offsurface = self.controller.game_assets.image(offsurface)
 
-        # Register event listeners.
-        self.events_sub()
-
     def events_sub(self):
         self.subto(self.controller, "MOUSEBUTTONDOWN", self.mousebuttondown_listener)
 
