@@ -41,8 +41,6 @@
 
 ## Task/Idea List
 
-Prioritized in descending order.
-
 Key
 * In process
 - Not Started or on hold.
