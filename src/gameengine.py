@@ -31,12 +31,13 @@ class GameEngine():
         # Cache of image assets.
         self.game_assets = GameAssets(globaldata.ASSETS_PATH)
 
+        # The main display, which all other views should be nested with.
+        # Display needs to be set before any graphics calls and the main
+        # UI controller.
+        self.display = PygameDisplay(globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1])
+
         # Controller for all UI elements.
         self.ui_controller = GameUIController(self)
-
-        # The main display, which all other views should be nested with.
-        # Display needs to be set before any graphics calls.
-        self.display = PygameDisplay(0, 0, globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1], 0, self.ui_controller)
 
         # Map scales itself to the screensize.
         self.display.addchild(Map(controller=self.ui_controller))

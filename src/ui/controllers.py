@@ -186,9 +186,29 @@ class GameUIController(UIController):
         # Defines the viewable portion of the entire world.
         # Keep the default dimensions the size of the map.
         # Max pixel size == max size of the world.
-        min_zoom_dims = game_engine.globaldata.SCREEN_SIZE[0], game_engine.globaldata.SCREEN_SIZE[1]-170
+        dims = self.map_screen_dims()
+        min_zoom_dims = dims["width"], dims["height"]
         max_zoom_dims = game_engine.world.width, game_engine.world.height
         self.world_viewport = ZoomableViewportController(min_zoom_dims, max_zoom_dims)
+
+    def map_screen_dims(self):
+        """Single source for map dimensions.
+        
+        The map is interdependent (until it can be made less so). Visual and
+        logical things need to know where the map is on screen, and its
+        coordinate and dimensional settings are kept here.
+        """
+        # Numbers here assume the map is scaled by the screen.
+        height_scale = 0.75
+        width_scale = 1
+        return {
+                "x": 0,
+                "y": 0,
+                "height": self.game_engine.display.height * height_scale,
+                "height_scale": height_scale,
+                "width": self.game_engine.display.width * width_scale,
+                "width_scale": width_scale
+                }
 
     @property
     def fps(self):

@@ -46,12 +46,6 @@ Key
 - Not Started or on hold.
 
 * User Interface
-    * Move the Map gamepoint_to_screenpoint and screenpoint_to_gamepoint
-      to the controller.
-    * Removed the need for a .rect on PygameSurface. (Leave as reminder for
-      a bit until more testing.)
-    * Add surface resize on view for height and width resizing. (Leave as reminder
-      until done with control panel.)
     * Control panel as a named view that will contain all controls, allow relative
       positioning and be resizable.
     - Views should have dirty rect capability (see pygame.display.update function

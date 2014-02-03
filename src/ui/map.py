@@ -17,8 +17,9 @@ class Map(PygameView):
     def position(self):
         """Scale the map to the default size.
         """
-        self.scale_relative_to_parent(1, .75)
-        #self.position_relative_to_parent(0, 0)
+        map_dims = self.controller.map_screen_dims()
+        self.scale_relative_to_parent(map_dims["width_scale"], map_dims["height_scale"])
+        self.position_relative_to_parent(map_dims["x"], map_dims["y"])
     
     def screenpoint_to_gamepoint(self, screenx, screeny):
         """Convert a screen coordinate to an equivalent game coordinate.

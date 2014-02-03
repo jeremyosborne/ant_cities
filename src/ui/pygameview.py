@@ -9,20 +9,14 @@ class PygameDisplay(View, EventSubscriber):
     
     This should be the outermost view and all views should be nested within.
     """
-    def __init__(self, x=0, y=0, width=0, height=0, z=0, controller=None, **kwargs):
-        # Set the title.
-        pygame.display.set_caption(controller.game_engine.globaldata.GAME_TITLE)
+    def __init__(self, width=0, height=0):
+        # Initialize the view and call the subclass init.
+        super(PygameDisplay, self).__init__(width=width, height=height)
 
         # Windowed view.
         self.surface = pygame.display.set_mode((width, height), pygame.HWSURFACE|pygame.DOUBLEBUF, 32)
         # Full screen mode.
         #screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
-
-        # Initialize the view and call the subclass init.
-        super(PygameDisplay, self).__init__(x, y, width, height, z, controller, **kwargs)
-
-        # mimic PygameView... just in case.
-        self.events_sub()
 
     def draw(self, surface):
         """Refresh the view of the game.

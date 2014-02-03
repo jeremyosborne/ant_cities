@@ -18,7 +18,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__),"src")))
 
 import pygame
 from gameengine import GameEngine
-
+import globaldata
 
 
 def run():
@@ -26,6 +26,7 @@ def run():
     """
     
     pygame.init()
+    pygame.display.set_caption(globaldata.GAME_TITLE)
     
     # Needs to be initialized after everything.
     game_engine = GameEngine()
