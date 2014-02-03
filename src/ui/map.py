@@ -2,6 +2,8 @@ import pygame
 from pymunk.vec2d import Vec2d
 from ui.pygameview import PygameView
 
+import ui.render.entity as render_entity
+
 class Map(PygameView):
     def subclass_init(self, **kwargs):
         """Arguments not inherited from viewport.
@@ -52,30 +54,7 @@ class Map(PygameView):
         
         return Vec2d(x, y)
 
-    def render_entity_statusbars(self, entity, surface):
-        """Display status bars for a particular entity.
-        
-        Pass the entity and the surface on which to render the status bars.
-        
-        Returns the surface with the status bars rendered.
-        """
-        # Common settings.
-        width = 25
-        height = 4
-        empty_color = (255, 0, 0)
-        bar = pygame.surface.Surface((width, height)).convert()
-        
-        # Energy.
-        comps_to_draw = [(entity.c["attrs"].get("energy"), (230, 100, 230)),
-                         (entity.c["attrs"].get("health"), (0, 255, 0))]
-        for i, v in enumerate(comps_to_draw):
-            component, full_color = v
-            bar.fill(empty_color)
-            bar.fill(full_color, (0, 0, component.val/float(component.max)*width, height))
-            surface.blit(bar, (0, height*i))
-        return surface
-
-    def render_scaling(self, surface):
+    def scale_entity(self, surface):
         """Scale a surface according to the zoom level we are at.
         
         Always returns a surface, even if the surface wasn't scaled.
@@ -88,14 +67,6 @@ class Map(PygameView):
         surface = pygame.transform.scale(surface, (scale_width, scale_height))
         return surface
 
-    def render_entity_strategic_icon(self, entity):
-        """Renders the entity as a strategic icon on the view surface.
-        """
-        color = self.controller.game_assets.color(entity)
-        # Transform entity world coordinates to viewable coordinates.
-        x, y = self.gamepoint_to_screenpoint(*entity.location)
-        self.surface.fill(color, (x-5, y-5, 10, 10))
-    
     def render_entity(self, entity):
         """Display logic for dealing with entities.
         """
@@ -103,38 +74,22 @@ class Map(PygameView):
         # Render as scaled image or filled square? 
         if zoom_level > self.strategic_zoom_level:
             # Render as square.
-            self.render_entity_strategic_icon(entity)
+            image = render_entity.strategic_icon(entity)
         else:
             image = self.controller.game_assets.image(entity)
-            
-            # Do special things to the dummy.
-#             if __debug__:
-#                 if entity.name == "dummy":
-#                     image = pygame.transform.rotate(image, entity.c["facing"].deg*-1.)
-            
-            # Deal with ants. (Blech, this is gross right now, but trying
-            # to isolate view code, view specific logic, and will then
-            # normalize so that we simply do things to objects and need
-            # no or few entity specific code paths).            
-            if entity.name == "ant":
+
+            # This code is a bit less 'blech' now, and is generalized, but
+            # it still needs to be refactored out of the Map.            
+            image = render_entity.inventory(entity, image)
+            if "facing" in entity.c:
                 image = pygame.transform.rotate(image, entity.c["facing"].deg*-1.)
-                # Inventory display.
-                if zoom_level < self.strategic_zoom_level:
-                    if entity.c["inventory"].carried:
-                        # We assume ants are only carrying a leaf.
-                        inventory_image = self.controller.game_assets.image(entity.c["inventory"].carried[0])
-                        image = pygame.transform.rotate(inventory_image, entity.c["facing"].deg*-1.)
+            image = render_entity.statusbars(entity, image)
+            image = self.scale_entity(image)
 
-                if zoom_level < self.strategic_zoom_level:
-                    # Energy/health bar display.
-                    image = self.render_entity_statusbars(entity, image)
-
-            image = self.render_scaling(image)
-
-            w, h = image.get_size()
-            # Transform entity world coordinates to viewable coordinates.
-            x, y = self.gamepoint_to_screenpoint(*entity.location)
-            self.surface.blit(image, (x-w/2, y-h/2))
+        # Transform entity world coordinates to viewable coordinates.
+        w, h = image.get_size()
+        x, y = self.gamepoint_to_screenpoint(*entity.location)
+        self.surface.blit(image, (x-w/2, y-h/2))
 
     def clear(self):
         self.surface.fill((255, 255, 255))
@@ -166,8 +121,9 @@ class Map(PygameView):
             entity_list_in_range = world.find_all_in_range(world_viewport.rect.center, the_range)
     
             # Render each entity onto the framebuffer.
-            for entity in entity_list_in_range:
-                self.render_entity(entity[0])
+            # Ignore the range.
+            for entity, _ in entity_list_in_range:
+                self.render_entity(entity)
         else:
             for entity in world.entities.itervalues():
                 self.render_entity(entity)

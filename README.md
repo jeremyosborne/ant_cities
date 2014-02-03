@@ -48,13 +48,13 @@ Key
 * User Interface
     * Control panel as a named view that will contain all controls, allow relative
       positioning and be resizable.
+    * Give assets a default size and then scale.
     - Views should have dirty rect capability (see pygame.display.update function
       for interface for passing in changed list of rects that need redrawing).
     - Allow preservation of aspect ratio and auto scaling.
 
 - Entities
     - Combine simple statistics into the attrs component.
-    - Adjust leaf carrying position from back to the mouth.
     - Add sight (square first, than radial if we want to) and visual fog.
     - Add collision detection so that entities can not run over each other.
 - Ant-god controls:

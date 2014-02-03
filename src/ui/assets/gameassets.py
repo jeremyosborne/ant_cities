@@ -44,11 +44,17 @@ class GameAssets(object):
     
     # Naming scheme is made up of entity duck typed name and the team id.
     colors = {
+        # Entity specific colors.
         "ant-1": (0, 0, 255),
         "ant-2": (255, 0, 0),
         "anthill-1": (170, 170, 255),
         "anthill-2": (255, 170, 170),
-        "leaf": (0, 255, 0)
+        "leaf": (0, 255, 0),
+        
+        # General entity rendering colors.
+        "empty_bar": (255, 0, 0),
+        "energy_bar": (230, 100, 230),
+        "health_bar": (0, 255, 0),
     }
     
     def color(self, thing):
