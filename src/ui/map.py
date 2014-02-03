@@ -13,7 +13,13 @@ class Map(PygameView):
         
     def events_sub(self):
         self.subto(self.controller, "MOUSEBUTTONDOWN", self.mousebuttondown_listener)        
-        
+    
+    def position(self):
+        """Scale the map to the default size.
+        """
+        self.scale_relative_to_parent(1, .75)
+        #self.position_relative_to_parent(0, 0)
+    
     def screenpoint_to_gamepoint(self, screenx, screeny):
         """Convert a screen coordinate to an equivalent game coordinate.
         
@@ -195,7 +201,7 @@ class Map(PygameView):
             # left click, attempt to select entity.
             
             # Clicks outside of the view won't cancel the tracking.
-            if self.rect.collidepoint(ui_click_point) == True:
+            if self.contained_screenxy(ui_click_point):
                 game_world_point = self.screenpoint_to_gamepoint(*event.pos)
                 entity, _ = world.find_closest(game_world_point, 150)
                 self.controller.entity_selection = entity
@@ -205,7 +211,7 @@ class Map(PygameView):
             world_viewport.zoom_level += -1
             
             # Check to see if the mouse is above the game world viewport.
-            if self.rect.collidepoint(ui_click_point) == True:
+            if self.contained_screenxy(ui_click_point):
                 gamexy = self.screenpoint_to_gamepoint(*event.pos)
                 world_viewport.move(*gamexy)
 
@@ -214,6 +220,6 @@ class Map(PygameView):
             world_viewport.zoom_level += 1
 
             # Check to see if the mouse is above the game world viewport.
-            if self.rect.collidepoint(ui_click_point) == True:
+            if self.contained_screenxy(ui_click_point):
                 gamexy = self.screenpoint_to_gamepoint(*event.pos)
                 world_viewport.move(*gamexy)

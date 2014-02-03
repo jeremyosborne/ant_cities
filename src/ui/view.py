@@ -140,6 +140,12 @@ class View(object):
     # Reserved. Abstract surface to be implemented by instances or subclasses.
     surface = None
     
+    # Default cache values initialized.
+    _x = 0
+    _y = 0
+    _width = 0
+    _height = 0
+    
     def __init__(self, x=0, y=0, width=0, height=0, z=0, controller=None, **kwargs):
         """Initialize an instance.
         
@@ -174,6 +180,8 @@ class View(object):
         super(View, self).__init__()
         self.subclass_init(**kwargs)
 
+    # Assumes subclasses override computed property to resize
+    # on dimension change.
     @property
     def width(self):
         return self._width
@@ -273,6 +281,9 @@ class View(object):
     
     def position(self):
         """Position the element with all known information.
+        
+        Will be called automatically on child views after they have been
+        added to their parent.
         """
         pass
 

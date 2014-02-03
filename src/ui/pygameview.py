@@ -18,8 +18,6 @@ class PygameDisplay(View, EventSubscriber):
         # Full screen mode.
         #screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN|pygame.HWSURFACE|pygame.DOUBLEBUF)
 
-        self.rect = pygame.Rect(x, y, width, height) 
-
         # Initialize the view and call the subclass init.
         super(PygameDisplay, self).__init__(x, y, width, height, z, controller, **kwargs)
 
@@ -44,19 +42,37 @@ class PygameDisplay(View, EventSubscriber):
 class PygameView(View, EventSubscriber, PositionableMixin, ScalableMixin):
     """A View made for use with Pygame.
     """
-    def __init__(self, x=0, y=0, width=0, height=0, z=0, controller=None, **kwargs):
-        # Pygame specific surface.
-        self.surface = pygame.surface.Surface((width, height)).convert()
-
-        # Pygame specific helper.
-        # TODO: I don't think this is needed. Shoul remove if not.
-        self.rect = pygame.Rect(x, y, width, height)
-        
+    def __init__(self, x=0, y=0, width=0, height=0, z=0, controller=None, **kwargs):        
         # Initialize the view and call the subclass init.
         super(PygameView, self).__init__(x, y, width, height, z, controller, **kwargs)
-        
+
+        # self.surface init.
+        self.init_surface()
+
         # Also call events_sub() automatically.
         self.events_sub()
+
+    @View.width.setter
+    def width(self, value):
+        """Override and resize on width change.
+        """
+        self._width = value
+        self.init_surface()
+
+    @View.height.setter
+    def height(self, value):
+        """Override and resize on height change.
+        """
+        self._height = value
+        self.init_surface()
+
+    def init_surface(self, width=None, height=None):
+        """Called to create the surface.
+        
+        the dimensions of the surface can be overridden, but will default to
+        the width and height of the 
+        """
+        self.surface = pygame.surface.Surface((self.width, self.height))
 
     def events_sub(self):
         """Views should override and place all event subscriptions in this

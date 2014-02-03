@@ -10,7 +10,7 @@ from ui.map import Map
 from ui.mousedisplay import MouseDisplay
 from ui.controllers import GameUIController
 from ui.assets.gameassets import GameAssets
-from ui.pygameview import PygameDisplay
+from ui.pygameview import PygameDisplay, PygameView
 
 
 class GameEngine():
@@ -38,10 +38,10 @@ class GameEngine():
         # Display needs to be set before any graphics calls.
         self.display = PygameDisplay(0, 0, globaldata.SCREEN_SIZE[0], globaldata.SCREEN_SIZE[1], 0, self.ui_controller)
 
-        # The minus 170 below is the y size of the UI elements.
-        self.display.addchild(Map(self.display.x, self.display.y, 
-                                 self.display.width, self.display.height-170, 0,
-                                 self.ui_controller))
+        # Map scales itself to the screensize.
+        self.display.addchild(Map(controller=self.ui_controller))
+
+        #self.control_panel = PygameView(0, self.display.height-170)
         
         # Frames per second.
         self.display.addchild(FPSDisplay(5, 5, 250, 20, 0, self.ui_controller))
