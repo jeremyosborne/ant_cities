@@ -34,10 +34,19 @@ class DataColumnDisplay(PygameView):
         # Used to align data displayed.
         self.max_data_label_width = 0
 
-        self.background = pygame.surface.Surface((self.width, self.height)).convert()
+        # Property is initialized in init_background, which is called
+        # from init_surface.
+        self.background = None
+
+    def init_surface(self, width=None, height=None):
+        """Override and allow redrawing of the minimap.
+        """
+        super(DataColumnDisplay, self).init_surface(width, height)
+        # Reinitialize background, which will resize the backgorund.
         self.init_background()
-                
+
     def init_background(self):
+        self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill(self.bgcolor)
 
         # Title.

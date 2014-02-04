@@ -42,34 +42,45 @@ class GameEngine():
         # Map scales itself to the screensize.
         self.display.addchild(Map(controller=self.ui_controller))
 
-        #self.control_panel = PygameView(0, self.display.height-170)
-        
+        # TODO: Should have a debug panel, and the following two things should
+        # be added.        
         # Frames per second.
-        self.display.addchild(FPSDisplay(5, 5, 250, 20, 0, self.ui_controller))
-        
+        self.display.addchild(FPSDisplay(5, 5, controller=self.ui_controller))
         # Mouse coordinates.
-        self.display.addchild(MouseDisplay(5, 25, 250, 20, 0, self.ui_controller))
-        
-        # Mini map.
-        self.display.addchild(MiniMap(self.display.width-256, self.display.height-170, 
-                                256, 170, 0,
-                                self.ui_controller))
+        self.display.addchild(MouseDisplay(5, 25, controller=self.ui_controller))
 
-        # Unit information display.
-        self.display.addchild(UnitInfoBox(self.display.width-512, self.display.height-170, 
-                                 256, 170, 0,
-                                 self.ui_controller))
-        
+
+        # On screen player controls and information readouts.
+        control_panel = PygameView(controller=self.ui_controller)
+        self.display.addchild(control_panel)
+        control_panel.scale_relative_to_parent(1, 0.25)
+        control_panel.position_relative_to_parent("left", "bottom")
+
         # Player Base Information
         data_to_display = [
             ("Game Time:", lambda: str(int(self.world.age))),
             ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.anthill_1, self.world.entities.itervalues())))),
             ("Energy:", lambda: str(self.world.anthill_1.c["attrs"]["energy"])),
         ]
-        self.display.addchild(DataColumnDisplay(self.display.x, self.display.height-170, 
-                                                200, 170,
-                                                title=str(self.world.anthill_1.c["team"]),
-                                                data=data_to_display))
+        player_base_info = DataColumnDisplay(title=str(self.world.anthill_1.c["team"]),
+                                            data=data_to_display)
+        control_panel.addchild(player_base_info)
+        player_base_info.scale_relative_to_parent(0.167, 1)
+
+        # Unit information display.
+        # TODO: Need a positionable relative to sibling (maybe an align relative
+        # to, or something like that).
+        unit_info_box = UnitInfoBox(controller=self.ui_controller)
+        control_panel.addchild(unit_info_box)
+        unit_info_box.scale_relative_to_parent(0.213, 1)
+        unit_info_box.position_relative_to_parent(self.display.width-512, "top")
+
+        mini_map = MiniMap(controller=self.ui_controller)
+        control_panel.addchild(mini_map)
+        mini_map.scale_relative_to_parent(.213, 1)
+        mini_map.position_relative_to_parent("right", "bottom")
+        
+        
 
     def process(self):
 

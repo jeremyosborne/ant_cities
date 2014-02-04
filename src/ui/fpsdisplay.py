@@ -6,6 +6,10 @@ class FPSDisplay(PygameView):
     """
     def subclass_init(self, **kwargs):
         self.font = pygame.font.SysFont("arial", 16)
+        
+        # Set a default width if width is not set.
+        self.width = self.width or 250
+        self.height = self.height or 20
 
         # Set transparency color.
         self.surface.set_colorkey((255, 255, 255))

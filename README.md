@@ -48,13 +48,17 @@ Key
 * User Interface
     * Control panel as a named view that will contain all controls, allow relative
       positioning and be resizable.
-    * Give assets a default size and then scale.
+        * Refactor the existing control_panel code in gameengine into this.
+    * Assets have the same default size and then scale according to zoom level
+      (like 32x32 pixels, or something).
+    * Extract the minimap view from it's container view. To form the buffer,
+      and simplify the minimap.
     - Views should have dirty rect capability (see pygame.display.update function
       for interface for passing in changed list of rects that need redrawing).
-    - Allow preservation of aspect ratio and auto scaling.
-
+    - Allow preservation of aspect ratio and auto scaling via a mixin,
+      something like: PreserveAspectRatio
+        * MiniMap has the code that could be used as a basis for this.
 - Entities
-    - Combine simple statistics into the attrs component.
     - Add sight (square first, than radial if we want to) and visual fog.
     - Add collision detection so that entities can not run over each other.
 - Ant-god controls:

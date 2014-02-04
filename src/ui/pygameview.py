@@ -64,9 +64,21 @@ class PygameView(View, EventSubscriber, PositionableMixin, ScalableMixin):
         """Called to create the surface.
         
         the dimensions of the surface can be overridden, but will default to
-        the width and height of the 
+        the width and height of the view.
         """
-        self.surface = pygame.surface.Surface((self.width, self.height))
+        height = height if height is not None else self.height
+        width = width if width is not None else self.width
+        self.surface = pygame.surface.Surface((width, height)).convert()
+
+    def clear(self):
+        """Default clear method.
+        """
+        self.surface.fill((0, 0, 0))
+
+    def draw(self, surface):
+        """Default draw method.
+        """
+        surface.blit(self.surface, ((self.x, self.y)))
 
     def events_sub(self):
         """Views should override and place all event subscriptions in this

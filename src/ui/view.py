@@ -143,6 +143,7 @@ class View(object):
     # Default cache values initialized.
     _x = 0
     _y = 0
+    _z = 0
     _width = 0
     _height = 0
     
@@ -160,22 +161,24 @@ class View(object):
         interface, as well as any other methods for handling communication to
         and from the UI.
         """
-        # All properties are shadowed.
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+        # Access to our controller.
+        self.controller = controller
+        
+        # All properties are shadowed and assumed to be overridden in
+        # subclasses (e.g. trigger resizing of other properties on dimension
+        # change).
+        self._x = x
+        self._y = y
+        self._width = width
+        self._height = height
         # Higher z, closer to the user (drawing happens later).
-        self.z = z
+        self._z = z
 
         # If None than this view has no parent.
         self.parentView = None
         # Child views within this view hierarchy.
         self.childviews = []
         
-        # Access to our controller.
-        self.controller = controller
-
         # Assumes mixins don't want arguments. This might be a bad assumption.
         super(View, self).__init__()
         self.subclass_init(**kwargs)
@@ -225,7 +228,15 @@ class View(object):
         """Shorthand for y+height.
         """
         return self.y+self.height
-        
+
+    @property
+    def z(self):
+        return self._z
+    
+    @z.setter
+    def z(self, value):
+        self._z = value
+
     @property
     def center(self):
         """{tuple} Center coordinate relative to this view.

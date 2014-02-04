@@ -46,20 +46,32 @@ class UnitInfoBox(PygameView):
     def subclass_init(self, **kwargs):
         self.font = pygame.font.SysFont("arial", 16)
 
+        # Set within init_surface.
+        self.background = None
+        
+        # Reference so we can resize when necessary.
+        self.toggle_button = ToggleButton(width=30, height=30, xpos="right", buf=5,
+                                   controller=self.controller,
+                                   onsurface="track-enabled",
+                                   offsurface="track-disabled")
+        self.addchild(self.toggle_button)
+
+    def init_surface(self, width=None, height=None):
+        """Override and allow redrawing of all necessary surfaces.
+        """
+        super(UnitInfoBox, self).init_surface(width, height)
+        
         # Prepare the static background.
         self.background = pygame.surface.Surface((self.width, self.height)).convert()
         self.background.fill((0, 0, 0))
         label = self.font.render("Unit Info", True, (255, 255, 255))
         w, _ = label.get_size()
         self.background.blit(label, ((self.width / 2) - w / 2, 0))
-        
-        # Do we need a permanent reference to the tracking button?
-        toggle_button = ToggleButton(width=30, height=30, xpos="right", buf=5,
-                                   controller=self.controller,
-                                   onsurface="track-enabled",
-                                   offsurface="track-disabled")
-        self.addchild(toggle_button)
-    
+
+        # Need to create a real lifecycle for views. Ugh.
+        if hasattr(self, "toggle_button"):
+            self.toggle_button.position()
+
     def clear(self):
         self.surface.blit(self.background, (0, 0))
         

@@ -2,53 +2,100 @@ import pygame
 from ui.pygameview import PygameView
 
 class MiniMap(PygameView):
-    def subclass_init(self, **kwargs):
-        
-        # for initialization
-        # Total size of our view taking into account the border.
-        minimap_width = float(self.width)
-        minimap_height = float(self.height)
-        # Size of the game world.
-        world_width = float(self.controller.world.width)
-        world_height = float(self.controller.world.height)
-        
-        # Adjust for minimap aspect ratio, world size vs minimap size.
-        # Determine the aspect ratio of the minimap.
-        minimap_aspect_ratio = minimap_width/minimap_height
-        # determine the aspect ratio of the world.
-        world_aspect_ratio = world_width/world_height
-        
-        # Size the minimap to fit within our available aspect ratio.
-        if (world_aspect_ratio >= 1) and (world_aspect_ratio >= minimap_aspect_ratio):
-            # The dimensions of the minimap within the view.
-            self.minimap_width = minimap_width
-            self.minimap_height = world_height / (world_width / minimap_width)
-            # Offset applied to the minimap within our available view.
-            self.minimap_offsetx = 0
-            self.minimap_offsety = (minimap_height - self.minimap_height) / 2
-        else:
-            self.minimap_width = world_width / (world_height / minimap_height)
-            self.minimap_height = minimap_height
-            # Calculate the offset of the minimap based on the aspect ratio.
-            self.minimap_offsetx = (minimap_width - self.minimap_width) / 2
-            self.minimap_offsety = 0
-
-        if __debug__:
-            print "MiniMap instance property values"
-            print "minimap_width and height: ", self.minimap_width, self.minimap_height
-            print "minimap_offset width and height: ", self.minimap_offsetx, self.minimap_offsety        
-
-        # For scaling.
-        self.x_scale_factor = float(self.minimap_width) / world_width
-        self.y_scale_factor = float(self.minimap_height) / world_height 
-        
-        self.background = pygame.surface.Surface((self.width, self.height)).convert()
-        self.background.fill((0, 0, 0))
-        self.minimap_surface = pygame.surface.Surface((self.minimap_width, self.minimap_height)).convert()
-        self.minimap_surface.fill((0, 0, 0))
-        
+    def subclass_init(self, **kwargs):        
         # Panning of the map is active.
         self.panning_map = False
+
+    def init_surface(self, width=None, height=None):
+        """Override and allow redrawing of the minimap.
+        """
+        super(MiniMap, self).init_surface(width, height)
+        self.minimap_surface = pygame.surface.Surface((self.minimap_width, self.minimap_height)).convert()
+
+    @property
+    def desired_aspect_ratio(self):
+        """What is the desired aspect ratio?
+        
+        landscape > 1
+        portrait < 1
+        square == 0
+        """
+        # We base our desired aspect ratio on the real size of the world.
+        # Name of the function is to allow growth into an aspect ratio mixin
+        # without changing this code.
+        return float(self.controller.world.width)/self.controller.world.height
+
+    @property
+    def minimap_width(self):
+        """Width of the minimap (minus container and padding).
+        """
+        world_width = float(self.controller.world.width)
+        world_height = float(self.controller.world.height)
+
+        try:
+            if self.desired_aspect_ratio >= 1:
+                # Landscape
+                return self.width  
+            else:
+                # Portrait
+                return world_width / (world_height / float(self.height))
+        except ZeroDivisionError:
+            # In case height is 0.
+            return 0
+        
+    @property
+    def minimap_height(self):
+        """Height of the minimap (minus container and padding).
+        """
+        world_width = float(self.controller.world.width)
+        world_height = float(self.controller.world.height)
+
+        try:
+            if self.desired_aspect_ratio >= 1:
+                # Landscape
+                return world_height / (world_width / self.width)
+            else:
+                # Portrait
+                return self.height
+        except ZeroDivisionError:
+            # In case width is 0.
+            return 0
+
+    @property
+    def minimap_offsetx(self):
+        """Left anchor for minimap.
+        """
+        if self.desired_aspect_ratio >= 1:
+            # Landscape
+            return 0
+        else:
+            # Portrait
+            return (self.width - self.minimap_width) / 2
+
+    @property
+    def minimap_offsety(self):
+        """Top anchor for minimap.
+        """
+        if self.desired_aspect_ratio >= 1:
+            # Landscape
+            return (self.height - self.minimap_height) / 2
+        else:
+            # Portrait
+            return 0
+
+    @property
+    def x_scale_factor(self):
+        """Used to scale normal objects down to the on screen size of the
+        minimap.
+        """
+        return float(self.minimap_width) / self.controller.world.width
+
+    @property
+    def y_scale_factor(self):
+        """Used to scale normal objects down to the on screen size of the
+        minimap.
+        """
+        return float(self.minimap_height) / self.controller.world.height
 
     def events_sub(self):
         self.subto(self.controller, "MOUSEBUTTONDOWN", self.mousebuttondown_listener)
@@ -57,14 +104,14 @@ class MiniMap(PygameView):
 
     def clear(self):
         self.surface.fill((0, 0, 0))
+        # Also clear the minimap.
+        self.minimap_surface.fill((0, 0, 0))
 
     def draw(self, surface):
         """Update the mini view of the game world.        
         """
         world = self.controller.game_engine.world
 
-        # Clear the mini map.
-        self.minimap_surface.fill((0, 0, 0))
         # Let's go through all the entities and put them on the mini_map
         for entity in world.entities.itervalues():
             x_location, y_location = entity.location
