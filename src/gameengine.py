@@ -58,11 +58,11 @@ class GameEngine():
 
         # Player Base Information
         data_to_display = [
-            ("Game Time:", lambda: str(int(self.world.age))),
-            ("Ants:", lambda: str(len(filter(lambda e: hasattr(e, "base") and e.base == self.world.anthill_1, self.world.entities.itervalues())))),
-            ("Energy:", lambda: str(self.world.anthill_1.c["attrs"]["energy"])),
+            ("Game Time:", lambda: str(self.ui_controller.player_info_controller.game_time_passed)),
+            ("Ants:", lambda: str(self.ui_controller.player_info_controller.entity_population)),
+            ("Energy:", lambda: str(self.ui_controller.player_info_controller.anthill_energy)),
         ]
-        player_base_info = DataColumnDisplay(title=str(self.world.anthill_1.c["team"]),
+        player_base_info = DataColumnDisplay(title=self.ui_controller.player_info_controller.team_name,
                                             data=data_to_display)
         control_panel.addchild(player_base_info)
         player_base_info.scale_relative_to_parent(0.167, 1)

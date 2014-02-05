@@ -6,25 +6,42 @@ from commonmath import mmval
 
 
 
-class UIController(EventPublisher, EventSubscriber):
-    """Responsibilities:
-    
-    * Listen for events from the device, normalize and pass to view elements.
-    * Provide a centralized location for logic shared among views.
-    * Provide access to model and entity logic.
+class PlayerInfoController(object):
+    """Gathering place for common info needed by the player.
     """
-    def __init__(self):
-        super(UIController, self).__init__()
-        
-    def handle_event(self, event):
-        """All events are passed to the UI Controller, and then will be passed
-        on.
-        
-        Override to process events.
-        
-        event {pygame.event.Event} a raw pygame event object.
+    def __init__(self, world):
+        """Provide a reference to the game world.
         """
-        pass
+        self.world = world
+    
+    @property
+    def game_time_passed(self):
+        """How much time has passed in the game in an unpaused state?
+        
+        Rounded off to the nearest second.
+        """
+        return int(self.world.age)
+    
+    @property
+    def entity_population(self):
+        """How many entities are currently alive under the control of the
+        player?
+        """
+        return len(filter(lambda e: hasattr(e, "base") and e.base == self.world.anthill_1, self.world.entities.itervalues()))
+
+    @property
+    def anthill_energy(self):
+        """How much energy does the player anthill have?
+        """
+        return self.world.anthill_1.c["attrs"]["energy"]
+
+    @property
+    def team_name(self):
+        """What is the teamname of the player?
+        
+        Returned as a string.
+        """
+        return self.world.anthill_1.c["team"].name
 
 
 
@@ -155,6 +172,30 @@ class ZoomableViewportController(object):
 
 
 
+class UIController(EventPublisher, EventSubscriber):
+    """Abstract class.
+    
+    Responsibilities:
+    
+    * Listen for events from the device, normalize and pass to view elements.
+    * Provide a centralized location for logic shared among views.
+    * Provide access to model and entity logic.
+    """
+    def __init__(self):
+        super(UIController, self).__init__()
+        
+    def handle_event(self, event):
+        """All events are passed to the UI Controller, and then will be passed
+        on.
+        
+        Override to process events.
+        
+        event {pygame.event.Event} a raw pygame event object.
+        """
+        pass
+
+
+
 class GameUIController(UIController):
     """Manages pass through of logic between device and simulation and the
     visual elements.
@@ -182,6 +223,9 @@ class GameUIController(UIController):
         
         # Reference to the main image cache.
         self.game_assets = game_engine.game_assets
+        
+        # Allows access to various game information in regards to the player.
+        self.player_info_controller = PlayerInfoController(game_engine.world)
         
         # Defines the viewable portion of the entire world.
         # Keep the default dimensions the size of the map.
