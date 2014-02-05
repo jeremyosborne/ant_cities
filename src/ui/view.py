@@ -62,10 +62,10 @@ class PositionableMixin(object):
         
         raises ValueError if an incorrect value is passed to any parameter.
         """
-        if not self.parentView:
+        if not self.parentview:
             # No parent to position relative to.
             return
-        parent = self.parentView
+        parent = self.parentview
         
         # Handle buffer.
         if type(buf) == tuple:
@@ -118,10 +118,10 @@ class ScalableMixin(object):
 
         raises ValueError if an incorrect value is passed to any parameter.
         """
-        if not self.parentView:
+        if not self.parentview:
             # No parent to position relative to.
             return
-        parent = self.parentView
+        parent = self.parentview
         
         if (type(w) == float or type(w) == int) and w >= 0:
             self.width = parent.width * w
@@ -175,7 +175,7 @@ class View(object):
         self._z = z
 
         # If None than this view has no parent.
-        self.parentView = None
+        self.parentview = None
         # Child views within this view hierarchy.
         self.childviews = []
         
@@ -263,11 +263,11 @@ class View(object):
         This function returns (5, 70).
         """
         x, y = self.x, self.y
-        ancestor = self.parentView
+        ancestor = self.parentview
         while ancestor:
             x += ancestor.x
             y += ancestor.y
-            ancestor = ancestor.parentView
+            ancestor = ancestor.parentview
 
         return (x, y)
 
@@ -285,7 +285,7 @@ class View(object):
         """
         self.childviews.append(view)
         self.sortchildren()
-        view.parentView = self
+        view.parentview = self
         # Allow an element to position itself relatively now that it knows
         # its parent.
         view.position()
@@ -314,15 +314,15 @@ class View(object):
         """
         self.childviews.remove(view)
         # No resorting, assumes removing does not change indexing.
-        view.parentView = None
+        view.parentview = None
         
     def removeself(self):
         """Remove a view from its parent, if it has a parent.
         
         Convenience method.
         """
-        if self.parentView:
-            self.parentView.removechild(self)
+        if self.parentview:
+            self.parentview.removechild(self)
 
     def render(self, surface=None):
         """Begin the rendering process for this view and all child views.

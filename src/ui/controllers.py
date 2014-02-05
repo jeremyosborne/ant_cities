@@ -224,6 +224,9 @@ class GameUIController(UIController):
         # Reference to the main image cache.
         self.game_assets = game_engine.game_assets
         
+        # Reference to the main display.
+        self.display = game_engine.display
+        
         # Allows access to various game information in regards to the player.
         self.player_info_controller = PlayerInfoController(game_engine.world)
         

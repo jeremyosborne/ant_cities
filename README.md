@@ -46,9 +46,10 @@ Key
 - Not Started or on hold.
 
 * User Interface
-    * Control panel as a named view that will contain all controls, allow relative
-      positioning and be resizable.
-        * Refactor the existing control_panel code in gameengine into this.
+    * Make a DebugPanel for showing:
+        * fps
+        * mouse coordinates
+        * log statements in game.
     * Assets have the same default size and then scale according to zoom level
       (like 32x32 pixels, or something).
     * Extract the minimap view from it's container view. To form the buffer,
