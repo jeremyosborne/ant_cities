@@ -1,5 +1,5 @@
 from entities.components.component import Component
-from commonmath import mmval, Heading, courseto
+from common.calc import mmval, Heading, courseto
 import math
 
 class Velocity(Component):

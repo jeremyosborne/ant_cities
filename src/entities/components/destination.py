@@ -1,5 +1,5 @@
 from entities.components.component import Component
-from commonmath import Heading, courseto, distanceto
+from common.calc import Heading, courseto, distanceto
 
 
 

@@ -1,5 +1,5 @@
 import math
-from src.commonmath import mmval, courseto, distanceto, Heading
+from src.common.calc import mmval, courseto, distanceto, Heading
 
 
 

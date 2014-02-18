@@ -1,5 +1,5 @@
 from entities.components.component import Component
-from commonmath import mmval
+from common.calc import mmval
 
 
 

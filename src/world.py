@@ -5,7 +5,7 @@ Created on Jun 19, 2013
 '''
 
 from random import randint
-from commonmath import random_radial_offset, mmval
+from common.calc import random_radial_offset, mmval
 from entities.anthill import Anthill
 from entities.leaf import Leaf
 from entities.dummy import Dummy

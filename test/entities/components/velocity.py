@@ -1,6 +1,6 @@
 from src.entities.components.velocity import Velocity
 from nose.tools import assert_almost_equal 
-from src.commonmath import Heading
+from src.common.calc import Heading
 import math
 
 def test_velocity():

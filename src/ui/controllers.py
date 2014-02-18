@@ -2,7 +2,7 @@ import pygame
 from pygame import KEYDOWN, K_ESCAPE, K_TAB, K_q, K_m,\
                     MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
 from events import EventPublisher, EventSubscriber
-from commonmath import mmval
+from common.calc import mmval
 
 
 
