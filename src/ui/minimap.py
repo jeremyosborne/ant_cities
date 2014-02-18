@@ -1,5 +1,5 @@
 import pygame
-from ui.pygameview import PygameView
+from common.ui.pygameview import PygameView
 
 class MiniMap(PygameView):
     def subclass_init(self, **kwargs):        

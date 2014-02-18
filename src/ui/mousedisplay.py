@@ -1,5 +1,5 @@
 import pygame
-from ui.pygameview import PygameView
+from common.ui.pygameview import PygameView
 
 class MouseDisplay(PygameView):
     """Display the translation of mouse device coordinates to mouse game world

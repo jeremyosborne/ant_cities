@@ -1,5 +1,5 @@
 from nose import with_setup
-from src.events import EventPublisher, EventSubscriber
+from src.common.events import EventPublisher, EventSubscriber
 
 
 #-----------------------------------------------------------------------------

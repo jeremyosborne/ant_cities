@@ -3,7 +3,7 @@
 Complex views should be defined elsewhere.
 """
 
-from ui.pygameview import PygameView
+from common.ui.pygameview import PygameView
 from ui.datacolumndisplay import DataColumnDisplay
 from ui.unitinfobox import UnitInfoBox
 from ui.minimap import MiniMap

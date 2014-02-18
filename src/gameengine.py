@@ -7,7 +7,7 @@ from ui.controllers import GameUIController
 from ui.map import Map
 from ui.fpsdisplay import FPSDisplay
 from ui.mousedisplay import MouseDisplay
-from ui.pygameview import PygameDisplay
+from common.ui.pygameview import PygameDisplay
 from ui.controlpanel import ControlPanel
 
 

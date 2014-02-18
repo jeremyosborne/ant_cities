@@ -1,6 +1,6 @@
 import pygame
 from pymunk.vec2d import Vec2d
-from ui.pygameview import PygameView
+from common.ui.pygameview import PygameView
 
 import ui.render.entity as render_entity
 

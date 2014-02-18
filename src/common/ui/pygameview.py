@@ -1,6 +1,9 @@
+"""pygame flavored implementation of Views.
+"""
+
 import pygame
 from common.ui.view import View, PositionableMixin, ScalableMixin
-from events import EventSubscriber
+from common.events import EventSubscriber
 
 
 

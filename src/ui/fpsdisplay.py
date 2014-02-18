@@ -1,5 +1,5 @@
 import pygame
-from ui.pygameview import PygameView
+from common.ui.pygameview import PygameView
 
 class FPSDisplay(PygameView):
     """Display frames per second.

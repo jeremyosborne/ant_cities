@@ -2,7 +2,7 @@
 
 General usage:
 
-    from events import EventPublisher
+    from common.events import EventPublisher
     
     pub = EventPublisher()
     
