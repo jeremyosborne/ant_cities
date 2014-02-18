@@ -1,5 +1,5 @@
 import pygame
-from ui.view import View, PositionableMixin, ScalableMixin
+from common.ui.view import View, PositionableMixin, ScalableMixin
 from events import EventSubscriber
 
 

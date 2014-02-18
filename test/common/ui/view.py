@@ -1,4 +1,4 @@
-from src.ui.view import View, PositionableMixin, ScalableMixin
+from src.common.ui.view import View, PositionableMixin, ScalableMixin
 
 def test_view_init():
     """View should be able to initialize correctly.
