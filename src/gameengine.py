@@ -17,6 +17,11 @@ class GameEngine():
     ui.
     """
     def __init__(self):
+        
+        # This initialization needs to be done before other pygame calls.
+        pygame.init()
+        pygame.display.set_caption(globaldata.GAME_TITLE)
+        
         # Reference to the globaldata for our application.
         self.globaldata = globaldata
         
@@ -52,8 +57,6 @@ class GameEngine():
         # On screen player controls and information readouts.
         self.display.addchild(ControlPanel(controller=self.ui_controller))
         
-        
-
     def process(self):
 
         # Time_passed is in milliseconds.
@@ -67,4 +70,19 @@ class GameEngine():
         # Update UI.
         self.display.render()
 
+    def run(self):
+        """Call to start the game.
+        """
+        
+        if __debug__:
+            print pygame.display.Info()
     
+        # Main game loop.
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
+                else:
+                    self.ui_controller.handle_event(event)
+            
+            self.process()

@@ -16,38 +16,10 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__),"src")))
 # There is a discussion for why this is so here:
 # http://python-notes.boredomandlaziness.org/en/latest/python_concepts/import_traps.html
 
-import pygame
 from gameengine import GameEngine
-import globaldata
-
-
-def run():
-    """Call to start the game.
-    """
-    
-    pygame.init()
-    pygame.display.set_caption(globaldata.GAME_TITLE)
-    
-    # Needs to be initialized after everything.
-    game_engine = GameEngine()
-
-    if __debug__:
-        print pygame.display.Info()
-
-    #Main game loop    
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return
-            else:
-                game_engine.ui_controller.handle_event(event)
-
-        game_engine.process()
 
 
 
 if __name__ == "__main__":
-    # The game module exports a game instance.
-    # It is our job to call run on this game object to start the game. 
-    run()
+    GameEngine().run()
     print "Thank you for playing."
