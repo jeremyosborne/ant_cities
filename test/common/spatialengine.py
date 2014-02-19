@@ -5,7 +5,7 @@ import time
 from random import randint
 from pymunk import Vec2d
 
-from src.spatialengine import SpatialEngine
+from src.common.spatialengine import SpatialEngine
 
 # Fixtures.
 world_size_x = 1200*6

@@ -8,9 +8,8 @@ from random import randint
 from common.calc import random_radial_offset, mmval
 from entities.anthill import Anthill
 from entities.leaf import Leaf
-from entities.dummy import Dummy
 import globaldata
-import spatialengine
+import common.spatialengine as spatialengine
 
 
 
@@ -42,12 +41,6 @@ class World(object):
         #-----------------------------------------------------------------------
         # Setting up initial entities.
         #-----------------------------------------------------------------------
-
-#         if __debug__:
-#             # Dummy entity for testing components.
-#             dummy = Dummy(self)
-#             dummy.location = (self.width/2, self.height/2)
-#             self.add_entity(dummy)
 
         # Generate bases.
         self.anthill_1 = Anthill(self, 1, "Blue Ants")
