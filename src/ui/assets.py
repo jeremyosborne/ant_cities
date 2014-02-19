@@ -2,7 +2,7 @@ import os
 import pygame
 import globaldata
 
-from ui.assets.assets import AssetCache
+from common.ui.assets import AssetCache
 
 
 

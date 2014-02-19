@@ -2,7 +2,7 @@ import pygame
 
 import globaldata
 from world import World
-from ui.assets.gameassets import GameAssets
+from ui.assets import GameAssets
 from ui.controllers import GameUIController
 from ui.map import Map
 from ui.fpsdisplay import FPSDisplay
@@ -66,3 +66,5 @@ class GameEngine():
 
         # Update UI.
         self.display.render()
+
+    

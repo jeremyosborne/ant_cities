@@ -6,7 +6,7 @@ or aliased.
 
 import pygame
 import globaldata
-from ui.assets.gameassets import GameAssets
+from ui.assets import GameAssets
 
 # We'll keep our own copy here for now.
 game_assets = GameAssets(globaldata.ASSETS_PATH)

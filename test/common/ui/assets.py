@@ -1,5 +1,5 @@
 import os
-from src.ui.assets.assets import AssetCache
+from src.common.ui.assets import AssetCache
 
 def test_assets_assetcache_defaults():
     a = AssetCache(basepath="yourmom")
